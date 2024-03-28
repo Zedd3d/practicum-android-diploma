@@ -20,7 +20,7 @@ class VacanciesAdapter: ListAdapter<Vacancy, VacanciesAdapter.ViewHolder>(DiffUt
 
         fun bind(vacancy: Vacancy){
             binding.tvVacancyName.text = vacancy.name
-            binding.salary.text = vacancy.salary
+            binding.salary.text = vacancy.salary?.from.toString().orEmpty()
             Glide.with(view.context)
                 .load(vacancy.img)
                 .placeholder(R.drawable.placeholder_company_icon)

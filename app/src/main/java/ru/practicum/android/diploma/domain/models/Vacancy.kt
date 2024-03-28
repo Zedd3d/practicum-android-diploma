@@ -5,6 +5,6 @@ data class Vacancy(
     val img: String?,
     val employer: String,
     val name: String,
-    val salary: String?,
-    val area: String
+    val salary: Salary?,
+    val area: String?
 )
