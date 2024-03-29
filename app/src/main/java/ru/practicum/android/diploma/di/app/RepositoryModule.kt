@@ -1,5 +1,6 @@
 package ru.practicum.android.diploma.di.app
 
+import android.view.Display.Mode
 import dagger.Module
 import dagger.Provides
 import ru.practicum.android.diploma.domain.impl.VacanciesRepository

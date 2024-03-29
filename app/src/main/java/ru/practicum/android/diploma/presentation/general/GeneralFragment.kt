@@ -43,6 +43,10 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             .onEach {
                 val query = it?.toString().orEmpty()
                 viewModel.search(query)
+                if (query.isNotEmpty()){
+                    binding.vacanciesLoading.visibleOrGone(true)
+                    binding.vacanciesRv.visibleOrGone(false)
+                }
             }
             .launchIn(lifecycleScope)
 
@@ -51,6 +55,8 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 viewModel.observeUi().collect{state ->
                     adapter.submitList(state.vacancies)
                     updateStatus(state.status)
+                    binding.vacanciesProgress.visibleOrGone(false)
+                    binding.vacanciesLoading.visibleOrGone(false)
                 }
             }
 
@@ -65,6 +71,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                     val itemsCount = adapter.itemCount
                     if (pos >= itemsCount-1) {
                         viewModel.onLastItemReached(binding.searchEditText.text.toString())
+                        binding.vacanciesProgress.visibleOrGone(true)
                     }
                 }
             }

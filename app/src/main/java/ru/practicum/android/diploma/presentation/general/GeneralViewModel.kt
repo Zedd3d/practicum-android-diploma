@@ -16,13 +16,17 @@ class GeneralViewModel @Inject constructor(
 ): ViewModel() {
 
     private val state = MutableStateFlow(ViewState())
+
+    private var isNextPageLoading = false
     fun observeUi() = state.asStateFlow()
 
     fun search(query: String, page: Int = 0, isPagination: Boolean = false){
+        if(isNextPageLoading) return
         if (query.isEmpty() && !isPagination){
             state.update { it.copy(status = ResponseState.Start) }
             return
         }
+        isNextPageLoading = true
         viewModelScope.launch {
             try {
                 val vacancies = vacanciesRepository.search(query, page)
@@ -38,6 +42,9 @@ class GeneralViewModel @Inject constructor(
             }
             catch (e: Error){
                 state.update { it.copy(status = ResponseState.ServerError) }
+            }
+            finally {
+                isNextPageLoading = false
             }
         }
     }
