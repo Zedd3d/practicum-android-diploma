@@ -10,9 +10,13 @@ import javax.inject.Inject
 class VacanciesRepositoryImpl @Inject constructor(
     private val headHunterService: HeadHunterService
 ): VacanciesRepository {
-    override suspend fun search(text: String): List<Vacancy> {
+    override suspend fun search(text: String, page: Int): List<Vacancy> {
         return withContext(Dispatchers.IO) {
-            val query = mapOf("text" to text)
+            val query = mapOf(
+                "text" to text,
+                "page" to page.toString(),
+                "per_page" to "20"
+                )
             headHunterService.vacancies(query).items.asDomain()
         }
     }

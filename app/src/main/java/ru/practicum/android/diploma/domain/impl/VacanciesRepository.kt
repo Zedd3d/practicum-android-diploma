@@ -4,5 +4,5 @@ import ru.practicum.android.diploma.domain.models.Vacancy
 
 interface VacanciesRepository {
 
-    suspend fun search(text: String): List<Vacancy>
+    suspend fun search(text: String, page: Int): List<Vacancy>
 }

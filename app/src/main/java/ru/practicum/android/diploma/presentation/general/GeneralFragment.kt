@@ -8,14 +8,21 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.bumptech.glide.Glide
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.base.Factory
 import ru.practicum.android.diploma.databinding.FragmentGeneralBinding
 import ru.practicum.android.diploma.util.onChange
+import ru.practicum.android.diploma.util.onTextChangeDebounce
+import ru.practicum.android.diploma.util.visibleOrGone
 
 class GeneralFragment : Fragment(R.layout.fragment_general) {
 
@@ -31,15 +38,54 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupVacancies()
-        binding.searchEditText.onChange { viewModel.search(it) }
+        binding.searchEditText.onTextChangeDebounce()
+            .debounce(2000)
+            .onEach {
+                val query = it?.toString().orEmpty()
+                viewModel.search(query)
+            }
+            .launchIn(lifecycleScope)
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.observeUi().collect{state ->
                     adapter.submitList(state.vacancies)
+                    updateStatus(state.status)
                 }
             }
 
+        }
+
+        binding.vacanciesRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                if (dy > 0) {
+                    val pos = (binding.vacanciesRv.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                    val itemsCount = adapter.itemCount
+                    if (pos >= itemsCount-1) {
+                        viewModel.onLastItemReached(binding.searchEditText.text.toString())
+                    }
+                }
+            }
+        })
+    }
+
+    private fun updateStatus(status: ResponseState) {
+        binding.vacanciesRv.visibleOrGone(status == ResponseState.Content)
+        binding.src.visibleOrGone(status != ResponseState.Content)
+        val image = when(status){
+            ResponseState.Empty -> {R.drawable.state_image_nothing_found}
+            ResponseState.ServerError -> {R.drawable.state_image_server_error_search}
+            ResponseState.NetworkError -> {R.drawable.state_image_no_internet}
+            ResponseState.Start -> {R.drawable.state_image_start_search}
+            else -> {null}
+        }
+
+        image?.let {
+            Glide.with(requireContext())
+                .load(image)
+                .into(binding.src)
         }
     }
 

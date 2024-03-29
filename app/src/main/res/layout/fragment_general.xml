@@ -53,7 +53,18 @@
         app:layout_constraintTop_toBottomOf="@+id/search_input"
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="8dp"
-        tools:listitem="@layout/vacancy_item"/>
+        tools:listitem="@layout/vacancy_item"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/src"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/state_image_start_search"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_input" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
