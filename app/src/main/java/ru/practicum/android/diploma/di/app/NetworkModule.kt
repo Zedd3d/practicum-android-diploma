@@ -23,7 +23,7 @@ object NetworkModule {
                     request()
                         .newBuilder()
                         .addHeader("Authorization", "Bearer ${BuildConfig.HH_ACCESS_TOKEN}")
-                        .addHeader("HH-User-Agent", "practicum-android-diploma (makss.impeks@gmail.com)")
+                        .addHeader("HH-User-Agent", "practicum-android-diploma (valentin.pside@mail.ru)")
                         .build()
                 )
             }

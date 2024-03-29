@@ -8,4 +8,6 @@ interface GeneralComponent {
 
     fun viewModel(): GeneralViewModel
 
+
+
 }
