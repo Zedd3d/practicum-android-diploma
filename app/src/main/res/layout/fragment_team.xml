@@ -27,6 +27,7 @@
         android:text="Над приложением \nработали"
         android:textSize="32sp"
         android:textStyle="bold"
+
         />
 
     <TextView
