@@ -3,12 +3,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingStart="16dp"
+    android:paddingTop="24dp"
+    android:paddingEnd="10dp"
+    android:paddingBottom="10dp"
     tools:context=".presentation.favorites.FavoritesFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="@string/favorite_head_name"
+        android:textSize="22sp" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        tools:listitem="@layout/vacancy_item" />
+
+    <ImageView
+        android:id="@+id/iv_favorite"
+        android:layout_width="320dp"
+        android:layout_height="220dp"
+        android:layout_gravity="center"
+        android:foreground="@drawable/state_image_empty" />
 </FrameLayout>
