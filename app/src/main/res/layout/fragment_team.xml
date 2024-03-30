@@ -3,13 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.team.TeamFragment"
+    android:orientation="vertical"
     android:paddingLeft="16dp"
     android:paddingTop="40dp"
-    android:paddingBottom="16dp"
     android:paddingRight="16dp"
-    android:orientation="vertical"
-    >
+    android:paddingBottom="16dp"
+    tools:context=".presentation.team.TeamFragment">
 
     <!-- TODO: Добавить отчества, добавить стили, убрать текста в strings -->
     <TextView
@@ -17,8 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Команда"
-        android:textSize="22sp"
-        />
+        android:textSize="22sp" />
 
     <TextView
         android:layout_width="match_parent"
@@ -35,29 +33,27 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="26dp"
         android:text="Валентин Мальцев"
-        android:textSize="16sp"
-        />
+        android:textSize="16sp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Андрей Ярыгин"
-        android:textSize="16sp"
-        />
+        android:textSize="16sp" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Александр Панкратов"
-        android:textSize="16sp"
-        />
+        android:textSize="16sp" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Александр Ефремов"
-        android:textSize="16sp"
-        />
+        android:textSize="16sp" />
 
 </LinearLayout>
