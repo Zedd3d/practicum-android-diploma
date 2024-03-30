@@ -10,19 +10,19 @@
     android:paddingBottom="16dp"
     tools:context=".presentation.team.TeamFragment">
 
-    <!-- TODO: Добавить отчества, добавить стили, убрать текста в strings -->
+    <!-- TODO: Добавить отчества, добавить стили -->
     <TextView
         android:id="@+id/tv_team"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Команда"
+        android:text="@string/team_head_name"
         android:textSize="22sp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:text="Над приложением \nработали"
+        android:text="@string/team_works"
         android:textSize="32sp"
         android:textStyle="bold"
 
@@ -32,28 +32,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="26dp"
-        android:text="Валентин Мальцев"
+        android:text="@string/team_developer_1"
         android:textSize="16sp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Андрей Ярыгин"
+        android:text="@string/team_developer_2"
         android:textSize="16sp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Александр Панкратов"
+        android:text="@string/team_developer_3"
         android:textSize="16sp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Александр Ефремов"
+        android:text="@string/team_developer_4"
         android:textSize="16sp" />
 
 </LinearLayout>

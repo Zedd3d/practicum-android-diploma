@@ -6,4 +6,11 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="favorite_head_name">Избранное</string>
     <string name="insert_request">Введите запрос</string>
+    <!-- TODO: team strings -->
+    <string name="team_head_name">Команда</string>
+    <string name="team_works">Над приложением \nработали</string>
+    <string name="team_developer_1">Валентин Мальцев</string>
+    <string name="team_developer_2">Андрей Ярыгин</string>
+    <string name="team_developer_3">Александр Панкратов</string>
+    <string name="team_developer_4">Александр Ефремов</string>
 </resources>
