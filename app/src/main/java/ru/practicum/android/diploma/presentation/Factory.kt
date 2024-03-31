@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.base
+package ru.practicum.android.diploma.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
