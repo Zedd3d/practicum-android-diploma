@@ -34,14 +34,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appbar"
-        app:endIconMode="clear_text"
-        app:endIconDrawable="@drawable/ic_clear">
+        app:endIconDrawable="@drawable/ic_clear"
+        style="@style/inputTextLayoutStyle">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/search_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/insert_request" />
+            android:hint="@string/insert_request"
+            app:endIconMode="clear_text"
+            app:endIconDrawable="@drawable/ic_clear"
+            style="@style/inputTextEditStyleDayNight"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -55,7 +58,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_input"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="8dp"
+        android:layout_marginTop="8dp"
         android:clipToPadding="false"
         android:paddingBottom="50dp"
         tools:listitem="@layout/vacancy_item"
@@ -79,7 +82,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:visibility="gone"/>
+        android:background="@color/Blue_yp"
+        android:visibility="visible"/>
 
     <ProgressBar
         android:id="@+id/vacancies_loading"
