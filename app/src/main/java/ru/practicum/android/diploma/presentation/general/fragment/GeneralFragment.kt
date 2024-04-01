@@ -46,10 +46,6 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             .onEach {
                 val query = it?.toString().orEmpty()
                 viewModel.search(query)
-                if (query.isNotEmpty()){
-                    binding.vacanciesLoading.visibleOrGone(true)
-                    binding.vacanciesRv.visibleOrGone(false)
-                }
             }
             .launchIn(lifecycleScope)
 
@@ -61,6 +57,9 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                     binding.vacanciesProgress.visibleOrGone(false)
                     binding.vacanciesLoading.visibleOrGone(false)
                     binding.foundCountText.text = getString(R.string.found_count, state.found.toString())
+                    binding.vacanciesLoading.visibleOrGone(state.isLoading)
+                    binding.vacanciesRv.visibleOrGone(!state.isLoading)
+
                 }
             }
 
