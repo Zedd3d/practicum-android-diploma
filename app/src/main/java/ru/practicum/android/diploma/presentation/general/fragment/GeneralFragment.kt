@@ -2,11 +2,13 @@ package ru.practicum.android.diploma.presentation.general.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -121,7 +123,10 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     }
 
     private fun setupVacancies() {
-        adapter = VacanciesAdapter()
+        adapter = VacanciesAdapter() {
+            val params = bundleOf("id" to it)
+        findNavController().navigate(R.id.action_generalFragment_to_vacancyFragment, params)
+    }
         binding.vacanciesRv.adapter = adapter
         binding.vacanciesRv.layoutManager = LinearLayoutManager(requireContext())
     }

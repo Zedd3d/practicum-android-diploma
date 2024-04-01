@@ -13,7 +13,9 @@ import ru.practicum.android.diploma.databinding.VacancyItemBinding
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.util.SalaryUtil
 
-class VacanciesAdapter: ListAdapter<Vacancy, VacanciesAdapter.ViewHolder>(DiffUtil()){
+class VacanciesAdapter(
+    private val onClick: (String) -> Unit
+): ListAdapter<Vacancy, VacanciesAdapter.ViewHolder>(DiffUtil()){
 
     inner class ViewHolder(private val view : View): RecyclerView.ViewHolder(view){
 
@@ -27,7 +29,7 @@ class VacanciesAdapter: ListAdapter<Vacancy, VacanciesAdapter.ViewHolder>(DiffUt
                 .placeholder(R.drawable.placeholder_company_icon)
                 .into(binding.ivCompany)
             binding.department.text = vacancy.area
-
+            binding.root.setOnClickListener{onClick.invoke(vacancy.id)}
         }
 
     }

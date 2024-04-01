@@ -1,21 +1,17 @@
 package ru.practicum.android.diploma.presentation.vacancy
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.app.App
+import ru.practicum.android.diploma.presentation.Factory
 
-class VacancyFragment : Fragment() {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
+class VacancyFragment : Fragment(R.layout.vacancy_information_fragment) {
+    private val vacancyId: String? by lazy { requireArguments().getString("id") }
+    private val viewModel by viewModels<VacancyViewModel>{
+        Factory{
+            App.appComponent.vacancyComponent().create(requireNotNull(vacancyId)).viewModel()
+        }
     }
 }
