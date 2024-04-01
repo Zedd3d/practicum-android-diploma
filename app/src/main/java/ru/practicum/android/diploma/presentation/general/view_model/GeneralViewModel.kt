@@ -29,13 +29,19 @@ class GeneralViewModel @Inject constructor(
         isNextPageLoading = true
         viewModelScope.launch {
             try {
-                val vacancies = vacanciesRepository.search(query, page)
+                val response = vacanciesRepository.search(query, page)
+                val vacancies = response
                 val currentList = if(isPagination){
                     state.value.vacancies + vacancies
                 } else{
                     vacancies
                 }
-                state.update { it.copy(vacancies = currentList, status = if (vacancies.isNotEmpty()) ResponseState.Content else ResponseState.Empty) }
+                state.update {
+                    it.copy(
+                        vacancies = currentList,
+                        found = response.size,
+                        status = if (vacancies.isNotEmpty()) ResponseState.Content else ResponseState.Empty)
+                }
             }
             catch (e: UnknownHostException){
                 state.update { it.copy(status = ResponseState.NetworkError) }
@@ -57,7 +63,9 @@ class GeneralViewModel @Inject constructor(
 
 data class ViewState(
     val vacancies: List<Vacancy> = emptyList(),
-    val status: ResponseState = ResponseState.Start
+    val status: ResponseState = ResponseState.Start,
+    val found: Int = 0,
+    val isLoading: Boolean = false
 )
 
 sealed class ResponseState(){
