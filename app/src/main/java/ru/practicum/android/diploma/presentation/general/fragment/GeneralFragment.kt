@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.presentation.general
+package ru.practicum.android.diploma.presentation.general.fragment
 
 import android.os.Bundle
 import android.view.View
@@ -19,6 +19,9 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.databinding.FragmentGeneralBinding
+import ru.practicum.android.diploma.presentation.general.view_model.GeneralViewModel
+import ru.practicum.android.diploma.presentation.general.view_model.ResponseState
+import ru.practicum.android.diploma.presentation.general.VacanciesAdapter
 import ru.practicum.android.diploma.util.onTextChangeDebounce
 import ru.practicum.android.diploma.util.visibleOrGone
 
@@ -79,11 +82,32 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     private fun updateStatus(status: ResponseState) {
         binding.vacanciesRv.visibleOrGone(status == ResponseState.Content)
         binding.src.visibleOrGone(status != ResponseState.Content)
+        binding.srcText.visibleOrGone(status != ResponseState.Content)
+        when(status){
+            ResponseState.Empty -> {
+                binding.srcText.setText(R.string.no_vacancies)
+            }
+            ResponseState.ServerError -> {
+                binding.srcText.setText(R.string.server_error)
+            }
+            ResponseState.NetworkError -> {
+                binding.srcText.setText(R.string.no_internet)
+            }
+            else -> {binding.srcText.text = ""}
+        }
         val image = when(status){
-            ResponseState.Empty -> {R.drawable.state_image_nothing_found}
-            ResponseState.ServerError -> {R.drawable.state_image_server_error_search}
-            ResponseState.NetworkError -> {R.drawable.state_image_no_internet}
-            ResponseState.Start -> {R.drawable.state_image_start_search}
+            ResponseState.Empty -> {
+                R.drawable.state_image_nothing_found
+            }
+            ResponseState.ServerError -> {
+                R.drawable.state_image_server_error_search
+            }
+            ResponseState.NetworkError -> {
+                R.drawable.state_image_no_internet
+            }
+            ResponseState.Start -> {
+                R.drawable.state_image_start_search
+            }
             else -> {null}
         }
 

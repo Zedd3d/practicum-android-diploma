@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/generalFragment"
-        android:name="ru.practicum.android.diploma.presentation.general.GeneralFragment"
+        android:name="ru.practicum.android.diploma.presentation.general.fragment.GeneralFragment"
         android:label="fragment_general"
         tools:layout="@layout/fragment_general" />
     <fragment

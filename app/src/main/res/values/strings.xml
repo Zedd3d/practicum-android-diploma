@@ -13,4 +13,8 @@
     <string name="team_developer_2">Андрей Ярыгин</string>
     <string name="team_developer_3">Александр Панкратов</string>
     <string name="team_developer_4">Александр Ефремов</string>
+
+    <string name="no_vacancies">Не удалось получить \n список вакансий</string>
+    <string name="no_internet">Нет интернета</string>
+    <string name="server_error">Ошибка сервера</string>
 </resources>
