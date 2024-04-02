@@ -75,13 +75,11 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                     updateStatus(state.status)
                     binding.vacanciesProgress.visibleOrGone(false)
                     binding.vacanciesLoading.visibleOrGone(false)
-                    binding.foundCountText.text =
-                        if(state.found != 0){
+                    binding.foundCountText.text = if (state.found!= 0) {
                             getString(R.string.found_count, state.found.toString())
+                        } else {
+                            getString(R.string.no_vacancies_lil)
                         }
-                    else{
-                        getString(R.string.no_vacancies_lil)
-                    }
                     binding.vacanciesLoading.visibleOrGone(state.isLoading)
                 }
             }
