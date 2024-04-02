@@ -10,11 +10,12 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.onStart
 
 
-fun View.visibleOrGone(visible: Boolean){
+fun View.visibleOrGone(visible: Boolean) {
     this.visibility = if (visible) View.VISIBLE else View.GONE
 }
-fun EditText.onChange(callback: (String) -> Unit){
-    val textWatcher = object: TextWatcher{
+
+fun EditText.onTextChange(callback: (text: String) -> Unit) {
+    val textWatcher = object : TextWatcher {
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
         override fun onTextChanged(text: CharSequence, p1: Int, p2: Int, p3: Int) {
@@ -23,7 +24,7 @@ fun EditText.onChange(callback: (String) -> Unit){
 
         override fun afterTextChanged(p0: Editable?) {}
     }
-    this.addTextChangedListener(textWatcher)
+    addTextChangedListener(textWatcher)
 }
 
 fun EditText.onTextChangeDebounce(): Flow<CharSequence?> {

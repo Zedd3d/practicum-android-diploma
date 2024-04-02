@@ -5,7 +5,7 @@ import ru.practicum.android.diploma.data.dto.VacancyDto
 import ru.practicum.android.diploma.domain.models.Salary
 import ru.practicum.android.diploma.domain.models.Vacancy
 
-fun List<VacancyDto>.asDomain(): List<Vacancy> = this.map{ it.asDomain() }
+fun List<VacancyDto>.asDomain(): List<Vacancy> = this.map { it.asDomain() }
 
 fun VacancyDto.asDomain(): Vacancy = Vacancy(
     id = id,

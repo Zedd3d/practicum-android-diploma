@@ -11,22 +11,25 @@ import com.bumptech.glide.Glide
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.VacancyItemBinding
 import ru.practicum.android.diploma.domain.models.Vacancy
+import ru.practicum.android.diploma.util.SalaryUtil
 
-class VacanciesAdapter: ListAdapter<Vacancy, VacanciesAdapter.ViewHolder>(DiffUtil()){
+class VacanciesAdapter(
+    private val onClick: (String) -> Unit
+) : ListAdapter<Vacancy, VacanciesAdapter.ViewHolder>(DiffUtil()) {
 
-    inner class ViewHolder(private val view : View): RecyclerView.ViewHolder(view){
+    inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
         private val binding by viewBinding { VacancyItemBinding.bind(view) }
 
-        fun bind(vacancy: Vacancy){
+        fun bind(vacancy: Vacancy) {
             binding.tvVacancyName.text = vacancy.name
-            binding.salary.text = vacancy.salary?.from.toString().orEmpty()
+            binding.salary.text = SalaryUtil.formatSalary(view.context, vacancy.salary)
             Glide.with(view.context)
                 .load(vacancy.img)
                 .placeholder(R.drawable.placeholder_company_icon)
                 .into(binding.ivCompany)
             binding.department.text = vacancy.area
-
+            binding.root.setOnClickListener { onClick.invoke(vacancy.id) }
         }
 
     }
@@ -42,7 +45,7 @@ class VacanciesAdapter: ListAdapter<Vacancy, VacanciesAdapter.ViewHolder>(DiffUt
     }
 }
 
-class DiffUtil(): DiffUtil.ItemCallback<Vacancy>(){
+class DiffUtil : DiffUtil.ItemCallback<Vacancy>() {
     override fun areItemsTheSame(oldItem: Vacancy, newItem: Vacancy): Boolean {
         return oldItem.id == newItem.id
     }

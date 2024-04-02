@@ -4,6 +4,7 @@ import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 import ru.practicum.android.diploma.di.general.GeneralComponent
+import ru.practicum.android.diploma.di.vacancy.VacancyComponent
 import javax.inject.Singleton
 
 @Singleton
@@ -16,6 +17,8 @@ import javax.inject.Singleton
 interface AppComponent {
 
     fun generalComponent(): GeneralComponent
+
+    fun vacancyComponent(): VacancyComponent.VacancyComponentFactory
 
     @Component.Factory
     interface AppComponentFactory{
