@@ -57,7 +57,7 @@ class GeneralViewModel @Inject constructor(
                 }
             } catch (e: UnknownHostException) {
                 state.update { it.copy(status = ResponseState.NetworkError) }
-            } catch (e: Error) {
+            } catch (e: Throwable) {
                 state.update { it.copy(status = ResponseState.ServerError) }
             } finally {
                 state.update { it.copy(isLoading = false) }
