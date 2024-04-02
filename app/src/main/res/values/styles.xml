@@ -19,7 +19,6 @@
         <item name="hintTextAppearance">@style/LowTitleTextStyle</item>
         <item name="android:textAppearance">@style/LowTitleTextStyle</item>
         <item name="android:background">@drawable/background_corners12</item>
-        <item name="android:drawableEnd">@drawable/ic_search</item>
     </style>
 
     <style name="inputTextEditStyleDayNight" parent="inputTextEditStyle">

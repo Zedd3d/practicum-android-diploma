@@ -1,7 +1,9 @@
 package ru.practicum.android.diploma.presentation.general.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -24,6 +26,7 @@ import ru.practicum.android.diploma.databinding.FragmentGeneralBinding
 import ru.practicum.android.diploma.presentation.general.view_model.GeneralViewModel
 import ru.practicum.android.diploma.presentation.general.view_model.ResponseState
 import ru.practicum.android.diploma.presentation.general.VacanciesAdapter
+import ru.practicum.android.diploma.util.onTextChange
 import ru.practicum.android.diploma.util.onTextChangeDebounce
 import ru.practicum.android.diploma.util.visibleOrGone
 
@@ -44,10 +47,26 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         binding.searchEditText.onTextChangeDebounce()
             .debounce(2000)
             .onEach {
+                hideKeyBoard()
                 val query = it?.toString().orEmpty()
                 viewModel.search(query)
             }
             .launchIn(lifecycleScope)
+
+        binding.searchEditText.onTextChange {
+            if (it.isNotBlank()){
+                binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_clear, 0)
+                binding.clearButton.isEnabled = true
+            }
+            else{
+                binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_search, 0)
+                binding.clearButton.isEnabled = false
+            }
+        }
+
+        binding.clearButton.setOnClickListener {
+            binding.searchEditText.setText("")
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
@@ -56,10 +75,10 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                     updateStatus(state.status)
                     binding.vacanciesProgress.visibleOrGone(false)
                     binding.vacanciesLoading.visibleOrGone(false)
-                    binding.foundCountText.text = getString(R.string.found_count, state.found.toString())
+                    binding.foundCountText.text =
+                        if(state.found != 0) getString(R.string.found_count, state.found.toString())
+                    else getString(R.string.no_vacancies_lil)
                     binding.vacanciesLoading.visibleOrGone(state.isLoading)
-                    binding.vacanciesRv.visibleOrGone(!state.isLoading)
-
                 }
             }
 
@@ -85,10 +104,11 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         binding.vacanciesRv.visibleOrGone(status == ResponseState.Content)
         binding.src.visibleOrGone(status != ResponseState.Content)
         binding.srcText.visibleOrGone(status != ResponseState.Content)
-        binding.foundCount.visibleOrGone(status == ResponseState.Content)
+        binding.foundCount.visibleOrGone(status == ResponseState.Content || status == ResponseState.Empty)
         when(status){
             ResponseState.Empty -> {
                 binding.srcText.setText(R.string.no_vacancies)
+                binding.foundCountText.setText(R.string.no_vacancies_lil)
             }
             ResponseState.ServerError -> {
                 binding.srcText.setText(R.string.server_error)
@@ -128,6 +148,14 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     }
         binding.vacanciesRv.adapter = adapter
         binding.vacanciesRv.layoutManager = LinearLayoutManager(requireContext())
+    }
+
+    private fun hideKeyBoard() {
+        binding.let {
+            val inputMethodManager =
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            inputMethodManager?.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
+        }
     }
 
 }
