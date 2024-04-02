@@ -11,7 +11,6 @@ import ru.practicum.android.diploma.databinding.FragmentVacancyBinding
 import ru.practicum.android.diploma.presentation.Factory
 
 class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
-
     private val vacancyId: String? by lazy { requireArguments().getString("id") }
 
     private val binding by viewBinding(FragmentVacancyBinding::bind)

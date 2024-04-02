@@ -24,11 +24,13 @@ import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentGeneralBinding
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.general.VacanciesAdapter
-import ru.practicum.android.diploma.presentation.general.view_model.GeneralViewModel
-import ru.practicum.android.diploma.presentation.general.view_model.ResponseState
+import ru.practicum.android.diploma.presentation.general.viewModel.GeneralViewModel
+import ru.practicum.android.diploma.presentation.general.viewModel.ResponseState
 import ru.practicum.android.diploma.util.onTextChange
 import ru.practicum.android.diploma.util.onTextChangeDebounce
 import ru.practicum.android.diploma.util.visibleOrGone
+
+private const val DEBOUNCE: Long = 2000
 
 class GeneralFragment : Fragment(R.layout.fragment_general) {
 
@@ -45,7 +47,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         super.onViewCreated(view, savedInstanceState)
         setupVacancies()
         binding.searchEditText.onTextChangeDebounce()
-            .debounce(2000)
+            .debounce(DEBOUNCE)
             .onEach {
                 hideKeyBoard()
                 val query = it?.toString().orEmpty()

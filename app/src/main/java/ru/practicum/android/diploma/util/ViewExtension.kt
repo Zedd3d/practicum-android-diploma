@@ -15,7 +15,6 @@ fun View.visibleOrGone(visible: Boolean) {
 }
 
 fun EditText.onTextChange(callback: (text: String) -> Unit) {
-
     val textWatcher = object : TextWatcher {
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
