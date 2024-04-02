@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class GeneralViewModel @Inject constructor(
     private val vacanciesRepository: VacanciesRepository
-): ViewModel() {
+) : ViewModel() {
 
     private val state = MutableStateFlow(ViewState())
 
@@ -22,14 +22,14 @@ class GeneralViewModel @Inject constructor(
     private var query: String? = null
     fun observeUi() = state.asStateFlow()
 
-    fun search(query: String, page: Int = 0, isPagination: Boolean = false){
-        if(isNextPageLoading) return
+    fun search(query: String, page: Int = 0, isPagination: Boolean = false) {
+        if (isNextPageLoading) return
 
-        if(this.query == query && !isPagination) return
+        if (this.query == query && !isPagination) return
 
         this.query = query
 
-        if (query.isEmpty() && !isPagination){
+        if (query.isEmpty() && !isPagination) {
             state.update { it.copy(status = ResponseState.Start) }
             return
         }
@@ -42,9 +42,9 @@ class GeneralViewModel @Inject constructor(
             try {
                 val response = vacanciesRepository.search(query, page)
                 val vacancies = response.items
-                val currentList = if(isPagination){
+                val currentList = if (isPagination) {
                     state.value.vacancies + vacancies
-                } else{
+                } else {
                     vacancies
                 }
                 state.update {
@@ -52,23 +52,21 @@ class GeneralViewModel @Inject constructor(
                         vacancies = currentList,
                         found = response.found,
                         isLoading = false,
-                        status = if (vacancies.isNotEmpty()) ResponseState.Content else ResponseState.Empty)
+                        status = if (vacancies.isNotEmpty()) ResponseState.Content else ResponseState.Empty
+                    )
                 }
-            }
-            catch (e: UnknownHostException){
+            } catch (e: UnknownHostException) {
                 state.update { it.copy(status = ResponseState.NetworkError) }
-            }
-            catch (e: Error){
+            } catch (e: Error) {
                 state.update { it.copy(status = ResponseState.ServerError) }
-            }
-            finally {
+            } finally {
                 state.update { it.copy(isLoading = false) }
                 isNextPageLoading = false
             }
         }
     }
 
-    fun onLastItemReached(query: String){
+    fun onLastItemReached(query: String) {
         val page = state.value.vacancies.size / 20
         search(query, page, true)
     }
@@ -81,11 +79,11 @@ data class ViewState(
     val isLoading: Boolean = false
 )
 
-sealed class ResponseState(){
+sealed class ResponseState() {
 
-    data object Start: ResponseState()
-    data object Empty: ResponseState()
-    data object Content: ResponseState()
-    data object NetworkError: ResponseState()
-    data object ServerError: ResponseState()
+    data object Start : ResponseState()
+    data object Empty : ResponseState()
+    data object Content : ResponseState()
+    data object NetworkError : ResponseState()
+    data object ServerError : ResponseState()
 }

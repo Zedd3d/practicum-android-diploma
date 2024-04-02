@@ -54,13 +54,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             .launchIn(lifecycleScope)
 
         binding.searchEditText.onTextChange {
-            if (it.isNotBlank()) {
-                binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_clear, 0)
-                binding.clearButton.isEnabled = true
-            } else {
-                binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_search, 0)
-                binding.clearButton.isEnabled = false
-            }
+            setupIcon(it)
         }
 
         binding.clearButton.setOnClickListener {
@@ -124,6 +118,10 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 binding.srcText.text = ""
             }
         }
+        updatePicture(status)
+    }
+
+    private fun updatePicture(status: ResponseState) {
         val image = when (status) {
             ResponseState.Empty -> {
                 R.drawable.state_image_nothing_found
@@ -167,6 +165,16 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             val inputMethodManager =
                 requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
+        }
+    }
+
+    private fun setupIcon(it: String) {
+        if (it.isNotBlank()) {
+            binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_clear, 0)
+            binding.clearButton.isEnabled = true
+        } else {
+            binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_search, 0)
+            binding.clearButton.isEnabled = false
         }
     }
 

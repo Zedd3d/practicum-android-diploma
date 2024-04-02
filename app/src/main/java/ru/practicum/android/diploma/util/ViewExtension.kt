@@ -10,9 +10,10 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.onStart
 
 
-fun View.visibleOrGone(visible: Boolean){
+fun View.visibleOrGone(visible: Boolean) {
     this.visibility = if (visible) View.VISIBLE else View.GONE
 }
+
 fun EditText.onTextChange(callback: (text: String) -> Unit) {
 
     val textWatcher = object : TextWatcher {

@@ -5,5 +5,5 @@ import javax.inject.Inject
 
 class VacancyViewModel @Inject constructor(
     val vacancyId: String
-): ViewModel() {
+) : ViewModel() {
 }
