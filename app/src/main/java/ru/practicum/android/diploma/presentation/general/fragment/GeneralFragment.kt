@@ -21,11 +21,11 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
-import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.databinding.FragmentGeneralBinding
+import ru.practicum.android.diploma.presentation.Factory
+import ru.practicum.android.diploma.presentation.general.VacanciesAdapter
 import ru.practicum.android.diploma.presentation.general.view_model.GeneralViewModel
 import ru.practicum.android.diploma.presentation.general.view_model.ResponseState
-import ru.practicum.android.diploma.presentation.general.VacanciesAdapter
 import ru.practicum.android.diploma.util.onTextChange
 import ru.practicum.android.diploma.util.onTextChangeDebounce
 import ru.practicum.android.diploma.util.visibleOrGone
@@ -33,7 +33,7 @@ import ru.practicum.android.diploma.util.visibleOrGone
 class GeneralFragment : Fragment(R.layout.fragment_general) {
 
     private val viewModel by viewModels<GeneralViewModel> {
-        Factory{
+        Factory {
             App.appComponent.generalComponent().viewModel()
         }
     }
@@ -53,12 +53,11 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             }
             .launchIn(lifecycleScope)
 
-        binding.searchEditText.onTextChange{
-            if (it.isNotBlank()){
+        binding.searchEditText.onTextChange {
+            if (it.isNotBlank()) {
                 binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_clear, 0)
                 binding.clearButton.isEnabled = true
-            }
-            else {
+            } else {
                 binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_search, 0)
                 binding.clearButton.isEnabled = false
             }
@@ -69,17 +68,17 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.observeUi().collect{state ->
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.observeUi().collect { state ->
                     adapter.submitList(state.vacancies)
                     updateStatus(state.status)
                     binding.vacanciesProgress.visibleOrGone(false)
                     binding.vacanciesLoading.visibleOrGone(false)
-                    binding.foundCountText.text = if (state.found!= 0) {
-                            getString(R.string.found_count, state.found.toString())
-                        } else {
-                            getString(R.string.no_vacancies_lil)
-                        }
+                    binding.foundCountText.text = if (state.found != 0) {
+                        getString(R.string.found_count, state.found.toString())
+                    } else {
+                        getString(R.string.no_vacancies_lil)
+                    }
                     binding.vacanciesLoading.visibleOrGone(state.isLoading)
                 }
             }
@@ -93,7 +92,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 if (dy > 0) {
                     val pos = (binding.vacanciesRv.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
                     val itemsCount = adapter.itemCount
-                    if (pos >= itemsCount-1) {
+                    if (pos >= itemsCount - 1) {
                         viewModel.onLastItemReached(binding.searchEditText.text.toString())
                         binding.vacanciesProgress.visibleOrGone(true)
                     }
@@ -107,33 +106,44 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         binding.src.visibleOrGone(status != ResponseState.Content)
         binding.srcText.visibleOrGone(status != ResponseState.Content)
         binding.foundCount.visibleOrGone(status == ResponseState.Content || status == ResponseState.Empty)
-        when(status) {
+        when (status) {
             ResponseState.Empty -> {
                 binding.srcText.setText(R.string.no_vacancies)
                 binding.foundCountText.setText(R.string.no_vacancies_lil)
             }
+
             ResponseState.ServerError -> {
                 binding.srcText.setText(R.string.server_error)
             }
+
             ResponseState.NetworkError -> {
                 binding.srcText.setText(R.string.no_internet)
             }
-            else -> {binding.srcText.text = ""}
+
+            else -> {
+                binding.srcText.text = ""
+            }
         }
-        val image = when(status){
+        val image = when (status) {
             ResponseState.Empty -> {
                 R.drawable.state_image_nothing_found
             }
+
             ResponseState.ServerError -> {
                 R.drawable.state_image_server_error_search
             }
+
             ResponseState.NetworkError -> {
                 R.drawable.state_image_no_internet
             }
+
             ResponseState.Start -> {
                 R.drawable.state_image_start_search
             }
-            else -> {null}
+
+            else -> {
+                null
+            }
         }
 
         image?.let {
@@ -146,8 +156,8 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     private fun setupVacancies() {
         adapter = VacanciesAdapter() {
             val params = bundleOf("id" to it)
-        findNavController().navigate(R.id.action_generalFragment_to_vacancyFragment, params)
-    }
+            findNavController().navigate(R.id.action_generalFragment_to_vacancyFragment, params)
+        }
         binding.vacanciesRv.adapter = adapter
         binding.vacanciesRv.layoutManager = LinearLayoutManager(requireContext())
     }
