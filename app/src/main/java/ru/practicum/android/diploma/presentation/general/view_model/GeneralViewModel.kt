@@ -41,7 +41,7 @@ class GeneralViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val response = vacanciesRepository.search(query, page)
-                val vacancies = response
+                val vacancies = response.items
                 val currentList = if(isPagination){
                     state.value.vacancies + vacancies
                 } else{
@@ -50,7 +50,7 @@ class GeneralViewModel @Inject constructor(
                 state.update {
                     it.copy(
                         vacancies = currentList,
-                        found = response.size,
+                        found = response.found,
                         isLoading = false,
                         status = if (vacancies.isNotEmpty()) ResponseState.Content else ResponseState.Empty)
                 }
