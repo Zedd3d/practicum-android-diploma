@@ -1,6 +1,7 @@
 package ru.practicum.android.diploma.util
 
 import android.content.Context
+import android.icu.text.DecimalFormat
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.models.Salary
 import java.lang.StringBuilder
@@ -11,11 +12,11 @@ object SalaryUtil {
         val text = StringBuilder()
 
         salary?.from?.let {
-            text.append("от $it")
+            text.append("от ${formatSalary(it)}")
         }
 
         salary?.to?.let {
-            text.append(" до $it")
+            text.append(" до ${formatSalary(it)}")
         }
 
         if(text.isEmpty()){
@@ -60,5 +61,12 @@ object SalaryUtil {
                 ""
             }
         }
+    }
+
+    private fun formatSalary(salary: Int): String {
+        val df = DecimalFormat()
+        df.isGroupingUsed = true
+        df.groupingSize = 3
+        return df.format(salary).replace(",", " ")
     }
 }
