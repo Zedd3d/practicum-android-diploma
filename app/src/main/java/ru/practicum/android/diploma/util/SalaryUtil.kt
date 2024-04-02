@@ -6,6 +6,8 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.models.Salary
 import java.lang.StringBuilder
 
+const val GROUPING_SIZE: Int = 3
+
 object SalaryUtil {
 
     fun formatSalary(context: Context, salary: Salary?): String {
@@ -75,7 +77,7 @@ object SalaryUtil {
     private fun formatSalary(salary: Int): String {
         val df = DecimalFormat()
         df.isGroupingUsed = true
-        df.groupingSize = 3
+        df.groupingSize = GROUPING_SIZE
         return df.format(salary).replace(",", " ")
     }
 }

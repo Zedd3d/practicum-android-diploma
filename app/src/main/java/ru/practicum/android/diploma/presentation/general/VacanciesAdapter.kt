@@ -45,7 +45,7 @@ class VacanciesAdapter(
     }
 }
 
-class DiffUtil() : DiffUtil.ItemCallback<Vacancy>() {
+class DiffUtil : DiffUtil.ItemCallback<Vacancy>() {
     override fun areItemsTheSame(oldItem: Vacancy, newItem: Vacancy): Boolean {
         return oldItem.id == newItem.id
     }

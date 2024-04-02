@@ -1,6 +1,5 @@
 package ru.practicum.android.diploma.presentation.vacancy
 
-
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels

@@ -24,8 +24,8 @@ import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentGeneralBinding
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.general.VacanciesAdapter
-import ru.practicum.android.diploma.presentation.general.viewModel.GeneralViewModel
-import ru.practicum.android.diploma.presentation.general.viewModel.ResponseState
+import ru.practicum.android.diploma.presentation.general.viewmodel.GeneralViewModel
+import ru.practicum.android.diploma.presentation.general.viewmodel.ResponseState
 import ru.practicum.android.diploma.util.onTextChange
 import ru.practicum.android.diploma.util.onTextChangeDebounce
 import ru.practicum.android.diploma.util.visibleOrGone
