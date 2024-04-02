@@ -53,12 +53,12 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             }
             .launchIn(lifecycleScope)
 
-        binding.searchEditText.onTextChange {
+        binding.searchEditText.onTextChange{
             if (it.isNotBlank()){
                 binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_clear, 0)
                 binding.clearButton.isEnabled = true
             }
-            else{
+            else {
                 binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_search, 0)
                 binding.clearButton.isEnabled = false
             }
@@ -76,8 +76,12 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                     binding.vacanciesProgress.visibleOrGone(false)
                     binding.vacanciesLoading.visibleOrGone(false)
                     binding.foundCountText.text =
-                        if(state.found != 0) getString(R.string.found_count, state.found.toString())
-                    else getString(R.string.no_vacancies_lil)
+                        if(state.found != 0){
+                            getString(R.string.found_count, state.found.toString())
+                        }
+                    else{
+                        getString(R.string.no_vacancies_lil)
+                    }
                     binding.vacanciesLoading.visibleOrGone(state.isLoading)
                 }
             }
@@ -105,7 +109,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         binding.src.visibleOrGone(status != ResponseState.Content)
         binding.srcText.visibleOrGone(status != ResponseState.Content)
         binding.foundCount.visibleOrGone(status == ResponseState.Content || status == ResponseState.Empty)
-        when(status){
+        when(status) {
             ResponseState.Empty -> {
                 binding.srcText.setText(R.string.no_vacancies)
                 binding.foundCountText.setText(R.string.no_vacancies_lil)
