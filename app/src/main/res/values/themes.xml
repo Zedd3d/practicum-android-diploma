@@ -4,7 +4,6 @@
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/BlackUniversal_yp</item>
         <item name="colorSecondary">@color/WhiteUniversal_yp</item>
-        <item name="android:background">?colorSecondary</item>
     </style>
 
     <style name="Theme.PracticumAndroidDiploma" parent="Base.Theme.PracticumAndroidDiploma" />
