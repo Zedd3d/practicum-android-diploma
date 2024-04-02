@@ -10,50 +10,47 @@
     android:paddingBottom="16dp"
     tools:context=".presentation.team.TeamFragment">
 
-    <!-- TODO: Добавить отчества, добавить стили -->
+    <!-- TODO: Добавить отчества -->
     <TextView
         android:id="@+id/tv_team"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/team_head_name"
-        android:textSize="22sp" />
+        style="@style/TitleTextStyle" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="@string/team_works"
-        android:textSize="32sp"
-        android:textStyle="bold"
-
-        />
+        style="@style/BoldTitleTextStyle" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="26dp"
         android:text="@string/team_developer_1"
-        android:textSize="16sp" />
+        style="@style/LowTitleTextStyle" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/team_developer_2"
-        android:textSize="16sp" />
+        style="@style/LowTitleTextStyle" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/team_developer_3"
-        android:textSize="16sp" />
+        style="@style/LowTitleTextStyle" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/team_developer_4"
-        android:textSize="16sp" />
+        style="@style/LowTitleTextStyle" />
 
 </LinearLayout>

@@ -7,7 +7,7 @@
     android:paddingTop="24dp"
     android:paddingEnd="10dp"
     android:paddingBottom="10dp"
-    tools:context=".presentation.favorites.FavoritesFragment">
+    tools:context=".presentation.favorites.fragment.FavoritesFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
