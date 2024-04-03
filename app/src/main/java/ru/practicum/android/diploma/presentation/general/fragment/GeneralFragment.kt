@@ -2,9 +2,12 @@ package ru.practicum.android.diploma.presentation.general.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -13,8 +16,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -40,8 +43,15 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         }
     }
 
-    private val binding by viewBinding(FragmentGeneralBinding::bind)
+    private var _binding: FragmentGeneralBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var adapter: VacanciesAdapter
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentGeneralBinding.inflate(layoutInflater)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -184,5 +194,14 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_search, 0)
             binding.clearButton.isEnabled = false
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = true
     }
 }
