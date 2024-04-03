@@ -6,18 +6,18 @@ import javax.inject.Inject
 
 class FavoritesRepositoryImpl @Inject constructor() : FavoritesRepository {
     override fun favoritesVacancies(): Flow<List<Vacancy>> {
-        TODO("Not yet implemented")
+        TODO("добавить логику загрузки вакансий")
     }
 
     override suspend fun deleteDbVacanciFromFavorite(vacID: String) {
-
+        TODO("добавить логику удаления из избранного")
     }
 
     override suspend fun insertDbVacanciToFavorite(vacanci: Vacancy) {
-
+        TODO("добавить логику добавления в избранное")
     }
 
     override fun setClickedVacanci(vacanci: Vacancy) {
-
+        TODO("добавить логику нажатия на вакансию")
     }
 }

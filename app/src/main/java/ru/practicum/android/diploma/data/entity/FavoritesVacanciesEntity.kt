@@ -14,4 +14,3 @@ data class FavoritesVacanciesEntity(
     val salary: String,
     val type: String
 )
-// TODO Доделать

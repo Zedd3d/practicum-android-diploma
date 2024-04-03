@@ -1,6 +1,4 @@
 package ru.practicum.android.diploma.presentation.favorites.state
-
-
 sealed class FavoritesState {
     object Loading : FavoritesState()
 
