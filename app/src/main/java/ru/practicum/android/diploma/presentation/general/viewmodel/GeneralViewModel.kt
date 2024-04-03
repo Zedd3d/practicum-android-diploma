@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.presentation.general.view_model
+package ru.practicum.android.diploma.presentation.general.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,9 +11,11 @@ import ru.practicum.android.diploma.domain.models.Vacancy
 import java.net.UnknownHostException
 import javax.inject.Inject
 
+const val PAG_COUNT: Int = 20
+
 class GeneralViewModel @Inject constructor(
     private val vacanciesRepository: VacanciesRepository
-): ViewModel() {
+) : ViewModel() {
 
     private val state = MutableStateFlow(ViewState())
 
@@ -22,14 +24,12 @@ class GeneralViewModel @Inject constructor(
     private var query: String? = null
     fun observeUi() = state.asStateFlow()
 
-    fun search(query: String, page: Int = 0, isPagination: Boolean = false){
-        if(isNextPageLoading) return
-
-        if(this.query == query && !isPagination) return
+    fun search(query: String, page: Int = 0, isPagination: Boolean = false) {
+        if (isNextPageLoading || this.query == query && !isPagination) return
 
         this.query = query
 
-        if (query.isEmpty() && !isPagination){
+        if (query.isEmpty() && !isPagination) {
             state.update { it.copy(status = ResponseState.Start) }
             return
         }
@@ -41,35 +41,33 @@ class GeneralViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val response = vacanciesRepository.search(query, page)
-                val vacancies = response
-                val currentList = if(isPagination){
+                val vacancies = response.items
+                val currentList = if (isPagination) {
                     state.value.vacancies + vacancies
-                } else{
+                } else {
                     vacancies
                 }
                 state.update {
                     it.copy(
                         vacancies = currentList,
-                        found = response.size,
+                        found = response.found,
                         isLoading = false,
-                        status = if (vacancies.isNotEmpty()) ResponseState.Content else ResponseState.Empty)
+                        status = if (vacancies.isNotEmpty()) ResponseState.Content else ResponseState.Empty
+                    )
                 }
-            }
-            catch (e: UnknownHostException){
+            } catch (e: UnknownHostException) {
                 state.update { it.copy(status = ResponseState.NetworkError) }
-            }
-            catch (e: Error){
+            } catch (e: Throwable) {
                 state.update { it.copy(status = ResponseState.ServerError) }
-            }
-            finally {
+            } finally {
                 state.update { it.copy(isLoading = false) }
                 isNextPageLoading = false
             }
         }
     }
 
-    fun onLastItemReached(query: String){
-        val page = state.value.vacancies.size / 20
+    fun onLastItemReached(query: String) {
+        val page = state.value.vacancies.size / PAG_COUNT
         search(query, page, true)
     }
 }
@@ -81,11 +79,11 @@ data class ViewState(
     val isLoading: Boolean = false
 )
 
-sealed class ResponseState(){
+sealed class ResponseState {
 
-    data object Start: ResponseState()
-    data object Empty: ResponseState()
-    data object Content: ResponseState()
-    data object NetworkError: ResponseState()
-    data object ServerError: ResponseState()
+    data object Start : ResponseState()
+    data object Empty : ResponseState()
+    data object Content : ResponseState()
+    data object NetworkError : ResponseState()
+    data object ServerError : ResponseState()
 }
