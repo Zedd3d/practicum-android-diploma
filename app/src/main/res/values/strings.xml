@@ -30,4 +30,5 @@
     <string name="filter_industries">Отрасль</string>
     <string name="accept">Применить</string>
     <string name="clear_filter">Сбросить</string>
+    <string name="experience_title">Требуемый опыт</string>
 </resources>

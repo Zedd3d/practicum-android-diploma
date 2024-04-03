@@ -1,16 +1,26 @@
 package ru.practicum.android.diploma.presentation.vacancy
 
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.bumptech.glide.Glide
+import io.noties.markwon.Markwon
+import io.noties.markwon.html.HtmlPlugin
+import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentVacancyBinding
+import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.presentation.Factory
+import ru.practicum.android.diploma.util.SalaryUtil
+import ru.practicum.android.diploma.util.visibleOrGone
 
 class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
     private val vacancyId: String? by lazy { requireArguments().getString("id") }
@@ -33,11 +43,43 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewLifecycleOwner.lifecycleScope
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.observeUi().collect() { state ->
+                    binding.progressBar.visibleOrGone(state.isLoading)
+                    binding.fragmentNotifications.visibleOrGone(!state.isLoading)
+                    state.vacancy?.let {
+                        updateVacancy(it)
+                    }
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun updateVacancy(vacancy: VacancyDetail) {
+        with(binding) {
+            jobName.text = vacancy.name
+            jobSalary.text = SalaryUtil.formatSalary(requireContext(), vacancy.salary)
+
+            Glide.with(requireContext())
+                .load(vacancy.employer?.logoUrls)
+                .into(ivCompany)
+
+            companyName.text = vacancy.area
+            neededExperience.text = vacancy.experience
+            jobTime.text = vacancy.employment
+
+            vacancy.description?.let {
+                val markwon = Markwon.builder(requireContext())
+                    .usePlugin(HtmlPlugin.create())
+                    .build()
+                markwon.setMarkdown(vacancyDescription, it)
+            }
+        }
     }
 }

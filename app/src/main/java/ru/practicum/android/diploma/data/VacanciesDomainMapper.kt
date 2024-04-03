@@ -34,13 +34,22 @@ fun EmployerDto.asDomain(): Employer = Employer(
     trusted = trusted,
     vacanciesUrl = vacanciesUrl
 )
-fun VacancyDetailDto.asDomain(): VacancyDetail = VacancyDetail(
-    id= id,
-    name = name,
-    salary = salary?.asDomain(),
-    experience = this.experience?.name,
-    description = description,
-    employer = employerDto?.asDomain(),
-    keySkills = keySkills.map { it.name }
-)
+fun VacancyDetailDto.asDomain(): VacancyDetail {
+    val employment = listOfNotNull(
+        this.employment?.name,
+        this.schedule?.name
+    ).joinToString(",")
+
+    return VacancyDetail(
+        id= id,
+        name = name,
+        salary = salary?.asDomain(),
+        experience = this.experience?.name,
+        description = description,
+        employer = employerDto?.asDomain(),
+        keySkills = keySkills?.map { it.name },
+        area = area?.name,
+        employment = employment
+    )
+}
 

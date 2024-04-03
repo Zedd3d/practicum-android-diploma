@@ -20,11 +20,12 @@ class VacancyViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val vacancy = repository.searchById(vacancyId)
-            state.update { it.copy(vacancy = vacancy) }
+            state.update { it.copy(vacancy = vacancy, isLoading = false) }
         }
     }
 }
 
 data class ViewState(
-    val vacancy: VacancyDetail? = null
+    val vacancy: VacancyDetail? = null,
+    val isLoading: Boolean = true
 )
