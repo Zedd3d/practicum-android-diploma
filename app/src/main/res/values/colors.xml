@@ -11,4 +11,7 @@
     <color name="LightGray_yp">#E6E8EB</color>
     <color name="Background_alpha_50_yp">#801A1B22</color>
 
+    <color name="BlackDay_WhiteNight">@color/BlackUniversal_yp</color>
+    <color name="WhiteDay_BlackNight">@color/WhiteUniversal_yp</color>
+
 </resources>

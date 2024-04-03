@@ -9,10 +9,13 @@
         android:id="@+id/generalFragment"
         android:name="ru.practicum.android.diploma.presentation.general.fragment.GeneralFragment"
         android:label="fragment_general"
-        tools:layout="@layout/fragment_general" >
+        tools:layout="@layout/fragment_general">
         <action
             android:id="@+id/action_generalFragment_to_vacancyFragment"
             app:destination="@id/vacancyFragment" />
+        <action
+            android:id="@+id/action_generalFragment_to_filtersMainFragment"
+            app:destination="@id/filtersMainFragment" />
     </fragment>
     <fragment
         android:id="@+id/favoritesFragment"
@@ -23,7 +26,7 @@
         android:id="@+id/teamFragment"
         android:name="ru.practicum.android.diploma.presentation.team.TeamFragment"
         android:label="fragment_team"
-        tools:layout="@layout/fragment_team" />
+        tools:layozut="@layout/fragment_team" />
     <fragment
         android:id="@+id/vacancyFragment"
         android:name="ru.practicum.android.diploma.presentation.vacancy.VacancyFragment"
@@ -33,4 +36,9 @@
             android:name="vacancyId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/filtersMainFragment"
+        android:name="ru.practicum.android.diploma.presentation.filters.main.fragment.FiltersMainFragment"
+        android:label="FiltersMainFragment"
+        tools:layout="@layout/fragment_filters_main" />
 </navigation>
