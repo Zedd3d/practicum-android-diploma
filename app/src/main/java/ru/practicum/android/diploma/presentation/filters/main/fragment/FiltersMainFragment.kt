@@ -20,7 +20,6 @@ import ru.practicum.android.diploma.presentation.filters.main.state.FiltersMainV
 import ru.practicum.android.diploma.presentation.filters.main.viewmodel.FiltersMainViewModel
 import ru.practicum.android.diploma.util.onTextChange
 
-
 class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
 
     private val viewModel by viewModels<FiltersMainViewModel> {
@@ -30,7 +29,6 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
     }
 
     private val binding by viewBinding(FragmentFiltersMainBinding::bind)
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -73,12 +71,10 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
         findNavController().popBackStack()
     }
 
-
     @SuppressLint("ResourceAsColor")
     private fun setHintTextColor(salaryText: String) {
         binding.tvSalaryHint.isEnabled = salaryText.isNotBlank()
     }
-
 
     private fun onChangeViewState(state: FiltersMainViewState) {
         when (state) {
@@ -108,6 +104,5 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
             v.standardTextBlock.text = textValue
             v.standardTextBlock.setTextColor(R.color.BlackDay_WhiteNight)
         }
-
     }
 }
