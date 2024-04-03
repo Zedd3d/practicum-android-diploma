@@ -3,6 +3,6 @@
 
     <item android:color="@color/Blue_yp" android:state_selected="false" />
 
-    <item android:color="?colorSecondary" android:state_selected="true" />
+    <item android:color="@color/WhiteDay_BlackNight" android:state_selected="true" />
 
 </selector>
