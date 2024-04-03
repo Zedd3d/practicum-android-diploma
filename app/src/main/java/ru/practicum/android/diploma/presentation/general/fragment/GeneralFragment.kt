@@ -185,5 +185,4 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             binding.clearButton.isEnabled = false
         }
     }
-
 }

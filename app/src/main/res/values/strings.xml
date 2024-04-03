@@ -26,4 +26,6 @@
     <string name="input_expected_salary">Введите сумму</string>
     <string name="filter_only_with_salary">Не показывать без зарплаты</string>
     <string name="filter_industries">Отрасль</string>
+    <string name="accept">Применить</string>
+    <string name="clear_filter">Сбросить</string>
 </resources>

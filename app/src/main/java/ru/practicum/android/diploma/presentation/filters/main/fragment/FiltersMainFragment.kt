@@ -3,10 +3,14 @@ package ru.practicum.android.diploma.presentation.filters.main.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FilterCategotyElementBinding
@@ -31,6 +35,9 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.btnCancel.isSelected = true
+        activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = false
+
         binding.llWorkPlace.smallTextBlock.setText(getString(R.string.filter_workplace))
         binding.llIndustries.smallTextBlock.setText(getString(R.string.filter_industries))
 
@@ -38,17 +45,38 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
             setHintTextColor(it)
         }
 
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                onBackPressed()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+
+        binding.btnAccept.setOnClickListener {
+            Toast.makeText(context, "Принять", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.btnCancel.setOnClickListener {
+            Toast.makeText(context, "Сбросить", Toast.LENGTH_SHORT).show()
+        }
+
         onChangeViewState(FiltersMainViewState.Empty)
 
     }
 
+    private fun onBackPressed() {
+        activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = true
+        findNavController().popBackStack()
+    }
+
+
     @SuppressLint("ResourceAsColor")
     private fun setHintTextColor(salaryText: String) {
-        if (salaryText.isNotBlank()) {
-            binding.tvSalaryHint.setTextColor(R.color.Blue_yp)
-        } else {
-            binding.tvSalaryHint.setTextColor(R.color.Gray_yp)
-        }
+        binding.tvSalaryHint.isEnabled = salaryText.isNotBlank()
     }
 
 
@@ -64,6 +92,9 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
                 setViewPropertys(binding.llIndustries, state.Industries)
             }
         }
+
+        binding.btnCancel.isVisible = false
+        binding.btnAccept.isVisible = false
     }
 
     @SuppressLint("ResourceAsColor")
