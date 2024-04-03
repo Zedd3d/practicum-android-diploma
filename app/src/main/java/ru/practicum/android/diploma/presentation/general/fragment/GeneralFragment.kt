@@ -198,7 +198,6 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
     }
 
     override fun onResume() {
