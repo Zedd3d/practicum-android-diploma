@@ -95,6 +95,12 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 }
             }
         })
+
+        binding.filterImageView.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_generalFragment_to_filtersMainFragment
+            )
+        }
     }
 
     private fun updateStatus(status: ResponseState) {
@@ -179,5 +185,4 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             binding.clearButton.isEnabled = false
         }
     }
-
 }
