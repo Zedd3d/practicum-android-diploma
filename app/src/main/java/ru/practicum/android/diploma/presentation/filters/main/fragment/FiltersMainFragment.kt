@@ -17,7 +17,7 @@ import ru.practicum.android.diploma.databinding.FilterCategotyElementBinding
 import ru.practicum.android.diploma.databinding.FragmentFiltersMainBinding
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.filters.main.state.FiltersMainViewState
-import ru.practicum.android.diploma.presentation.filters.main.view_model.FiltersMainViewModel
+import ru.practicum.android.diploma.presentation.filters.main.viewmodel.FiltersMainViewModel
 import ru.practicum.android.diploma.util.onTextChange
 
 
@@ -89,7 +89,7 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
 
             is FiltersMainViewState.Content -> {
                 setViewPropertys(binding.llWorkPlace, state.workPlace)
-                setViewPropertys(binding.llIndustries, state.Industries)
+                setViewPropertys(binding.llIndustries, state.industries)
             }
         }
 

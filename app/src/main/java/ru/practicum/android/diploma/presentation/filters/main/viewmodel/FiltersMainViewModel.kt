@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.presentation.filters.main.view_model
+package ru.practicum.android.diploma.presentation.filters.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import javax.inject.Inject
@@ -13,7 +13,6 @@ class FiltersMainViewModel @Inject constructor(
 
     private var query: String? = null
 
-    private val PAG_COUNT: Int = 20
 
 }
 
