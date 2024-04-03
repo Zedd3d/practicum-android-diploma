@@ -15,7 +15,7 @@ import ru.practicum.android.diploma.presentation.general.VacanciesAdapter
 class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
 
     private val viewModel by viewModels<FavoritesViewModel> {
-        Factory{
+        Factory {
             App.appComponent.favoriteslComponent().viewModel()
         }
     }

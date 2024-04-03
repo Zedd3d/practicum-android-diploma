@@ -6,7 +6,7 @@ sealed class FavoritesState {
 
     data object Content : FavoritesState()
 
-    data object  Empty  : FavoritesState()
+    data object Empty : FavoritesState()
 
-    data object NetworkError  : FavoritesState()
+    data object NetworkError : FavoritesState()
 }
