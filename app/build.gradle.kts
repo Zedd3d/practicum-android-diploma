@@ -88,4 +88,6 @@ dependencies {
 
     //ui
     implementation(libs.glide)
+    implementation(libs.core)
+    implementation(libs.html)
 }
