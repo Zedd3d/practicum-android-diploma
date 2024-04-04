@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.impl.VacanciesRepository
-import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.models.VacancyDetail
 import javax.inject.Inject
 
@@ -17,6 +16,7 @@ class VacancyViewModel @Inject constructor(
 ) : ViewModel() {
     private val state = MutableStateFlow(ViewState())
     fun observeUi() = state.asStateFlow()
+
     init {
         viewModelScope.launch {
             val vacancy = repository.searchById(vacancyId)

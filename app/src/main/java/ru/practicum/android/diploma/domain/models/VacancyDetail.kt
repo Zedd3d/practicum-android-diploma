@@ -1,8 +1,5 @@
 package ru.practicum.android.diploma.domain.models
 
-import ru.practicum.android.diploma.data.dto.detail.EmploymentDto
-import ru.practicum.android.diploma.data.dto.detail.ExperienceDto
-
 data class VacancyDetail(
     val id: String,
     val name: String,

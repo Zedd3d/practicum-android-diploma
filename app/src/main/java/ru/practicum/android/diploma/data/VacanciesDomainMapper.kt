@@ -34,6 +34,7 @@ fun EmployerDto.asDomain(): Employer = Employer(
     trusted = trusted,
     vacanciesUrl = vacanciesUrl
 )
+
 fun VacancyDetailDto.asDomain(): VacancyDetail {
     val employment = listOfNotNull(
         this.employment?.name,
@@ -41,7 +42,7 @@ fun VacancyDetailDto.asDomain(): VacancyDetail {
     ).joinToString(",")
 
     return VacancyDetail(
-        id= id,
+        id = id,
         name = name,
         salary = salary?.asDomain(),
         experience = this.experience?.name,

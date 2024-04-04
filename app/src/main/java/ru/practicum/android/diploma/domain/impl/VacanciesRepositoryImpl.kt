@@ -2,7 +2,6 @@ package ru.practicum.android.diploma.domain.impl
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.Dispatcher
 import ru.practicum.android.diploma.data.asDomain
 import ru.practicum.android.diploma.data.dto.Vacancies
 import ru.practicum.android.diploma.data.network.HeadHunterService
