@@ -30,6 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="64dp"
             android:visibility="visible">
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/vacancy_toolbars"
                 android:layout_width="match_parent"
@@ -51,8 +52,7 @@
                     android:layout_marginEnd="8dp"
                     android:paddingEnd="16dp"
                     android:src="@drawable/favorite_vacancy_drawable_empty"
-                    android:visibility="visible"
-                    tools:ignore="RtlSymmetry" />
+                    android:visibility="visible" />
 
                 <ImageView
                     android:id="@+id/button_share"
@@ -97,10 +97,10 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="25dp"
                 android:backgroundTint="#E6E8EB"
-                app:cardCornerRadius="12dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:orientation="vertical"
+                app:cardCornerRadius="12dp"
                 app:cardElevation="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -131,7 +131,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"/>
+                    android:layout_marginTop="16dp" />
             </androidx.cardview.widget.CardView>
 
             <TextView
@@ -221,7 +221,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="CONTACTS"
+                android:text="Контакты"
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 app:layout_constraintStart_toStartOf="@id/card_view_company"
@@ -232,7 +232,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="CONTACT_PERSON"
+                android:text="Контактное лицо"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@id/card_view_company"
@@ -254,7 +254,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="CONTACT_PERSON_EMAIL"
+                android:text="E-mail"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@id/card_view_company"
@@ -267,7 +267,7 @@
                 android:layout_marginTop="8dp"
                 android:text="CONTACT_PERSON_EMAIL_DATA"
 
-                android:textColor="@color/black"
+                android:textColor="@color/Blue_yp"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@id/card_view_company"
                 app:layout_constraintTop_toBottomOf="@id/contact_person_email" />
@@ -277,7 +277,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="CONTACT_PERSON_PHONE"
+                android:text="Телефон"
 
                 android:textColor="@color/black"
                 android:textSize="16sp"
@@ -300,7 +300,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="CONTACT_COMMENT"
+                android:text="Комментарий"
 
                 android:textColor="@color/black"
                 android:textSize="16sp"
