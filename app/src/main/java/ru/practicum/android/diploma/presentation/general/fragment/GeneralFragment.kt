@@ -46,7 +46,12 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     private var _binding: FragmentGeneralBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var adapter: VacanciesAdapter
+    private val adapter by lazy {
+        VacanciesAdapter() {
+            val params = bundleOf("id" to it)
+            findNavController().navigate(R.id.action_generalFragment_to_vacancyFragment, params)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentGeneralBinding.inflate(layoutInflater)
@@ -170,15 +175,12 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     }
 
     private fun setupVacancies() {
-        adapter = VacanciesAdapter() {
-            val params = bundleOf("id" to it)
-            findNavController().navigate(R.id.action_generalFragment_to_vacancyFragment, params)
-        }
         binding.vacanciesRv.adapter = adapter
         binding.vacanciesRv.layoutManager = LinearLayoutManager(requireContext())
     }
 
     private fun hideKeyBoard() {
+        if (_binding == null) return
         binding.let {
             val inputMethodManager =
                 requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
