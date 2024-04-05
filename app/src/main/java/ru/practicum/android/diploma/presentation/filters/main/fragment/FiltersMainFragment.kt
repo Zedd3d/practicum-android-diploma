@@ -61,6 +61,10 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
             onBackPressed()
         }
 
+        binding.llIndustries.ivBtnGo.setOnClickListener {
+            findNavController().navigate(R.id.action_filtersMainFragment_to_industryFragment)
+        }
+
         binding.btnAccept.setOnClickListener {
             Toast.makeText(context, "Принять", Toast.LENGTH_SHORT).show()
         }

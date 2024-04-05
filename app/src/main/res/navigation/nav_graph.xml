@@ -40,5 +40,13 @@
         android:id="@+id/filtersMainFragment"
         android:name="ru.practicum.android.diploma.presentation.filters.main.fragment.FiltersMainFragment"
         android:label="FiltersMainFragment"
-        tools:layout="@layout/fragment_filters_main" />
+        tools:layout="@layout/fragment_filters_main">
+        <action
+            android:id="@+id/action_filtersMainFragment_to_industryFragment"
+            app:destination="@id/industryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/industryFragment"
+        android:name="ru.practicum.android.diploma.presentation.filters.industry.fragment.IndustryFragment"
+        tools:layout="@layout/fragment_filter_industry" />
 </navigation>
