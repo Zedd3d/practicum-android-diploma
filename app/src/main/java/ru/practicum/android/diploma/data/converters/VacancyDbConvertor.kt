@@ -3,7 +3,7 @@ package ru.practicum.android.diploma.data.converters
 import ru.practicum.android.diploma.data.dto.detail.FavoriteVacancyDto
 import ru.practicum.android.diploma.data.entity.FavoritesVacanciesEntity
 
-class VacancyDbConvertor {
+object VacancyDbConvertor {
     fun map(vacancy: FavoriteVacancyDto): FavoritesVacanciesEntity {
         return FavoritesVacanciesEntity(
             vacancy.id,

@@ -10,8 +10,7 @@ import ru.practicum.android.diploma.domain.favorites.api.FavoritesRepository
 import javax.inject.Inject
 
 class FavoritesRepositoryImpl @Inject constructor(
-    private val appDatabase: AppDatabase,
-    private val vacancyDbConvertor: VacancyDbConvertor
+    private val appDatabase: AppDatabase
 ) : FavoritesRepository {
     override fun favoritesVacancies(): Flow<List<FavoriteVacancyDto>> = flow {
         val vacancy = appDatabase.favoriteDao().getVacancyFromFavorite()
@@ -31,9 +30,9 @@ class FavoritesRepositoryImpl @Inject constructor(
     }
 
     private fun convertFromVacancyEntity(vacancy: List<FavoritesVacanciesEntity>): List<FavoriteVacancyDto> {
-        return vacancy.map { vac -> vacancyDbConvertor.map(vac) }
+        return vacancy.map { vac -> VacancyDbConvertor.map(vac) }
     }
     private fun convertToVacancyEntity(listVacancy: List<FavoriteVacancyDto>): List<FavoritesVacanciesEntity> {
-        return listVacancy.map { vac -> vacancyDbConvertor.map(vac) }
+        return listVacancy.map { vac -> VacancyDbConvertor.map(vac) }
     }
 }
