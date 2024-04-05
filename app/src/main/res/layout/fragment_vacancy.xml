@@ -96,7 +96,8 @@
                 android:layout_height="80dp"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="25dp"
-                android:backgroundTint="#B5B5B5"
+                android:backgroundTint="#E6E8EB"
+                app:cardCornerRadius="12dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:orientation="vertical"
@@ -130,8 +131,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:src="@mipmap/ic_launcher_round" />
+                    android:layout_marginTop="16dp"/>
             </androidx.cardview.widget.CardView>
 
             <TextView
