@@ -39,7 +39,7 @@ fun VacancyDetailDto.asDomain(): VacancyDetail {
     val employment = listOfNotNull(
         this.employment?.name,
         this.schedule?.name
-    ).joinToString(",")
+    ).joinToString(", ")
 
     return VacancyDetail(
         id = id,

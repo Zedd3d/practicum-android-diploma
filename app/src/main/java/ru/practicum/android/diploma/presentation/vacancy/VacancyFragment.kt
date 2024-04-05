@@ -1,21 +1,27 @@
 package ru.practicum.android.diploma.presentation.vacancy
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.noties.markwon.Markwon
 import io.noties.markwon.html.HtmlPlugin
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentVacancyBinding
+import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.util.SalaryUtil
@@ -26,7 +32,6 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
 
     private var _binding: FragmentVacancyBinding? = null
     private val binding get() = _binding!!
-
 
     private val viewModel by viewModels<VacancyViewModel> {
         Factory {
@@ -53,6 +58,9 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
                 }
             }
         }
+        binding.vacancyToolbars.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 
     override fun onDestroyView() {
@@ -66,7 +74,10 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
             jobSalary.text = SalaryUtil.formatSalary(requireContext(), vacancy.salary)
 
             Glide.with(requireContext())
-                .load(vacancy.employer?.logoUrls)
+                .load(vacancy.employer?.logoUrls) // false
+                .placeholder(R.drawable.placeholder_company_icon)
+                .fitCenter()
+                .transform(RoundedCorners(8))
                 .into(ivCompany)
 
             companyName.text = vacancy.area
