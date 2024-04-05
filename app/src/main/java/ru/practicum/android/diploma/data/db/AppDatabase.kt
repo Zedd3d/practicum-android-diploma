@@ -9,6 +9,6 @@ import ru.practicum.android.diploma.data.entity.FavoritesVacanciesEntity
 @Database(version = 3, entities = [FavoritesVacanciesEntity::class])
 abstract class AppDatabase : RoomDatabase()   {
 
-
     abstract fun favoriteDao(): FavoritesVacancyDao
+
 }

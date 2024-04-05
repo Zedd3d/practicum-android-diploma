@@ -1,6 +1,7 @@
 package ru.practicum.android.diploma.di.app
 
 import android.content.Context
+import android.provider.ContactsContract.Data
 import dagger.BindsInstance
 import dagger.Component
 import ru.practicum.android.diploma.di.favorites.FavoritesComponent
@@ -13,7 +14,8 @@ import javax.inject.Singleton
     modules = [
         RepositoryModule::class,
         NetworkModule::class,
-        FavoriteRepositoryModule::class
+        FavoriteRepositoryModule::class,
+        DataBaseModule::class
     ]
 )
 interface AppComponent {

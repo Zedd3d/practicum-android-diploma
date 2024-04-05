@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.domain.favorites.impl
+package ru.practicum.android.diploma.data.favorites.impl
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -6,6 +6,7 @@ import ru.practicum.android.diploma.data.converters.VacancyDbConvertor
 import ru.practicum.android.diploma.data.db.AppDatabase
 import ru.practicum.android.diploma.data.dto.detail.FavoriteVacancyDto
 import ru.practicum.android.diploma.data.entity.FavoritesVacanciesEntity
+import ru.practicum.android.diploma.domain.favorites.api.FavoritesRepository
 import javax.inject.Inject
 
 class FavoritesRepositoryImpl @Inject constructor(
