@@ -25,7 +25,7 @@ class VacanciesRepositoryImpl @Inject constructor(
             val response = headHunterService.vacancies(query)
             vacanciesList = response.items.asDomain()
             found = response.found
-            Vacancies(vacanciesList, found)
+            Vacancies(vacanciesList, found, response.pages)
         }
     }
 

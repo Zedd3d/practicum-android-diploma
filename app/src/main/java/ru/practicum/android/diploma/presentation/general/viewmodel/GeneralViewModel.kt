@@ -22,9 +22,17 @@ class GeneralViewModel @Inject constructor(
     private var isNextPageLoading = false
 
     private var query: String? = null
+        set(value) {
+            maxPages = null
+            field = value
+        }
+
+    private var maxPages: Int? = 0
     fun observeUi() = state.asStateFlow()
 
     fun search(query: String, page: Int = 0, isPagination: Boolean = false) {
+        state.update { it.copy(vacanciesProgress = isPagination) }
+
         if (isNextPageLoading || this.query == query && !isPagination) return
 
         this.query = query
@@ -34,6 +42,8 @@ class GeneralViewModel @Inject constructor(
             return
         }
 
+        maxPages?.let { if (page > it) return }
+
         isNextPageLoading = true
 
         state.update { it.copy(isLoading = !isPagination) }
@@ -41,18 +51,20 @@ class GeneralViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val response = vacanciesRepository.search(query, page)
+                maxPages = response.pages
+
                 val vacancies = response.items
                 val currentList = if (isPagination) {
                     state.value.vacancies + vacancies
                 } else {
                     vacancies
                 }
+
                 state.update {
                     it.copy(
                         vacancies = currentList,
                         found = response.found,
-                        isLoading = false,
-                        status = if (vacancies.isNotEmpty()) ResponseState.Content else ResponseState.Empty
+                        status = if (currentList.isNotEmpty()) ResponseState.Content else ResponseState.Empty,
                     )
                 }
             } catch (e: UnknownHostException) {
@@ -60,8 +72,8 @@ class GeneralViewModel @Inject constructor(
             } catch (e: Throwable) {
                 state.update { it.copy(status = ResponseState.ServerError) }
             } finally {
-                state.update { it.copy(isLoading = false) }
                 isNextPageLoading = false
+                state.update { it.copy(isLoading = false, vacanciesProgress = false) }
             }
         }
     }
@@ -76,7 +88,8 @@ data class ViewState(
     val vacancies: List<Vacancy> = emptyList(),
     val status: ResponseState = ResponseState.Start,
     val found: Int = 0,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val vacanciesProgress: Boolean = false
 )
 
 sealed class ResponseState {

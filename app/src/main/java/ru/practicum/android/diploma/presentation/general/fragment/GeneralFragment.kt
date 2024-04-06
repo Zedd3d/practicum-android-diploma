@@ -64,7 +64,6 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         binding.searchEditText.onTextChangeDebounce()
             .debounce(DEBOUNCE)
             .onEach {
-                hideKeyBoard()
                 val query = it?.toString().orEmpty()
                 viewModel.search(query)
             }
@@ -83,17 +82,20 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 viewModel.observeUi().collect { state ->
                     adapter.submitList(state.vacancies)
                     updateStatus(state.status)
-                    binding.vacanciesProgress.visibleOrGone(false)
-                    binding.vacanciesLoading.visibleOrGone(false)
+
+                    binding.vacanciesProgress.visibleOrGone(state.vacanciesProgress)
+
                     binding.foundCountText.text = if (state.found != 0) {
                         getString(R.string.found_count, state.found.toString())
                     } else {
                         getString(R.string.no_vacancies_lil)
                     }
                     binding.vacanciesLoading.visibleOrGone(state.isLoading)
+                    if (state.isLoading) {
+                        hideKeyBoard()
+                    }
                 }
             }
-
         }
 
         binding.vacanciesRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -200,6 +202,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        _binding = null
     }
 
     override fun onResume() {
