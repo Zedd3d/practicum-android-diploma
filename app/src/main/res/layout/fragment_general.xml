@@ -74,7 +74,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/Blue_yp"
+        android:indeterminateTint="@color/Blue_yp"
         android:visibility="gone"/>
 
     <ProgressBar
@@ -85,7 +85,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_edit_text"
-        android:background="@color/Blue_yp"
+        android:indeterminateTint="@color/Blue_yp"
         android:visibility="gone"/>
 
     <androidx.cardview.widget.CardView
