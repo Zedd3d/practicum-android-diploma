@@ -6,4 +6,5 @@ import ru.practicum.android.diploma.presentation.favorites.viewmodel.FavoritesVi
 @Subcomponent
 interface FavoritesComponent {
     fun viewModel(): FavoritesViewModel
+
 }

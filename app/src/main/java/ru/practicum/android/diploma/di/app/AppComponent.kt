@@ -13,6 +13,7 @@ import javax.inject.Singleton
     modules = [
         RepositoryModule::class,
         NetworkModule::class,
+        DataBaseModule::class
     ]
 )
 interface AppComponent {
@@ -24,7 +25,7 @@ interface AppComponent {
     fun favoriteslComponent(): FavoritesComponent
 
     @Component.Factory
-    interface AppComponentFactory{
+    interface AppComponentFactory {
         fun create(@BindsInstance context: Context): AppComponent
     }
 }
