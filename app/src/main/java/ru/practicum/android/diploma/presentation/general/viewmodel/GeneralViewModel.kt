@@ -52,7 +52,7 @@ class GeneralViewModel @Inject constructor(
                     vacancies
                 }
                 state.update {
-                    ViewState(
+                    it.copy(
                         vacancies = currentList,
                         found = response.found,
                         isLoading = false,
@@ -60,11 +60,11 @@ class GeneralViewModel @Inject constructor(
                     )
                 }
             } catch (e: UnknownHostException) {
-                state.update { ViewState(status = ResponseState.NetworkError) }
+                state.update { it.copy(status = ResponseState.NetworkError) }
             } catch (e: Throwable) {
-                state.update { ViewState(status = ResponseState.ServerError) }
+                state.update { it.copy(status = ResponseState.ServerError) }
             } finally {
-                state.update { ViewState(isLoading = false) }
+                state.update { it.copy(isLoading = false) }
                 isNextPageLoading = false
             }
         }
