@@ -38,6 +38,10 @@ class GeneralViewModel @Inject constructor(
 
         state.update { it.copy(isLoading = !isPagination) }
 
+        asyncSearch(query, isPagination, page)
+    }
+
+    private fun asyncSearch(query: String, isPagination: Boolean, page: Int) {
         viewModelScope.launch {
             try {
                 val response = vacanciesRepository.search(query, page)
@@ -48,7 +52,7 @@ class GeneralViewModel @Inject constructor(
                     vacancies
                 }
                 state.update {
-                    it.copy(
+                    ViewState(
                         vacancies = currentList,
                         found = response.found,
                         isLoading = false,
@@ -56,11 +60,11 @@ class GeneralViewModel @Inject constructor(
                     )
                 }
             } catch (e: UnknownHostException) {
-                state.update { it.copy(status = ResponseState.NetworkError) }
+                state.update { ViewState(status = ResponseState.NetworkError) }
             } catch (e: Throwable) {
-                state.update { it.copy(status = ResponseState.ServerError) }
+                state.update { ViewState(status = ResponseState.ServerError) }
             } finally {
-                state.update { it.copy(isLoading = false) }
+                state.update { ViewState(isLoading = false) }
                 isNextPageLoading = false
             }
         }
