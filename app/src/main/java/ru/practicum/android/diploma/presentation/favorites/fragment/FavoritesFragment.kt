@@ -12,7 +12,6 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentFavoritesBinding
 import ru.practicum.android.diploma.presentation.Factory
-import ru.practicum.android.diploma.presentation.favorites.state.FavoritesState
 import ru.practicum.android.diploma.presentation.favorites.viewmodel.FavoritesViewModel
 
 class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
@@ -33,7 +32,6 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
     }
 
     override fun onDestroyView() {
