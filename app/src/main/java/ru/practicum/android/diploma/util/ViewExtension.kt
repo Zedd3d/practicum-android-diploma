@@ -40,5 +40,3 @@ fun EditText.onTextChangeDebounce(): Flow<CharSequence?> {
         awaitClose { removeTextChangedListener(listener) }
     }.onStart { emit(text) }
 }
-
-

@@ -26,9 +26,6 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     private var _binding: FragmentFavoritesBinding? = null
     private val binding get() = _binding!!
 
-    //private val favoriteVacancies = ArrayList<Vacancy>()
-    //private val favoriteVacancyAdapter = VacanciesAdapter(favoriteVacancies){}
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentFavoritesBinding.inflate(layoutInflater)
         return binding.root
@@ -37,24 +34,6 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-    }
-
-    private fun updateFavoriteStatus(state: FavoritesState) {
-        binding.apply {
-            when (state) {
-                is FavoritesState.Content -> {
-                    binding.ivFavorite.isVisible = false
-                    binding.tvFavorite.isVisible = false
-                    binding.rvFavorite.isVisible = true
-                }
-
-                else -> {
-                    binding.ivFavorite.isVisible = true
-                    binding.tvFavorite.isVisible = true
-                    binding.rvFavorite.isVisible = false
-                }
-            }
-        }
     }
 
     override fun onDestroyView() {
