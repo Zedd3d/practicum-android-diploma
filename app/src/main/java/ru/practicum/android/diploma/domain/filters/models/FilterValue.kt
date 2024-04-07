@@ -11,5 +11,4 @@ data class FilterValue(
     val valueString: String,
     val valueInt: Int,
     val valueBoolean: Boolean,
-    var isChecked: Boolean,
 ) : Parcelable
