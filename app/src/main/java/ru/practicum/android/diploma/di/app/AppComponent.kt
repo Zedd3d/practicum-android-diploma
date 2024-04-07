@@ -4,6 +4,8 @@ import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 import ru.practicum.android.diploma.di.favorites.FavoritesComponent
+import ru.practicum.android.diploma.di.filters.CountryComponent
+import ru.practicum.android.diploma.di.filters.RegionComponent
 import ru.practicum.android.diploma.di.general.GeneralComponent
 import ru.practicum.android.diploma.di.vacancy.VacancyComponent
 import javax.inject.Singleton
@@ -23,8 +25,12 @@ interface AppComponent {
 
     fun favoriteslComponent(): FavoritesComponent
 
+    fun countryComponent(): CountryComponent
+
+    fun regionComponent(): RegionComponent
+
     @Component.Factory
-    interface AppComponentFactory{
+    interface AppComponentFactory {
         fun create(@BindsInstance context: Context): AppComponent
     }
 }
