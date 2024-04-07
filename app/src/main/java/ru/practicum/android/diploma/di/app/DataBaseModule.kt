@@ -7,7 +7,6 @@ import dagger.Provides
 import ru.practicum.android.diploma.data.db.AppDatabase
 import javax.inject.Singleton
 
-
 @Module
 object DataBaseModule {
     @Singleton

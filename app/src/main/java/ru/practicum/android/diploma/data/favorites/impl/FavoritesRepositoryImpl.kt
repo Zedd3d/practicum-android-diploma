@@ -31,6 +31,7 @@ class FavoritesRepositoryImpl @Inject constructor(
     private fun convertFromVacancyEntity(vacancy: List<FavoritesVacanciesEntity>): List<FavoriteVacancyDto> {
         return vacancy.map { vac -> VacancyDbConvertor.map(vac) }
     }
+
     private fun convertToVacancyEntity(listVacancy: List<FavoriteVacancyDto>): List<FavoritesVacanciesEntity> {
         return listVacancy.map { vac -> VacancyDbConvertor.map(vac) }
     }

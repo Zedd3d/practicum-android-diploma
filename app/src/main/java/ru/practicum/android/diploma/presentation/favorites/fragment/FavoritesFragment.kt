@@ -46,10 +46,8 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
                     binding.ivFavorite.isVisible = false
                     binding.tvFavorite.isVisible = false
                     binding.rvFavorite.isVisible = true
-
-
-
                 }
+
                 else -> {
                     binding.ivFavorite.isVisible = true
                     binding.tvFavorite.isVisible = true

@@ -1,7 +1,6 @@
 package ru.practicum.android.diploma.di.app
 
 import android.content.Context
-import android.provider.ContactsContract.Data
 import dagger.BindsInstance
 import dagger.Component
 import ru.practicum.android.diploma.di.favorites.FavoritesComponent
@@ -26,7 +25,7 @@ interface AppComponent {
     fun favoriteslComponent(): FavoritesComponent
 
     @Component.Factory
-    interface AppComponentFactory{
+    interface AppComponentFactory {
         fun create(@BindsInstance context: Context): AppComponent
     }
 }
