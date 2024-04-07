@@ -39,14 +39,17 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
 
     private val viewModel by viewModels<GeneralViewModel> {
         Factory {
-            App.appComponent.generalComponent().viewModel()
+            (requireContext().applicationContext as App).appComponent.generalComponent().viewModel()
         }
     }
 
     private var _binding: FragmentGeneralBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var adapter: VacanciesAdapter
+    private val adapter = VacanciesAdapter() {
+        val params = bundleOf("id" to it)
+        findNavController().navigate(R.id.action_generalFragment_to_vacancyFragment, params)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentGeneralBinding.inflate(layoutInflater)
@@ -56,14 +59,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupVacancies()
-        binding.searchEditText.onTextChangeDebounce()
-            .debounce(DEBOUNCE)
-            .onEach {
-                hideKeyBoard()
-                val query = it?.toString().orEmpty()
-                viewModel.search(query)
-            }
-            .launchIn(lifecycleScope)
+        setDebounceOnEditText()
 
         binding.searchEditText.onTextChange {
             setupIcon(it)
@@ -88,7 +84,6 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                     binding.vacanciesLoading.visibleOrGone(state.isLoading)
                 }
             }
-
         }
 
         binding.vacanciesRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -111,6 +106,17 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 R.id.action_generalFragment_to_filtersMainFragment
             )
         }
+    }
+
+    private fun setDebounceOnEditText() {
+        binding.searchEditText.onTextChangeDebounce()
+            .debounce(DEBOUNCE)
+            .onEach {
+                hideKeyBoard()
+                val query = it?.toString().orEmpty()
+                viewModel.search(query)
+            }
+            .launchIn(lifecycleScope)
     }
 
     private fun updateStatus(status: ResponseState) {
@@ -170,15 +176,12 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     }
 
     private fun setupVacancies() {
-        adapter = VacanciesAdapter() {
-            val params = bundleOf("id" to it)
-            findNavController().navigate(R.id.action_generalFragment_to_vacancyFragment, params)
-        }
         binding.vacanciesRv.adapter = adapter
         binding.vacanciesRv.layoutManager = LinearLayoutManager(requireContext())
     }
 
     private fun hideKeyBoard() {
+        if (_binding == null) return
         binding.let {
             val inputMethodManager =
                 requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager

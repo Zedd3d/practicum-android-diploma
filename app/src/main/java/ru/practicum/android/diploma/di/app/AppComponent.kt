@@ -24,7 +24,7 @@ interface AppComponent {
     fun favoriteslComponent(): FavoritesComponent
 
     @Component.Factory
-    interface AppComponentFactory{
+    interface AppComponentFactory {
         fun create(@BindsInstance context: Context): AppComponent
     }
 }

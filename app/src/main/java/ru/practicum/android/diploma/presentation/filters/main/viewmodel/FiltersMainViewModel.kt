@@ -12,4 +12,3 @@ class FiltersMainViewModel @Inject constructor() : ViewModel() {
     private var query: String? = null
 
 }
-

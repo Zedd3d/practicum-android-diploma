@@ -17,10 +17,11 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
     private var _binding: FragmentVacancyBinding? = null
     private val binding get() = _binding!!
 
-
     private val viewModel by viewModels<VacancyViewModel> {
         Factory {
-            App.appComponent.vacancyComponent().create(requireNotNull(vacancyId)).viewModel()
+            (requireContext().applicationContext as App).appComponent.vacancyComponent().create(
+                requireNotNull(vacancyId)
+            ).viewModel()
         }
     }
 

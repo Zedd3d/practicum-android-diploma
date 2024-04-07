@@ -10,7 +10,6 @@ import ru.practicum.android.diploma.BuildConfig
 import ru.practicum.android.diploma.data.network.ApiEndpoints
 import ru.practicum.android.diploma.data.network.HeadHunterService
 
-
 @Module
 object NetworkModule {
 
