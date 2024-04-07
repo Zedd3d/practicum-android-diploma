@@ -17,7 +17,6 @@ import ru.practicum.android.diploma.databinding.FilterCategotyElementBinding
 import ru.practicum.android.diploma.databinding.FragmentFiltersWorkplaceBinding
 import ru.practicum.android.diploma.domain.filters.models.FilterValue
 import ru.practicum.android.diploma.presentation.Factory
-import ru.practicum.android.diploma.presentation.filters.main.state.FiltersMainViewState
 import ru.practicum.android.diploma.presentation.filters.region.state.FiltersWorkPlaceViewState
 import ru.practicum.android.diploma.presentation.filters.region.viewmodel.FiltersWorkPlaceViewModel
 
@@ -113,11 +112,6 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
     private fun onBackPressed() {
         activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = true
         findNavController().popBackStack()
-    }
-
-
-    private fun onChangeViewState(state: FiltersMainViewState) {
-
     }
 
     override fun onDestroyView() {

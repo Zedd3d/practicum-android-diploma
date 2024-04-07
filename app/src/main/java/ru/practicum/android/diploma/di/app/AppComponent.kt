@@ -5,6 +5,7 @@ import dagger.BindsInstance
 import dagger.Component
 import ru.practicum.android.diploma.di.favorites.FavoritesComponent
 import ru.practicum.android.diploma.di.filters.CountryComponent
+import ru.practicum.android.diploma.di.filters.FiltersMainComponent
 import ru.practicum.android.diploma.di.filters.RegionComponent
 import ru.practicum.android.diploma.di.filters.WorkPlaceComponent
 import ru.practicum.android.diploma.di.general.GeneralComponent
@@ -16,6 +17,7 @@ import javax.inject.Singleton
     modules = [
         RepositoryModule::class,
         NetworkModule::class,
+        TemporaryInteractorModule::class
     ]
 )
 interface AppComponent {
@@ -31,6 +33,8 @@ interface AppComponent {
     fun countryComponent(): CountryComponent
 
     fun regionComponent(): RegionComponent
+
+    fun filtersMainComponent(): FiltersMainComponent
 
     @Component.Factory
     interface AppComponentFactory {

@@ -3,9 +3,8 @@ package ru.practicum.android.diploma.data.filters
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import ru.practicum.android.diploma.domain.filters.SharedPreferencesRepository
 import ru.practicum.android.diploma.domain.filters.models.FilterValue
-
+import ru.practicum.android.diploma.domain.sharedpreferences.api.SharedPreferencesRepository
 
 class SharedPreferencesRepositoryImpl(
     private val gson: Gson,
@@ -23,6 +22,7 @@ class SharedPreferencesRepositoryImpl(
     override fun setSharedPreferencesChangeListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
         sharedPref.registerOnSharedPreferenceChangeListener(listener)
     }
+
 
     private fun getFilterValue(json: String): FilterValue {
         return gson.fromJson<FilterValue>(
@@ -58,9 +58,57 @@ class SharedPreferencesRepositoryImpl(
         return result
     }
 
-    override fun putFilter(filterName: String, filterValue: FilterValue) {
+    private fun setFilter(filterName: String, filterValue: FilterValue) {
         val json = gson.toJson(filterValue)
         sharedPref.edit().putString(filterName, json).apply()
+    }
+
+    private fun getFilter(filterName: String): FilterValue? {
+        return sharedPref.getString(filterName, null).let {
+            if (it.isNullOrEmpty()) return null
+            getFilterValue(it)
+        }
+    }
+
+    override fun getAreaFilter(): FilterValue? {
+        return getFilter(AREA)
+
+    }
+
+    override fun getCountryFilter(): FilterValue? {
+        return getFilter(COUNTRY)
+    }
+
+    override fun getIndustryFilter(): FilterValue? {
+        return getFilter(INDUSTRY)
+    }
+
+    override fun getSalaryFilter(): FilterValue? {
+        return getFilter(SALARY)
+    }
+
+    override fun getOnlyWithSalaryFilter(): FilterValue? {
+        return getFilter(ONLY_WITH_SALARY)
+    }
+
+    override fun setAreaFilter(filterValue: FilterValue) {
+        setFilter(AREA, filterValue)
+    }
+
+    override fun setCountryFilter(filterValue: FilterValue) {
+        setFilter(COUNTRY, filterValue)
+    }
+
+    override fun setIndustryFilter(filterValue: FilterValue) {
+        setFilter(INDUSTRY, filterValue)
+    }
+
+    override fun setSalaryFilter(filterValue: FilterValue) {
+        setFilter(SALARY, filterValue)
+    }
+
+    override fun setOnlyWithSalsryFilter(filterValue: FilterValue) {
+        setFilter(ONLY_WITH_SALARY, filterValue)
     }
 
 }

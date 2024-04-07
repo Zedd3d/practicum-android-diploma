@@ -25,7 +25,7 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
 
     private val viewModel by viewModels<FiltersMainViewModel> {
         Factory {
-            App.appComponent.generalComponent().viewModel()
+            App.appComponent.filtersMainComponent().viewModel()
         }
     }
 
@@ -74,8 +74,9 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
             )
         }
 
-        onChangeViewState(FiltersMainViewState.Empty)
-
+        viewModel.getState().observe(viewLifecycleOwner) { state ->
+            onChangeViewState(state)
+        }
     }
 
     private fun onBackPressed() {

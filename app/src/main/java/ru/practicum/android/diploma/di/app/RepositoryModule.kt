@@ -8,9 +8,9 @@ import dagger.Provides
 import ru.practicum.android.diploma.data.filters.SharedPreferencesRepositoryImpl
 import ru.practicum.android.diploma.domain.favorites.impl.FavoritesRepository
 import ru.practicum.android.diploma.domain.favorites.impl.FavoritesRepositoryImpl
-import ru.practicum.android.diploma.domain.filters.SharedPreferencesRepository
 import ru.practicum.android.diploma.domain.impl.VacanciesRepository
 import ru.practicum.android.diploma.domain.impl.VacanciesRepositoryImpl
+import ru.practicum.android.diploma.domain.sharedpreferences.api.SharedPreferencesRepository
 
 @Module
 object RepositoryModule {
