@@ -29,7 +29,11 @@ class FiltersRegionFragment : Fragment(R.layout.fragment_filters_region) {
     private var _binding: FragmentFiltersRegionBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var adapter: FiltersAreaAdapter
+    private val adapter = FiltersAreaAdapter(emptyList<FilterValue>()) { filterValue: FilterValue ->
+        clickListener(
+            filterValue
+        )
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentFiltersRegionBinding.inflate(layoutInflater)
@@ -38,12 +42,6 @@ class FiltersRegionFragment : Fragment(R.layout.fragment_filters_region) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        adapter = FiltersAreaAdapter(emptyList<FilterValue>()) { filterValue: FilterValue ->
-            clickListener(
-                filterValue
-            )
-        }
 
         activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = false
 

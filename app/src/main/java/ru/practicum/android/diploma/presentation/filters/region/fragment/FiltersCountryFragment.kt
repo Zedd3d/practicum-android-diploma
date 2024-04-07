@@ -29,7 +29,11 @@ class FiltersCountryFragment : Fragment(R.layout.fragment_filters_country) {
     private var _binding: FragmentFiltersCountryBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var adapter: FiltersAreaAdapter
+    private val adapter = FiltersAreaAdapter(emptyList<FilterValue>()) { filterValue: FilterValue ->
+        clickListener(
+            filterValue
+        )
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentFiltersCountryBinding.inflate(layoutInflater)
@@ -38,13 +42,6 @@ class FiltersCountryFragment : Fragment(R.layout.fragment_filters_country) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        adapter = FiltersAreaAdapter(emptyList<FilterValue>()) { filterValue: FilterValue ->
-            clickListener(
-                filterValue
-            )
-        }
-
         activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = false
 
         val callback = object : OnBackPressedCallback(true) {
@@ -58,7 +55,6 @@ class FiltersCountryFragment : Fragment(R.layout.fragment_filters_country) {
             onBackPressed()
         }
         onChangeViewState(FiltersMainViewState.Empty)
-
     }
 
     private fun clickListener(filterValue: FilterValue) {
@@ -69,7 +65,6 @@ class FiltersCountryFragment : Fragment(R.layout.fragment_filters_country) {
         activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = true
         findNavController().popBackStack()
     }
-
 
     private fun onChangeViewState(state: FiltersMainViewState) {
 
