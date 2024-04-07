@@ -17,6 +17,5 @@ data class FavoritesVacanciesEntity(
     val area: String,
     val employment: String,
     val schedule: String,
-    var isFavorite: Boolean = false,
     val inDbTime: Long = Calendar.getInstance().time.time
 )
