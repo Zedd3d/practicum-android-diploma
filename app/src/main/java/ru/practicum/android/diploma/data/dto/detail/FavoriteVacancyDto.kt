@@ -1,12 +1,8 @@
-package ru.practicum.android.diploma.data.entity
+package ru.practicum.android.diploma.data.dto.detail
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import java.util.Calendar
 
-@Entity(tableName = "favorites_vacancies_table")
-data class FavoritesVacanciesEntity(
-    @PrimaryKey
+data class FavoriteVacancyDto(
     val id: String,
     val name: String,
     val salary: String,
