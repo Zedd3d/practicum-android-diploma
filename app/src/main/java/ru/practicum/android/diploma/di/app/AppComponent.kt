@@ -6,6 +6,7 @@ import dagger.Component
 import ru.practicum.android.diploma.di.favorites.FavoritesComponent
 import ru.practicum.android.diploma.di.filters.CountryComponent
 import ru.practicum.android.diploma.di.filters.RegionComponent
+import ru.practicum.android.diploma.di.filters.WorkPlaceComponent
 import ru.practicum.android.diploma.di.general.GeneralComponent
 import ru.practicum.android.diploma.di.vacancy.VacancyComponent
 import javax.inject.Singleton
@@ -24,6 +25,8 @@ interface AppComponent {
     fun vacancyComponent(): VacancyComponent.VacancyComponentFactory
 
     fun favoriteslComponent(): FavoritesComponent
+
+    fun workPlaceComponent(): WorkPlaceComponent
 
     fun countryComponent(): CountryComponent
 

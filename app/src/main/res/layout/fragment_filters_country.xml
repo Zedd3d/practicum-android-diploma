@@ -26,26 +26,12 @@
         android:layout_marginTop="8dp"
         android:clipToPadding="false"
         android:paddingBottom="50dp"
-        app:layout_constraintBottom_toTopOf="@id/btnSelect"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         tools:listitem="@layout/filter_area_item" />
 
-    <Button
-        android:id="@+id/btnSelect"
-        style="@style/StandartButton"
-        android:layout_width="match_parent"
-        android:layout_height="59dp"
-        android:layout_weight="0"
-        android:text="@string/select"
-        app:layout_constraintBottom_toBottomOf="@id/guideline" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.95" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

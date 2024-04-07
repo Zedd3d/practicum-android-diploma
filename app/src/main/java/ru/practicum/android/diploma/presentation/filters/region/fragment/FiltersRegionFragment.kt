@@ -12,27 +12,27 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
-import ru.practicum.android.diploma.databinding.FragmentFiltersCountryBinding
+import ru.practicum.android.diploma.databinding.FragmentFiltersRegionBinding
 import ru.practicum.android.diploma.domain.filters.models.FilterValue
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.filters.main.state.FiltersMainViewState
-import ru.practicum.android.diploma.presentation.filters.region.viewmodel.FiltersCountryViewModel
+import ru.practicum.android.diploma.presentation.filters.region.viewmodel.FiltersRegionViewModel
 
-class FiltersRegionFragment : Fragment(R.layout.fragment_filters_country) {
+class FiltersRegionFragment : Fragment(R.layout.fragment_filters_region) {
 
-    private val viewModel by viewModels<FiltersCountryViewModel> {
+    private val viewModel by viewModels<FiltersRegionViewModel> {
         Factory {
             App.appComponent.generalComponent().viewModel()
         }
     }
 
-    private var _binding: FragmentFiltersCountryBinding? = null
+    private var _binding: FragmentFiltersRegionBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var adapter: FiltersAreaAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        _binding = FragmentFiltersCountryBinding.inflate(layoutInflater)
+        _binding = FragmentFiltersRegionBinding.inflate(layoutInflater)
         return binding.root
     }
 

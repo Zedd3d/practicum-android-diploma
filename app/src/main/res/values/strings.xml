@@ -33,8 +33,11 @@
     <string name="experience_title">Требуемый опыт</string>
     <string name="filter_select_country">Выбор страны</string>
     <string name="filter_select_region">Выбор региона</string>
+    <string name="filter_select_workplace">Выбор места работы</string>
     <string name="input_region">Введите регион</string>
     <string name="industry">Отрасль</string>
     <string name="select">Выбрать</string>
     <string name="area">Регион</string>
+    <string name="filter_country">Страна</string>
+    <string name="filter_region">Регион</string>
 </resources>
