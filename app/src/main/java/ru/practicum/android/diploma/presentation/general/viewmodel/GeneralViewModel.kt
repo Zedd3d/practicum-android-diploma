@@ -8,18 +8,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.domain.impl.VacanciesRepository
 import ru.practicum.android.diploma.domain.models.Vacancy
-import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
 
 const val PAG_COUNT: Int = 20
 
 class GeneralViewModel @Inject constructor(
     private val vacanciesRepository: VacanciesRepository,
-    private val context : Context
+    private val context: Context
 ) : ViewModel() {
 
     private val state = MutableStateFlow(ViewState())
@@ -31,7 +28,7 @@ class GeneralViewModel @Inject constructor(
 
     fun search(query: String, page: Int = 0, isPagination: Boolean = false) {
 
-        if(!isOnline(context)){
+        if (!isOnline(context)) {
             state.update { it.copy(status = ResponseState.NetworkError, isLoading = false) }
             isNextPageLoading = false
             return
