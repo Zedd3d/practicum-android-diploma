@@ -5,10 +5,8 @@ import android.content.Context
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
-import ru.practicum.android.diploma.data.filters.SharedPreferencesRepositoryImpl
-import ru.practicum.android.diploma.domain.favorites.impl.FavoritesRepository
-import ru.practicum.android.diploma.domain.favorites.impl.FavoritesRepositoryImpl
 import ru.practicum.android.diploma.data.favorites.impl.FavoritesRepositoryImpl
+import ru.practicum.android.diploma.data.filters.SharedPreferencesRepositoryImpl
 import ru.practicum.android.diploma.domain.favorites.api.FavoritesRepository
 import ru.practicum.android.diploma.domain.impl.VacanciesRepository
 import ru.practicum.android.diploma.domain.impl.VacanciesRepositoryImpl
