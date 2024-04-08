@@ -4,5 +4,6 @@ import ru.practicum.android.diploma.domain.models.Vacancy
 
 data class Vacancies(
     val items: List<Vacancy>,
-    val found: Int
+    val found: Int,
+    val pages: Int
 )

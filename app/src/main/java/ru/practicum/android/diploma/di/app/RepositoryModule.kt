@@ -12,6 +12,7 @@ object RepositoryModule {
 
     @Provides
     fun providesVacanciesRepository(impl: VacanciesRepositoryImpl): VacanciesRepository = impl
+
     @Provides
     fun providesFavoritiesRepository(impl: FavoritesRepositoryImpl): FavoritesRepository = impl
 }

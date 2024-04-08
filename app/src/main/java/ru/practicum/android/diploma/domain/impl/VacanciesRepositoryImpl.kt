@@ -9,6 +9,8 @@ import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.models.VacancyDetail
 import javax.inject.Inject
 
+const val PAGINATION_COUNT_PAGES = "20"
+
 class VacanciesRepositoryImpl @Inject constructor(
     private val headHunterService: HeadHunterService
 ) : VacanciesRepository {
@@ -20,12 +22,12 @@ class VacanciesRepositoryImpl @Inject constructor(
             val query = mapOf(
                 "text" to text,
                 "page" to page.toString(),
-                "per_page" to "20"
+                "per_page" to PAGINATION_COUNT_PAGES
             )
             val response = headHunterService.vacancies(query)
             vacanciesList = response.items.asDomain()
             found = response.found
-            Vacancies(vacanciesList, found)
+            Vacancies(vacanciesList, found, response.pages)
         }
     }
 

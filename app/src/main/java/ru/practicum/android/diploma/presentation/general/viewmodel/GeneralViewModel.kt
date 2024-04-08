@@ -11,8 +11,6 @@ import ru.practicum.android.diploma.domain.models.Vacancy
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-const val PAG_COUNT: Int = 20
-
 class GeneralViewModel @Inject constructor(
     private val vacanciesRepository: VacanciesRepository
 ) : ViewModel() {
@@ -22,37 +20,46 @@ class GeneralViewModel @Inject constructor(
     private var isNextPageLoading = false
 
     private var query: String? = null
+        set(value) {
+            maxPages = null
+            field = value
+        }
+
+    private var maxPages: Int? = 0
     fun observeUi() = state.asStateFlow()
 
-    fun search(query: String, page: Int = 0, isPagination: Boolean = false) {
-        if (isNextPageLoading || this.query == query && !isPagination) return
 
+    fun search(query: String, page: Int = 0) {
+        if (this.query == query) return
         this.query = query
 
-        if (query.isEmpty() && !isPagination) {
+        if (query.isEmpty()) {
             state.update { it.copy(status = ResponseState.Start) }
             return
         }
 
-        isNextPageLoading = true
+        state.update { it.copy(isLoading = true, vacanciesProgress = false) }
+        makeSearchRequest(query, page, false)
+    }
 
-        state.update { it.copy(isLoading = !isPagination) }
-
+    private fun makeSearchRequest(query: String, page: Int, isPagination: Boolean) {
         viewModelScope.launch {
             try {
                 val response = vacanciesRepository.search(query, page)
+                maxPages = response.pages
+
                 val vacancies = response.items
                 val currentList = if (isPagination) {
                     state.value.vacancies + vacancies
                 } else {
                     vacancies
                 }
+
                 state.update {
                     it.copy(
                         vacancies = currentList,
                         found = response.found,
-                        isLoading = false,
-                        status = if (vacancies.isNotEmpty()) ResponseState.Content else ResponseState.Empty
+                        status = if (currentList.isNotEmpty()) ResponseState.Content else ResponseState.Empty,
                     )
                 }
             } catch (e: UnknownHostException) {
@@ -60,15 +67,29 @@ class GeneralViewModel @Inject constructor(
             } catch (e: Throwable) {
                 state.update { it.copy(status = ResponseState.ServerError) }
             } finally {
-                state.update { it.copy(isLoading = false) }
                 isNextPageLoading = false
+                state.update { it.copy(isLoading = false, vacanciesProgress = false) }
             }
         }
     }
 
-    fun onLastItemReached(query: String) {
+    private fun searchPagination(query: String, page: Int = 0) {
+        if (isNextPageLoading) return
+        maxPages?.let { if (page + 1 >= it) return }
+
+        isNextPageLoading = true
+        state.update { it.copy(isLoading = false, vacanciesProgress = true) }
+
+        makeSearchRequest(query, page, true)
+    }
+
+    fun onLastItemReached() {
         val page = state.value.vacancies.size / PAG_COUNT
-        search(query, page, true)
+        query?.let { searchPagination(it, page) }
+    }
+
+    companion object {
+        const val PAG_COUNT: Int = 20
     }
 }
 
@@ -76,7 +97,8 @@ data class ViewState(
     val vacancies: List<Vacancy> = emptyList(),
     val status: ResponseState = ResponseState.Start,
     val found: Int = 0,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val vacanciesProgress: Boolean = false
 )
 
 sealed class ResponseState {
