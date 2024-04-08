@@ -25,7 +25,7 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
 
     private val viewModel by viewModels<FiltersMainViewModel> {
         Factory {
-            App.appComponent.generalComponent().viewModel()
+            App.appComponent.filtersMainComponent().viewModel()
         }
     }
 
@@ -34,6 +34,8 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentFiltersMainBinding.inflate(layoutInflater)
+        binding.llWorkPlace.smallTextBlock.setText(getString(R.string.filter_workplace))
+        binding.llIndustries.smallTextBlock.setText(getString(R.string.filter_industries))
         return binding.root
     }
 
@@ -42,9 +44,6 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
 
         binding.btnCancel.isSelected = true
         activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = false
-
-        binding.llWorkPlace.smallTextBlock.setText(getString(R.string.filter_workplace))
-        binding.llIndustries.smallTextBlock.setText(getString(R.string.filter_industries))
 
         binding.tietSalary.onTextChange {
             setHintTextColor(it)
@@ -69,8 +68,15 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
             Toast.makeText(context, "Сбросить", Toast.LENGTH_SHORT).show()
         }
 
-        onChangeViewState(FiltersMainViewState.Empty)
+        binding.llWorkPlace.root.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_filtersMainFragment_to_filtersWorkPlaceFragment
+            )
+        }
 
+        viewModel.getState().observe(viewLifecycleOwner) { state ->
+            onChangeViewState(state)
+        }
     }
 
     private fun onBackPressed() {
