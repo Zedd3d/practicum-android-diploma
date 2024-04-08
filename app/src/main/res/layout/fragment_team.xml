@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background  = "?colorSecondary"
+    android:paddingLeft="16dp"
+    android:paddingTop="40dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="16dp"
+    tools:context=".presentation.team.TeamFragment">
+
+    <!-- TODO: Добавить отчества -->
+    <TextView
+        android:id="@+id/tv_team"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/team_head_name"
+        style="@style/TitleTextStyle" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/team_works"
+        style="@style/BoldTitleTextStyle" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:text="@string/team_developer_1"
+        style="@style/LowTitleTextStyle" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/team_developer_2"
+        style="@style/LowTitleTextStyle" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/team_developer_3"
+        style="@style/LowTitleTextStyle" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/team_developer_4"
+        style="@style/LowTitleTextStyle" />
+
+</LinearLayout>

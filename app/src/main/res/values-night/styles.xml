@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="inputTextEditStyleDayNight" parent="inputTextEditStyle">
+        <item name="android:textColorHint">@color/WhiteUniversal_yp</item>
+        <item name="android:backgroundTint">@color/Gray_yp</item>
+        <item name="android:drawableTint">@color/BlackUniversal_yp</item>
+    </style>
+
+</resources>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/generalFragment">
+
+    <fragment
+        android:id="@+id/generalFragment"
+        android:name="ru.practicum.android.diploma.presentation.general.fragment.GeneralFragment"
+        android:label="fragment_general"
+        tools:layout="@layout/fragment_general">
+        <action
+            android:id="@+id/action_generalFragment_to_vacancyFragment"
+            app:destination="@id/vacancyFragment" />
+        <action
+            android:id="@+id/action_generalFragment_to_filtersMainFragment"
+            app:destination="@id/filtersMainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="ru.practicum.android.diploma.presentation.favorites.fragment.FavoritesFragment"
+        android:label="fragment_favorites"
+        tools:layout="@layout/fragment_favorites" />
+    <fragment
+        android:id="@+id/teamFragment"
+        android:name="ru.practicum.android.diploma.presentation.team.TeamFragment"
+        android:label="fragment_team"
+        tools:layozut="@layout/fragment_team" />
+    <fragment
+        android:id="@+id/vacancyFragment"
+        android:name="ru.practicum.android.diploma.presentation.vacancy.VacancyFragment"
+        android:label="vacancy_fragment"
+        tools:layout="@layout/fragment_vacancy">
+        <argument
+            android:name="vacancyId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/filtersMainFragment"
+        android:name="ru.practicum.android.diploma.presentation.filters.main.fragment.FiltersMainFragment"
+        android:label="FiltersMainFragment"
+        tools:layout="@layout/fragment_filters_main" />
+</navigation>

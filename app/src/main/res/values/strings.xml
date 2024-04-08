@@ -1,3 +1,33 @@
 <resources>
     <string name="app_name">Practicum-Android-Diploma</string>
+    <string name="general">Главная</string>
+    <string name="favorites">Избранное</string>
+    <string name="team">Команда</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="insert_request">Введите запрос</string>
+    <!-- TODO: team strings -->
+    <string name="team_head_name">Команда</string>
+    <string name="team_works">Над приложением \nработали</string>
+    <string name="team_developer_1">Валентин Мальцев</string>
+    <string name="team_developer_2">Андрей Ярыгин</string>
+    <string name="team_developer_3">Александр Панкратов</string>
+    <string name="team_developer_4">Александр Ефремов</string>
+    <!-- TODO: favorites strings -->
+    <string name="favorite_head_name">Избранное</string>
+    <string name="favorite_empty">Список пуст</string>
+    <!-- TODO: general strings -->
+    <string name="no_vacancies">Не удалось получить \n список вакансий</string>
+    <string name="no_vacancies_lil">Таких вакансий нет</string>
+    <string name="no_internet">Нет интернета</string>
+    <string name="server_error">Ошибка сервера</string>
+    <string name="found_count">Найдено %s вакансий</string>
+    <string name="no_salary">Зарплата не указана</string>
+    <string name="filter_workplace">Место работы</string>
+    <string name="filter_settings">Настройки фильтрации</string>
+    <string name="expected_salary">Ожидаемая зарплата</string>
+    <string name="input_expected_salary">Введите сумму</string>
+    <string name="filter_only_with_salary">Не показывать без зарплаты</string>
+    <string name="filter_industries">Отрасль</string>
+    <string name="accept">Применить</string>
+    <string name="clear_filter">Сбросить</string>
 </resources>
