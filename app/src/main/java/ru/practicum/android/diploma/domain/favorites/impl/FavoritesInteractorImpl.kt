@@ -6,7 +6,8 @@ import ru.practicum.android.diploma.domain.favorites.api.FavoritesRepository
 import ru.practicum.android.diploma.domain.favorites.models.FavoriteDbModel
 import javax.inject.Inject
 
-class FavoritesInteractorImpl @Inject constructor(private val favoritesRepository: FavoritesRepository) : FavoritesInteractor {
+class FavoritesInteractorImpl @Inject constructor
+    (private val favoritesRepository: FavoritesRepository) : FavoritesInteractor {
     override fun favoritesVacancies(): Flow<List<FavoriteDbModel>> {
         return favoritesRepository.favoritesVacancies()
     }
@@ -14,5 +15,4 @@ class FavoritesInteractorImpl @Inject constructor(private val favoritesRepositor
     override suspend fun insertDbVacanciToFavorite(vacanci: FavoriteDbModel) {
         favoritesRepository.insertDbVacanciToFavorite(vacanci)
     }
-
 }

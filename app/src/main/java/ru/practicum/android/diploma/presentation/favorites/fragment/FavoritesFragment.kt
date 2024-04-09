@@ -45,11 +45,6 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun setupVacancies() {
-        binding.rvFavorite.adapter = adapter
-        binding.rvFavorite.layoutManager = LinearLayoutManager(requireContext())
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

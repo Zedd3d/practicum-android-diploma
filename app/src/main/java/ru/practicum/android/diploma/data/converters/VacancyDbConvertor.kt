@@ -1,6 +1,5 @@
 package ru.practicum.android.diploma.data.converters
 
-
 import ru.practicum.android.diploma.data.entity.FavoritesVacanciesEntity
 import ru.practicum.android.diploma.domain.favorites.models.FavoriteDbModel
 

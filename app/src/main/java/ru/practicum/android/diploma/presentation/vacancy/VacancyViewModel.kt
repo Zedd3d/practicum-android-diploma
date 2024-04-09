@@ -26,20 +26,21 @@ class VacancyViewModel @Inject constructor(
             state.update { it.copy(vacancy = vacancy, isLoading = false) }
         }
     }
-     fun setIndb(vacDb: VacancyDetail) {
+
+    fun setIndb(vacDb: VacancyDetail) {
         viewModelScope.launch {
             favoritesInteractor.insertDbVacanciToFavorite(
-               vacanci = FavoriteDbModel(
-                   idDto = vacDb.id,
-                   nameDto = vacDb.name,
-                   salaryDto = vacDb.salary.toString(),
-                   experienceDto = vacDb.experience.toString(),
-                   descriptionDto = vacDb.description.toString(),
-                   employerDto = vacDb.employer.toString(),
-                   keySkillsDto = vacDb.keySkills.toString(),
-                   areaDto = vacDb.area.toString(),
-                   employmentDto = vacDb.employment.toString(),
-               )
+                vacanci = FavoriteDbModel(
+                    idDto = vacDb.id,
+                    nameDto = vacDb.name,
+                    salaryDto = vacDb.salary.toString(),
+                    experienceDto = vacDb.experience.toString(),
+                    descriptionDto = vacDb.description.toString(),
+                    employerDto = vacDb.employer.toString(),
+                    keySkillsDto = vacDb.keySkills.toString(),
+                    areaDto = vacDb.area.toString(),
+                    employmentDto = vacDb.employment.toString(),
+                )
             )
         }
     }

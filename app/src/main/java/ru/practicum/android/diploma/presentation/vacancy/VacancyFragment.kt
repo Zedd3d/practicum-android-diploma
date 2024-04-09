@@ -52,7 +52,7 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
                     state.vacancy?.let {
                         updateVacancy(it)
                     }
-                    binding.buttonAddToFavorites.setOnClickListener{
+                    binding.buttonAddToFavorites.setOnClickListener {
                         state.vacancy?.let {
                             updateDb(it)
                             Log.d("Pan", "Положили в базу данных $it")
@@ -61,8 +61,6 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
                 }
             }
         }
-
-
         binding.vacancyToolbars.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
