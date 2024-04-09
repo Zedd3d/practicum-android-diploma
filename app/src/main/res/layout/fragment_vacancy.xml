@@ -5,6 +5,7 @@
     android:id="@+id/vacancy_detail_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?colorSecondary"
     android:orientation="vertical">
 
     <ProgressBar

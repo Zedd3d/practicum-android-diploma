@@ -14,9 +14,9 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
-import ru.practicum.android.diploma.databinding.FilterCategotyElementBinding
 import ru.practicum.android.diploma.databinding.FragmentFiltersMainBinding
 import ru.practicum.android.diploma.presentation.Factory
+import ru.practicum.android.diploma.presentation.filters.CustomViewPropertysSetter.setViewPropertys
 import ru.practicum.android.diploma.presentation.filters.main.state.FiltersMainViewState
 import ru.practicum.android.diploma.presentation.filters.main.viewmodel.FiltersMainViewModel
 import ru.practicum.android.diploma.util.onTextChange
@@ -106,18 +106,6 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
         binding.btnAccept.isVisible = false
     }
 
-    @SuppressLint("ResourceAsColor")
-    private fun setViewPropertys(v: FilterCategotyElementBinding, textValue: String) {
-        if (textValue.isEmpty()) {
-            v.smallTextBlock.isVisible = false
-            v.standardTextBlock.text = v.smallTextBlock.text
-            v.standardTextBlock.setTextColor(R.color.Gray_yp)
-        } else {
-            v.smallTextBlock.isVisible = true
-            v.standardTextBlock.text = textValue
-            v.standardTextBlock.setTextColor(R.color.BlackDay_WhiteNight)
-        }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

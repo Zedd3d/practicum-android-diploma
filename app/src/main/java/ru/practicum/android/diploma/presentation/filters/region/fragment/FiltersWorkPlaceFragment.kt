@@ -1,6 +1,5 @@
 package ru.practicum.android.diploma.presentation.filters.region.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +12,10 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
-import ru.practicum.android.diploma.databinding.FilterCategotyElementBinding
 import ru.practicum.android.diploma.databinding.FragmentFiltersWorkplaceBinding
 import ru.practicum.android.diploma.domain.filters.models.FilterValue
 import ru.practicum.android.diploma.presentation.Factory
+import ru.practicum.android.diploma.presentation.filters.CustomViewPropertysSetter.setViewPropertys
 import ru.practicum.android.diploma.presentation.filters.region.state.FiltersWorkPlaceViewState
 import ru.practicum.android.diploma.presentation.filters.region.viewmodel.FiltersWorkPlaceViewModel
 
@@ -92,18 +91,6 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
         }
     }
 
-    @SuppressLint("ResourceAsColor")
-    private fun setViewPropertys(v: FilterCategotyElementBinding, textValue: String) {
-        if (textValue.isEmpty()) {
-            v.smallTextBlock.isVisible = false
-            v.standardTextBlock.text = v.smallTextBlock.text
-            v.standardTextBlock.setTextColor(R.color.Gray_yp)
-        } else {
-            v.smallTextBlock.isVisible = true
-            v.standardTextBlock.text = textValue
-            v.standardTextBlock.setTextColor(R.color.BlackDay_WhiteNight)
-        }
-    }
 
     private fun clickListener(filterValue: FilterValue) {
 
