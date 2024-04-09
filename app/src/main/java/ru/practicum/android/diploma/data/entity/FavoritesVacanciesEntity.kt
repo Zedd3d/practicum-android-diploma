@@ -12,10 +12,9 @@ data class FavoritesVacanciesEntity(
     val salary: String,
     val experience: String,
     val description: String,
-    val employerDto: String,
+    val employer: String,
     val keySkills: String,
     val area: String,
     val employment: String,
-    val schedule: String,
     val inDbTime: Long = Calendar.getInstance().time.time
 )

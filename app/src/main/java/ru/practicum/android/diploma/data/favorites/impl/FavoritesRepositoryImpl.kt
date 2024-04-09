@@ -4,15 +4,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.practicum.android.diploma.data.converters.VacancyDbConvertor
 import ru.practicum.android.diploma.data.db.AppDatabase
-import ru.practicum.android.diploma.data.dto.detail.FavoriteVacancyDto
 import ru.practicum.android.diploma.data.entity.FavoritesVacanciesEntity
 import ru.practicum.android.diploma.domain.favorites.api.FavoritesRepository
+import ru.practicum.android.diploma.domain.favorites.models.FavoriteDbModel
 import javax.inject.Inject
 
 class FavoritesRepositoryImpl @Inject constructor(
     private val appDatabase: AppDatabase
 ) : FavoritesRepository {
-    override fun favoritesVacancies(): Flow<List<FavoriteVacancyDto>> = flow {
+    override fun favoritesVacancies(): Flow<List<FavoriteDbModel>> = flow {
         val vacancy = appDatabase.favoriteDao().getVacancyFromFavorite()
         emit(convertFromVacancyEntity(vacancy))
     }
@@ -21,18 +21,18 @@ class FavoritesRepositoryImpl @Inject constructor(
         appDatabase.favoriteDao().deleteVacancyFromFavorite(vacID)
     }
 
-    override suspend fun insertDbVacanciToFavorite(vacanci: FavoriteVacancyDto) {
-        val listVacancy = arrayListOf<FavoriteVacancyDto>()
+    override suspend fun insertDbVacanciToFavorite(vacanci: FavoriteDbModel) {
+        val listVacancy = arrayListOf<FavoriteDbModel>()
         listVacancy.add(vacanci)
         val listFavoriteEntity = convertToVacancyEntity(listVacancy)
         appDatabase.favoriteDao().insertFavoritiesVacancy(listFavoriteEntity)
     }
 
-    private fun convertFromVacancyEntity(vacancy: List<FavoritesVacanciesEntity>): List<FavoriteVacancyDto> {
+    private fun convertFromVacancyEntity(vacancy: List<FavoritesVacanciesEntity>): List<FavoriteDbModel> {
         return vacancy.map { vac -> VacancyDbConvertor.map(vac) }
     }
 
-    private fun convertToVacancyEntity(listVacancy: List<FavoriteVacancyDto>): List<FavoritesVacanciesEntity> {
+    private fun convertToVacancyEntity(listVacancy: List<FavoriteDbModel>): List<FavoritesVacanciesEntity> {
         return listVacancy.map { vac -> VacancyDbConvertor.map(vac) }
     }
 }
