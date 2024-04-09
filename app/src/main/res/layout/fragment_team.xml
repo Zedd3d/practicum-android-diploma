@@ -8,6 +8,7 @@
     android:paddingTop="40dp"
     android:paddingRight="16dp"
     android:paddingBottom="16dp"
+    android:background="?colorSecondary"
     tools:context=".presentation.team.TeamFragment">
 
     <!-- TODO: Добавить отчества -->
