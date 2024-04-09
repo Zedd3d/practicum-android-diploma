@@ -46,7 +46,12 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     private var _binding: FragmentGeneralBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var adapter: VacanciesAdapter
+    private val adapter by lazy {
+        VacanciesAdapter() {
+            val params = bundleOf("id" to it)
+            findNavController().navigate(R.id.action_generalFragment_to_vacancyFragment, params)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentGeneralBinding.inflate(layoutInflater)
@@ -59,7 +64,6 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         binding.searchEditText.onTextChangeDebounce()
             .debounce(DEBOUNCE)
             .onEach {
-                hideKeyBoard()
                 val query = it?.toString().orEmpty()
                 viewModel.search(query)
             }
@@ -70,7 +74,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         }
 
         binding.clearButton.setOnClickListener {
-            binding.searchEditText.setText("")
+            binding.searchEditText.text = null
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -78,17 +82,20 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 viewModel.observeUi().collect { state ->
                     adapter.submitList(state.vacancies)
                     updateStatus(state.status)
-                    binding.vacanciesProgress.visibleOrGone(false)
-                    binding.vacanciesLoading.visibleOrGone(false)
+
+                    binding.vacanciesProgress.visibleOrGone(state.vacanciesProgress)
+
                     binding.foundCountText.text = if (state.found != 0) {
                         getString(R.string.found_count, state.found.toString())
                     } else {
                         getString(R.string.no_vacancies_lil)
                     }
                     binding.vacanciesLoading.visibleOrGone(state.isLoading)
+                    if (state.isLoading) {
+                        hideKeyBoard()
+                    }
                 }
             }
-
         }
 
         binding.vacanciesRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -99,8 +106,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                     val pos = (binding.vacanciesRv.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
                     val itemsCount = adapter.itemCount
                     if (pos >= itemsCount - 1) {
-                        viewModel.onLastItemReached(binding.searchEditText.text.toString())
-                        binding.vacanciesProgress.visibleOrGone(true)
+                        viewModel.onLastItemReached()
                     }
                 }
             }
@@ -170,15 +176,12 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     }
 
     private fun setupVacancies() {
-        adapter = VacanciesAdapter() {
-            val params = bundleOf("id" to it)
-            findNavController().navigate(R.id.action_generalFragment_to_vacancyFragment, params)
-        }
         binding.vacanciesRv.adapter = adapter
         binding.vacanciesRv.layoutManager = LinearLayoutManager(requireContext())
     }
 
     private fun hideKeyBoard() {
+        if (_binding == null) return
         binding.let {
             val inputMethodManager =
                 requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -198,6 +201,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        _binding = null
     }
 
     override fun onResume() {
