@@ -61,6 +61,9 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
         binding.vacancyToolbars.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
+        binding.buttonShare.setOnClickListener {
+            viewModel.shareVacancy()
+        }
     }
 
     override fun onDestroyView() {

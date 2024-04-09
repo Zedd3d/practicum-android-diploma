@@ -12,16 +12,21 @@ import javax.inject.Inject
 
 class VacancyViewModel @Inject constructor(
     private val vacancyId: String,
-    private val repository: VacanciesRepository
+    private val repository: VacanciesRepository,
+    private val emailRepository: EmailRepository
 ) : ViewModel() {
     private val state = MutableStateFlow(ViewState())
+    private var vacancy: VacancyDetail? = null
     fun observeUi() = state.asStateFlow()
 
     init {
         viewModelScope.launch {
-            val vacancy = repository.searchById(vacancyId)
+            vacancy = repository.searchById(vacancyId)
             state.update { it.copy(vacancy = vacancy, isLoading = false) }
         }
+    }
+    fun shareVacancy() {
+        emailRepository.shareLink("https://ekaterinburg.hh.ru/vacancy/${vacancy!!.id}")
     }
 }
 
