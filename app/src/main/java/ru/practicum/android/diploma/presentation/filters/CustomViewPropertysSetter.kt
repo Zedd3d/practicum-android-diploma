@@ -15,7 +15,6 @@ object CustomViewPropertysSetter {
             v.smallTextBlock.isVisible = true
             v.standardTextBlock.text = textValue
             v.standardTextBlock.isEnabled = true
-            //v.standardTextBlock.setTextColor(R.color.BlackDay_WhiteNight)
         }
     }
 }

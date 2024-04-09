@@ -53,7 +53,7 @@ class SharedPreferencesInteractorImpl @Inject constructor(
         sharedPreferencesRepository.setSalaryFilter(filterValue)
     }
 
-    override fun setOnlyWithSalsryFilter(filterValue: FilterValue) {
+    override fun setOnlyWithSalaryFilter(filterValue: FilterValue) {
         sharedPreferencesRepository.setOnlyWithSalsryFilter(filterValue)
     }
 }

@@ -26,5 +26,5 @@ interface SharedPreferencesInteractor {
 
     fun setSalaryFilter(filterValue: FilterValue)
 
-    fun setOnlyWithSalsryFilter(filterValue: FilterValue)
+    fun setOnlyWithSalaryFilter(filterValue: FilterValue)
 }
