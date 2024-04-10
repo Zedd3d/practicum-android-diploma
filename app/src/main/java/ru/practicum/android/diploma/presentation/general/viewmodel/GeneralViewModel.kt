@@ -28,7 +28,6 @@ class GeneralViewModel @Inject constructor(
     private var maxPages: Int? = 0
     fun observeUi() = state.asStateFlow()
 
-
     fun search(query: String, page: Int = 0) {
         if (this.query == query) return
         this.query = query

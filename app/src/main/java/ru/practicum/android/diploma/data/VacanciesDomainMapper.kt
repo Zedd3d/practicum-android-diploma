@@ -53,4 +53,3 @@ fun VacancyDetailDto.asDomain(): VacancyDetail {
         employment = employment
     )
 }
-

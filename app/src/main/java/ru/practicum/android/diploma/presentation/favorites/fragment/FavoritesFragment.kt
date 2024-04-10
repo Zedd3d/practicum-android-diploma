@@ -31,7 +31,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
 
     private val viewModel by viewModels<FavoritesViewModel> {
         Factory {
-            App.appComponent.favoriteslComponent().viewModel()
+            (requireContext().applicationContext as App).appComponent.favoriteslComponent().viewModel()
         }
     }
 

@@ -23,14 +23,18 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
 
     private val viewModel by viewModels<FiltersWorkPlaceViewModel> {
         Factory {
-            App.appComponent.generalComponent().viewModel()
+            (requireContext().applicationContext as App).appComponent.generalComponent().viewModel()
         }
     }
 
     private var _binding: FragmentFiltersWorkplaceBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var adapter: FiltersAreaAdapter
+    private val adapter = FiltersAreaAdapter(emptyList<FilterValue>()) { filterValue: FilterValue ->
+        clickListener(
+            filterValue
+        )
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentFiltersWorkplaceBinding.inflate(layoutInflater)
@@ -41,12 +45,6 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        adapter = FiltersAreaAdapter(emptyList<FilterValue>()) { filterValue: FilterValue ->
-            clickListener(
-                filterValue
-            )
-        }
 
         activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = false
 
@@ -91,9 +89,8 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
         }
     }
 
-
     private fun clickListener(filterValue: FilterValue) {
-
+        TODO()
     }
 
     private fun onBackPressed() {

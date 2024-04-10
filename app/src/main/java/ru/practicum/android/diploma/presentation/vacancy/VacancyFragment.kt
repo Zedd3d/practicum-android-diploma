@@ -32,7 +32,8 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
 
     private val viewModel by viewModels<VacancyViewModel> {
         Factory {
-            App.appComponent.vacancyComponent().create(requireNotNull(vacancyId)).viewModel()
+            (requireContext().applicationContext as App).appComponent.vacancyComponent()
+                .create(requireNotNull(vacancyId)).viewModel()
         }
     }
 
@@ -73,6 +74,9 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
         binding.vacancyToolbars.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
+        binding.buttonShare.setOnClickListener {
+            viewModel.shareVacancy()
+        }
     }
 
     override fun onDestroyView() {
@@ -106,7 +110,7 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
     }
 
     private fun updateDb(vacDb: VacancyDetail) {
-        viewModel.setIndb(vacDb)
+        viewModel.setIndb()
     }
     private fun deleteDb(vacDb: VacancyDetail) {
         viewModel.deleteFavVac(vacDb)

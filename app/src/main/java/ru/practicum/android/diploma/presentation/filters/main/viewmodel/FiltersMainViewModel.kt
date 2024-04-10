@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.practicum.android.diploma.domain.sharedpreferences.api.SharedPreferencesInteractor
+import ru.practicum.android.diploma.domain.sharedpreferences.model.SharedFilterNames
 import ru.practicum.android.diploma.presentation.filters.main.state.FiltersMainViewState
 import javax.inject.Inject
 
@@ -21,19 +22,23 @@ class FiltersMainViewModel @Inject constructor(
         state.postValue(getCurrentFilters())
     }
 
+    fun getWorkPlace(): String {
+        val country = sharedPreferencesInteractor.getFilter(SharedFilterNames.COUNTRY)?.valueString ?: ""
+        val region = sharedPreferencesInteractor.getFilter(SharedFilterNames.AREA)?.valueString ?: ""
+        return if (country.isEmpty()) region else "$country $region"
+    }
+
     fun getCurrentFilters(): FiltersMainViewState {
-        val country = sharedPreferencesInteractor.getCountryFilter()?.valueString ?: ""
-        val region = sharedPreferencesInteractor.getAreaFilter()?.valueString ?: ""
-        val workplace = if (country.isEmpty()) region else "${country} ${region}"
-        val industry = sharedPreferencesInteractor.getIndustryFilter()?.valueString ?: ""
-        val salary = sharedPreferencesInteractor.getSalaryFilter()?.valueInt ?: 0
-        val onlyWithSalary = sharedPreferencesInteractor.getOnlyWithSalaryFilter()?.valueBoolean ?: false
+        val workplace = getWorkPlace()
+        val industry = sharedPreferencesInteractor
+            .getFilter(SharedFilterNames.INDUSTRY)?.valueString ?: ""
+        val salary = sharedPreferencesInteractor
+            .getFilter(SharedFilterNames.SALARY)?.valueInt ?: 0
+        val onlyWithSalary = sharedPreferencesInteractor
+            .getFilter(SharedFilterNames.ONLY_WITH_SALARY)?.valueBoolean ?: false
 
         return if (
-            workplace.isEmpty()
-            && industry.isEmpty()
-            && salary == 0
-            && onlyWithSalary == false
+            sharedPreferencesInteractor.getAllFilters().isEmpty()
         ) {
             FiltersMainViewState.Empty
         } else {
@@ -56,4 +61,3 @@ sealed class ResponseState {
     data object NetworkError : ResponseState()
     data object ServerError : ResponseState()
 }
-
