@@ -23,7 +23,7 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
 
     private val viewModel by viewModels<FiltersWorkPlaceViewModel> {
         Factory {
-            App.appComponent.generalComponent().viewModel()
+            (requireContext().applicationContext as App).appComponent.generalComponent().viewModel()
         }
     }
 

@@ -25,7 +25,7 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
 
     private val viewModel by viewModels<FiltersMainViewModel> {
         Factory {
-            App.appComponent.filtersMainComponent().viewModel()
+            (requireContext().applicationContext as App).appComponent.filtersMainComponent().viewModel()
         }
     }
 
