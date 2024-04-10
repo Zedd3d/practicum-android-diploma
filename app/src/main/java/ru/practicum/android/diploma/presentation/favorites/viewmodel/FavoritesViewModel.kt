@@ -9,6 +9,7 @@ import ru.practicum.android.diploma.domain.favorites.api.FavoritesInteractor
 import ru.practicum.android.diploma.presentation.favorites.state.FavoritesState
 import ru.practicum.android.diploma.ui.SingleLiveEvent
 import ru.practicum.android.diploma.util.debounce
+import java.io.IOException
 import javax.inject.Inject
 
 class FavoritesViewModel @Inject constructor(
@@ -38,15 +39,20 @@ class FavoritesViewModel @Inject constructor(
     fun loadFavorites() {
         state.postValue(FavoritesState.Loading)
         viewModelScope.launch {
-            favoritesInteractor
-                .favoritesVacancies()
-                .collect { vacancies ->
-                    if (vacancies.isEmpty()) {
-                        state.postValue(FavoritesState.Empty)
-                    } else {
-                        state.postValue(FavoritesState.Content(vacancies))
+            @Suppress("SwallowedException")
+            try {
+                favoritesInteractor
+                    .favoritesVacancies()
+                    .collect { vacancies ->
+                        if (vacancies.isEmpty()) {
+                            state.postValue(FavoritesState.Empty)
+                        } else {
+                            state.postValue(FavoritesState.Content(vacancies))
+                        }
                     }
-                }
+            } catch (e: IOException) {
+                state.postValue(FavoritesState.Error)
+            }
         }
     }
 

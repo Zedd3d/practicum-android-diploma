@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
@@ -64,7 +65,6 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     }
 
     private fun showDetails(vacancyId: String) {
-
         findNavController().navigate(
             R.id.action_favoritesFragment_to_vacancyFragment,
             createArgs(vacancyId)
@@ -72,7 +72,6 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     }
 
     private fun showListState(state: FavoritesState) {
-
         binding.ivFavorite.visibility = when (state) {
             is FavoritesState.Empty -> View.VISIBLE
             else -> View.GONE
@@ -81,6 +80,11 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
         binding.tvFavorite.visibility = when (state) {
             is FavoritesState.Empty -> View.VISIBLE
             else -> View.GONE
+        }
+
+        binding.tvFavorite.text = when (state) {
+            is FavoritesState.Error -> getString(R.string.no_vacancies)
+            else -> getString(R.string.favorite_empty)
         }
 
         binding.rvFavorite.visibility = when (state) {
@@ -102,7 +106,28 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
         if (binding.rvFavorite.visibility == View.GONE && !(state is FavoritesState.Content)) {
             adapter.submitList(emptyList<Vacancy>())
         }
+
+        updatePicture(state)
     }
+
+    private fun updatePicture(state: FavoritesState) {
+        val image = when (state) {
+            FavoritesState.Empty -> {
+                R.drawable.state_image_empty
+            }
+
+            else -> {
+                R.drawable.state_image_nothing_found
+            }
+        }
+
+        image?.let {
+            Glide.with(requireContext())
+                .load(image)
+                .into(binding.ivFavorite)
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

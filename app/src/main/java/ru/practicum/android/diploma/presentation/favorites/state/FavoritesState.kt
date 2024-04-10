@@ -9,6 +9,6 @@ sealed interface FavoritesState {
 
     data object Empty : FavoritesState
 
-    data object NetworkError : FavoritesState
+    data object Error : FavoritesState
 }
 
