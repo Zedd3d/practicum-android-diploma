@@ -5,6 +5,5 @@ import ru.practicum.android.diploma.presentation.general.viewmodel.GeneralViewMo
 
 @Subcomponent
 interface GeneralComponent {
-
     fun viewModel(): GeneralViewModel
 }
