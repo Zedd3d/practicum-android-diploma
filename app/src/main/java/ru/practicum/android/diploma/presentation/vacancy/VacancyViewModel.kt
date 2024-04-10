@@ -1,5 +1,6 @@
 package ru.practicum.android.diploma.presentation.vacancy
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,8 +19,10 @@ class VacancyViewModel @Inject constructor(
     private val favoritesInteractor: FavoritesInteractor
 ) : ViewModel() {
     private val state = MutableStateFlow(ViewState())
+    private var likeIndicator = MutableLiveData<Boolean>()
     private var vacancy: VacancyDetail? = null
     fun observeUi() = state.asStateFlow()
+    var isFav: Boolean = false
 
     init {
         viewModelScope.launch {
@@ -35,10 +38,24 @@ class VacancyViewModel @Inject constructor(
         viewModelScope.launch {
             state.value.vacancy?.let {
                 favoritesInteractor.insertDbVacanciToFavorite(
-                    it
+                    vacDb
                 )
             }
         }
+    }
+    fun deleteFavVac(vacDb: VacancyDetail) {
+        viewModelScope.launch {
+            state.value.vacancy?.let {
+                favoritesInteractor.deleteDbVacanciFromFavorite(vacDb.id)
+            }
+        }
+    }
+    fun isFavorite(id: String): Boolean {
+        viewModelScope.launch {
+            isFav = favoritesInteractor.isFavorite(id)
+            likeIndicator.postValue(isFav)
+        }
+        return isFav
     }
 }
 

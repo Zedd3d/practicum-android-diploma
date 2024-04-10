@@ -8,7 +8,7 @@ data class FavoriteVacancyDto(
     val salaryDto: String,
     val experienceDto: String,
     val descriptionDto: String,
-    val employerDto: String,
+    val employer: String,
     val keySkillsDto: String,
     val areaDto: String,
     val employmentDto: String,

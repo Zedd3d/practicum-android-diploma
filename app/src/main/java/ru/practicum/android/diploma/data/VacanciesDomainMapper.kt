@@ -29,7 +29,7 @@ fun SalaryDto.asDomain(): Salary = Salary(
 
 fun EmployerDto.asDomain(): Employer = Employer(
     id = id,
-    logoUrls = logoUrls?.original,
+    logoUrls = this.logoUrls?.original,
     name = name,
     trusted = trusted,
     vacanciesUrl = vacanciesUrl
@@ -47,7 +47,7 @@ fun VacancyDetailDto.asDomain(): VacancyDetail {
         salary = salary?.asDomain(),
         experience = this.experience?.name,
         description = description,
-        employer = employerDto?.asDomain(),
+        employer = employer?.asDomain(),
         keySkills = keySkills?.map { it.name },
         area = area?.name,
         employment = employment

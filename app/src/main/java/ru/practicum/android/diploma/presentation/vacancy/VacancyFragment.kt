@@ -53,10 +53,19 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
                     state.vacancy?.let {
                         updateVacancy(it)
                     }
+
                     binding.buttonAddToFavorites.setOnClickListener {
                         state.vacancy?.let {
-                            updateDb(it)
                             Log.d("Pan", "Положили в базу данных $it")
+                            if(viewModel.isFavorite(it.id)) {
+                                deleteDb(it)
+                                binding.buttonAddToFavorites.setImageResource(R.drawable.favorite_vacancy_drawable_empty)
+                                Log.d("Заполненая кнопка", viewModel.isFavorite(it.id).toString())
+                            } else {
+                                binding.buttonAddToFavorites.setImageResource(R.drawable.favorite_vacancy_drawable_fill)
+                                updateDb(it)
+                                Log.d("Не Заполненая кнопка", viewModel.isFavorite(it.id).toString())
+                            }
                         }
                     }
                 }
@@ -103,5 +112,7 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
     private fun updateDb(vacDb: VacancyDetail) {
         viewModel.setIndb()
     }
-
+    private fun deleteDb(vacDb: VacancyDetail) {
+        viewModel.deleteFavVac(vacDb)
+    }
 }
