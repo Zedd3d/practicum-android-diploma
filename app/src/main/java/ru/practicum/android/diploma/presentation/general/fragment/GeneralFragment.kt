@@ -121,10 +121,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     }
 
     private fun updateStatus(status: ResponseState, state: ViewState) {
-        binding.vacanciesRv.visibleOrGone(status == ResponseState.Content && !state.isLoading)
-        binding.src.visibleOrGone(status != ResponseState.Content && !state.isLoading)
-        binding.srcText.visibleOrGone(status != ResponseState.Content && !state.isLoading)
-        binding.foundCount.visibleOrGone(status == ResponseState.Content || status == ResponseState.Empty && !state.isLoading)
+        updatePreStatus(status, state)
         when (status) {
             ResponseState.Empty -> {
                 binding.srcText.setText(R.string.no_vacancies)
@@ -144,6 +141,16 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             }
         }
         updatePicture(status)
+    }
+
+    private fun updatePreStatus(status: ResponseState, state: ViewState) {
+        binding.vacanciesRv.visibleOrGone(status == ResponseState.Content && !state.isLoading)
+        binding.src.visibleOrGone(status != ResponseState.Content && !state.isLoading)
+        binding.srcText.visibleOrGone(status != ResponseState.Content && !state.isLoading)
+        binding.foundCount.visibleOrGone(
+            status == ResponseState.Content ||
+                status == ResponseState.Empty && !state.isLoading
+        )
     }
 
     private fun updatePicture(status: ResponseState) {
@@ -200,9 +207,9 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         }
     }
 
-    fun getNoun(count: Int): String{
+    fun getNoun(count: Int): String {
         val lastNumber = count.toString().last()
-        return when(lastNumber){
+        return when (lastNumber) {
             '1' -> "вакансия"
             '2' -> "вакансии"
             '3' -> "вакансии"
