@@ -23,7 +23,6 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
         private const val RADIUS = 8
     }
 
-
     private val vacancyId: String? by lazy { requireArguments().getString("id") }
 
     private var _binding: FragmentVacancyBinding? = null
