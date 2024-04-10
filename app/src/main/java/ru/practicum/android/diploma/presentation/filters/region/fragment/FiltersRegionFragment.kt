@@ -60,7 +60,7 @@ class FiltersRegionFragment : Fragment(R.layout.fragment_filters_region) {
     }
 
     private fun clickListener(filterValue: FilterValue) {
-
+        TODO()
     }
 
     private fun onBackPressed() {
@@ -68,9 +68,8 @@ class FiltersRegionFragment : Fragment(R.layout.fragment_filters_region) {
         findNavController().popBackStack()
     }
 
-
     private fun onChangeViewState(state: FiltersMainViewState) {
-
+        TODO()
     }
 
     override fun onDestroyView() {

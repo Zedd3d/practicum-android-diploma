@@ -7,7 +7,4 @@ import ru.practicum.android.diploma.presentation.general.viewmodel.GeneralViewMo
 interface GeneralComponent {
 
     fun viewModel(): GeneralViewModel
-
-
-
 }

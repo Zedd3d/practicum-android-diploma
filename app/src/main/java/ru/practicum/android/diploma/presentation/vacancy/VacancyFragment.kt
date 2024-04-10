@@ -100,7 +100,7 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
     }
 
     private fun updateDb(vacDb: VacancyDetail) {
-        viewModel.setIndb(vacDb)
+        viewModel.setIndb()
     }
 
 }

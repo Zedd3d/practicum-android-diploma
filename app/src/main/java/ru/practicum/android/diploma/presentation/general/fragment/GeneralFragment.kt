@@ -62,13 +62,11 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupVacancies()
-        binding.searchEditText.onTextChangeDebounce()
-            .debounce(DEBOUNCE)
+        binding.searchEditText.onTextChangeDebounce().debounce(DEBOUNCE)
             .onEach {
                 val query = it?.toString().orEmpty()
                 viewModel.search(query)
-            }
-            .launchIn(lifecycleScope)
+            }.launchIn(lifecycleScope)
 
         binding.searchEditText.onTextChange {
             setupIcon(it)
@@ -83,26 +81,20 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 viewModel.observeUi().collect { state ->
                     adapter.submitList(state.vacancies)
                     updateStatus(state.status, state)
-
                     binding.vacanciesProgress.visibleOrGone(state.vacanciesProgress)
-
                     binding.foundCountText.text = if (state.found != 0) {
                         getString(R.string.found_count, state.found.toString()).plus(" ").plus(getNoun(state.found))
                     } else {
                         getString(R.string.no_vacancies_lil)
                     }
                     binding.vacanciesLoading.visibleOrGone(state.isLoading)
-                    if (state.isLoading) {
-                        hideKeyBoard()
-                    }
+                    if (state.isLoading) hideKeyBoard()
                 }
             }
         }
-
         binding.vacanciesRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-
                 if (dy > 0) {
                     val pos = (binding.vacanciesRv.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
                     val itemsCount = adapter.itemCount
@@ -112,7 +104,6 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 }
             }
         })
-
         binding.filterImageView.setOnClickListener {
             findNavController().navigate(
                 R.id.action_generalFragment_to_filtersMainFragment

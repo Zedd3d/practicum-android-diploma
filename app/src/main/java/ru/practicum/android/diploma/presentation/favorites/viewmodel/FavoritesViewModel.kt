@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.favorites.api.FavoritesInteractor
 import ru.practicum.android.diploma.presentation.favorites.state.FavoritesState
 import ru.practicum.android.diploma.ui.SingleLiveEvent
-import ru.practicum.android.diploma.util.debounce
+import ru.practicum.android.diploma.util.debounceFun
 import java.io.IOException
 import javax.inject.Inject
 
@@ -18,7 +18,7 @@ class FavoritesViewModel @Inject constructor(
     private val state = MutableLiveData<FavoritesState>()
 
     private val onVacancyClickDebounce =
-        debounce<String>(CLICK_DELAY, viewModelScope, false) { vacancyId ->
+        debounceFun<String>(CLICK_DELAY, viewModelScope, false) { vacancyId ->
             showVacancy.postValue(vacancyId)
         }
 

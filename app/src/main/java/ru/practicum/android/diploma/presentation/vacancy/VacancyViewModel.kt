@@ -14,7 +14,7 @@ import javax.inject.Inject
 class VacancyViewModel @Inject constructor(
     private val vacancyId: String,
     private val repository: VacanciesRepository,
-    private val emailRepository: EmailRepository
+    private val emailRepository: EmailRepository,
     private val favoritesInteractor: FavoritesInteractor
 ) : ViewModel() {
     private val state = MutableStateFlow(ViewState())
@@ -31,7 +31,7 @@ class VacancyViewModel @Inject constructor(
         emailRepository.shareLink("https://ekaterinburg.hh.ru/vacancy/${vacancy!!.id}")
     }
 
-    fun setIndb(vacDb: VacancyDetail) {
+    fun setIndb() {
         viewModelScope.launch {
             state.value.vacancy?.let {
                 favoritesInteractor.insertDbVacanciToFavorite(

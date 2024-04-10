@@ -5,7 +5,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-fun <T> debounce(
+fun <T> debounceFun(
     delayMillis: Long,
     coroutineScope: CoroutineScope,
     useLastParam: Boolean,
