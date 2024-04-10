@@ -14,7 +14,7 @@ import javax.inject.Inject
 class VacancyViewModel @Inject constructor(
     private val vacancyId: String,
     private val repository: VacanciesRepository,
-    private val favoritesInteractor: FavoritesInteractor
+    private val favoritesInteractor: FavoritesInteractor,
 ) : ViewModel() {
     private val state = MutableStateFlow(ViewState())
     fun observeUi() = state.asStateFlow()
@@ -26,7 +26,7 @@ class VacancyViewModel @Inject constructor(
         }
     }
 
-    fun setIndb(vacDb: VacancyDetail) {
+    fun setIndb() {
         viewModelScope.launch {
             state.value.vacancy?.let {
                 favoritesInteractor.insertDbVacanciToFavorite(
