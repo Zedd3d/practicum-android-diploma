@@ -29,6 +29,7 @@ import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.general.VacanciesAdapter
 import ru.practicum.android.diploma.presentation.general.viewmodel.GeneralViewModel
 import ru.practicum.android.diploma.presentation.general.viewmodel.ResponseState
+import ru.practicum.android.diploma.presentation.general.viewmodel.ViewState
 import ru.practicum.android.diploma.util.onTextChange
 import ru.practicum.android.diploma.util.onTextChangeDebounce
 import ru.practicum.android.diploma.util.visibleOrGone
@@ -81,12 +82,12 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.observeUi().collect { state ->
                     adapter.submitList(state.vacancies)
-                    updateStatus(state.status)
+                    updateStatus(state.status, state)
 
                     binding.vacanciesProgress.visibleOrGone(state.vacanciesProgress)
 
                     binding.foundCountText.text = if (state.found != 0) {
-                        getString(R.string.found_count, state.found.toString())
+                        getString(R.string.found_count, state.found.toString()).plus(" ").plus(getNoun(state.found))
                     } else {
                         getString(R.string.no_vacancies_lil)
                     }
@@ -119,11 +120,11 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         }
     }
 
-    private fun updateStatus(status: ResponseState) {
-        binding.vacanciesRv.visibleOrGone(status == ResponseState.Content)
-        binding.src.visibleOrGone(status != ResponseState.Content)
-        binding.srcText.visibleOrGone(status != ResponseState.Content)
-        binding.foundCount.visibleOrGone(status == ResponseState.Content || status == ResponseState.Empty)
+    private fun updateStatus(status: ResponseState, state: ViewState) {
+        binding.vacanciesRv.visibleOrGone(status == ResponseState.Content && !state.isLoading)
+        binding.src.visibleOrGone(status != ResponseState.Content && !state.isLoading)
+        binding.srcText.visibleOrGone(status != ResponseState.Content && !state.isLoading)
+        binding.foundCount.visibleOrGone(status == ResponseState.Content || status == ResponseState.Empty && !state.isLoading)
         when (status) {
             ResponseState.Empty -> {
                 binding.srcText.setText(R.string.no_vacancies)
@@ -196,6 +197,17 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         } else {
             binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_search, 0)
             binding.clearButton.isEnabled = false
+        }
+    }
+
+    fun getNoun(count: Int): String{
+        val lastNumber = count.toString().last()
+        return when(lastNumber){
+            '1' -> "вакансия"
+            '2' -> "вакансии"
+            '3' -> "вакансии"
+            '4' -> "вакансии"
+            else -> "вакансий"
         }
     }
 
