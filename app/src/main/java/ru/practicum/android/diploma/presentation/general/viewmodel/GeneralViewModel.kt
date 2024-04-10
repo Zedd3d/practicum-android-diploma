@@ -1,11 +1,13 @@
 package ru.practicum.android.diploma.presentation.general.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import ru.practicum.android.diploma.domain.impl.VacanciesRepository
 import ru.practicum.android.diploma.domain.models.Vacancy
 import java.net.UnknownHostException
@@ -64,7 +66,8 @@ class GeneralViewModel @Inject constructor(
                 }
             } catch (e: UnknownHostException) {
                 state.update { it.copy(status = ResponseState.NetworkError) }
-            } catch (e: Throwable) {
+            } catch (e: HttpException) {
+                Log.d("NetError", e.code().toString())
                 state.update { it.copy(status = ResponseState.ServerError) }
             } finally {
                 isNextPageLoading = false
