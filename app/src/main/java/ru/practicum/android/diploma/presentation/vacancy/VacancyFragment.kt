@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -14,14 +13,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.noties.markwon.Markwon
 import io.noties.markwon.html.HtmlPlugin
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentVacancyBinding
-import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.util.SalaryUtil
@@ -54,6 +51,12 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
                     binding.fragmentNotifications.visibleOrGone(!state.isLoading)
                     state.vacancy?.let {
                         updateVacancy(it)
+                    }
+                    binding.buttonAddToFavorites.setOnClickListener {
+                        state.vacancy?.let {
+                            updateDb(it)
+                            Log.d("Pan", "Положили в базу данных $it")
+                        }
                     }
                 }
             }
@@ -95,4 +98,9 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
             }
         }
     }
+
+    private fun updateDb(vacDb: VacancyDetail) {
+        viewModel.setIndb(vacDb)
+    }
+
 }

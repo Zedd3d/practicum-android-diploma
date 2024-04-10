@@ -20,7 +20,7 @@
     <string name="no_vacancies_lil">Таких вакансий нет</string>
     <string name="no_internet">Нет интернета</string>
     <string name="server_error">Ошибка сервера</string>
-    <string name="found_count">Найдено %s вакансий</string>
+    <string name="found_count">Найдено %s </string>
     <string name="no_salary">Зарплата не указана</string>
     <string name="filter_workplace">Место работы</string>
     <string name="filter_settings">Настройки фильтрации</string>
@@ -40,4 +40,7 @@
     <string name="area">Регион</string>
     <string name="filter_country">Страна</string>
     <string name="filter_region">Регион</string>
+    <string name="NounOne">вакансия</string>
+    <string name="NounTwo">вакансии</string>
+    <string name="NounThree">вакансий</string>
 </resources>

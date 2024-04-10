@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.domain.favorites.api.FavoritesInteractor
 import ru.practicum.android.diploma.domain.impl.VacanciesRepository
 import ru.practicum.android.diploma.domain.models.VacancyDetail
 import javax.inject.Inject
@@ -14,6 +15,7 @@ class VacancyViewModel @Inject constructor(
     private val vacancyId: String,
     private val repository: VacanciesRepository,
     private val emailRepository: EmailRepository
+    private val favoritesInteractor: FavoritesInteractor
 ) : ViewModel() {
     private val state = MutableStateFlow(ViewState())
     private var vacancy: VacancyDetail? = null
@@ -27,6 +29,16 @@ class VacancyViewModel @Inject constructor(
     }
     fun shareVacancy() {
         emailRepository.shareLink("https://ekaterinburg.hh.ru/vacancy/${vacancy!!.id}")
+    }
+
+    fun setIndb(vacDb: VacancyDetail) {
+        viewModelScope.launch {
+            state.value.vacancy?.let {
+                favoritesInteractor.insertDbVacanciToFavorite(
+                    it
+                )
+            }
+        }
     }
 }
 
