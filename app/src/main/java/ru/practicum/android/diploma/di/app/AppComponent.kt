@@ -35,7 +35,6 @@ interface AppComponent {
     fun countryComponent(): CountryComponent
 
     fun regionComponent(): RegionComponent
-
     fun filtersMainComponent(): FiltersMainComponent
 
     @Component.Factory
