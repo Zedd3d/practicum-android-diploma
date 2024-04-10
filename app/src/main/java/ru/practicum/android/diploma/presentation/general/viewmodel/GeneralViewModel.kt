@@ -1,18 +1,22 @@
 package ru.practicum.android.diploma.presentation.general.viewmodel
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.practicum.android.diploma.domain.impl.VacanciesRepository
+import retrofit2.HttpException
+import ru.practicum.android.diploma.domain.impl.SearchVacanciesUseCase
 import ru.practicum.android.diploma.domain.models.Vacancy
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class GeneralViewModel @Inject constructor(
-    private val vacanciesRepository: VacanciesRepository
+    private val searchVacanciesUseCase: SearchVacanciesUseCase,
+    private val context: Context
 ) : ViewModel() {
 
     private val state = MutableStateFlow(ViewState())
@@ -29,6 +33,12 @@ class GeneralViewModel @Inject constructor(
     fun observeUi() = state.asStateFlow()
 
     fun search(query: String, page: Int = 0) {
+        if (!isOnline(context)) {
+            state.update {
+                it.copy(status = ResponseState.NetworkError)
+            }
+            return
+        }
         if (this.query == query) return
         this.query = query
 
@@ -44,7 +54,7 @@ class GeneralViewModel @Inject constructor(
     private fun makeSearchRequest(query: String, page: Int, isPagination: Boolean) {
         viewModelScope.launch {
             try {
-                val response = vacanciesRepository.search(query, page)
+                val response = searchVacanciesUseCase(query, page)
                 maxPages = response.pages
 
                 val vacancies = response.items
@@ -61,9 +71,8 @@ class GeneralViewModel @Inject constructor(
                         status = if (currentList.isNotEmpty()) ResponseState.Content else ResponseState.Empty,
                     )
                 }
-            } catch (e: UnknownHostException) {
-                state.update { it.copy(status = ResponseState.NetworkError) }
-            } catch (e: Throwable) {
+            } catch (e: HttpException) {
+                Log.d("NetError", e.code().toString())
                 state.update { it.copy(status = ResponseState.ServerError) }
             } finally {
                 isNextPageLoading = false
@@ -80,6 +89,14 @@ class GeneralViewModel @Inject constructor(
         state.update { it.copy(isLoading = false, vacanciesProgress = true) }
 
         makeSearchRequest(query, page, true)
+    }
+
+    private fun isOnline(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        return capabilities != null
     }
 
     fun onLastItemReached() {

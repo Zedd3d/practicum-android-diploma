@@ -1,10 +1,11 @@
-package ru.practicum.android.diploma.domain.impl
+package ru.practicum.android.diploma.data.general.impl
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.practicum.android.diploma.data.asDomain
 import ru.practicum.android.diploma.data.dto.Vacancies
 import ru.practicum.android.diploma.data.network.HeadHunterService
+import ru.practicum.android.diploma.domain.impl.VacanciesRepository
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.models.VacancyDetail
 import javax.inject.Inject

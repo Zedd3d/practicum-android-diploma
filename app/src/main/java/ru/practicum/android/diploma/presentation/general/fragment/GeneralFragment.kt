@@ -198,9 +198,8 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         }
     }
 
-    fun getNoun(count: Int): String {
-        val lastNumber = count.toString().last()
-        return when (lastNumber) {
+    private fun getNoun(count: Int): String {
+        return when (count.toString().last()) {
             '1' -> getString(R.string.NounOne)
             '2' -> getString(R.string.NounTwo)
             '3' -> getString(R.string.NounTwo)

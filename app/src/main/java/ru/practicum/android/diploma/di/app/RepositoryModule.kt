@@ -11,7 +11,7 @@ import ru.practicum.android.diploma.domain.favorites.api.FavoritesInteractor
 import ru.practicum.android.diploma.domain.favorites.api.FavoritesRepository
 import ru.practicum.android.diploma.domain.favorites.impl.FavoritesInteractorImpl
 import ru.practicum.android.diploma.domain.impl.VacanciesRepository
-import ru.practicum.android.diploma.domain.impl.VacanciesRepositoryImpl
+import ru.practicum.android.diploma.data.general.impl.VacanciesRepositoryImpl
 import ru.practicum.android.diploma.domain.sharedpreferences.api.SharedPreferencesRepository
 import ru.practicum.android.diploma.presentation.vacancy.EmailRepository
 import ru.practicum.android.diploma.presentation.vacancy.EmailRepositoryImpl
