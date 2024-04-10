@@ -20,7 +20,7 @@ class FavoritesInteractorImpl
         favoritesRepository.deleteDbVacanciFromFavorite(vacID)
     }
 
-    override suspend fun isFavorite(vacID: String) : Boolean {
-       return favoritesRepository.isFavorite(vacID)
+    override suspend fun isFavorite(vacID: String): Boolean {
+        return favoritesRepository.isFavorite(vacID)
     }
 }
