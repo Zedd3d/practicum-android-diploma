@@ -1,5 +1,8 @@
 package ru.practicum.android.diploma.presentation.general.viewmodel
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,13 +11,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import ru.practicum.android.diploma.domain.impl.VacanciesRepository
+import ru.practicum.android.diploma.domain.impl.SearchVacanciesUseCase
 import ru.practicum.android.diploma.domain.models.Vacancy
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class GeneralViewModel @Inject constructor(
-    private val vacanciesRepository: VacanciesRepository
+    private val searchVacanciesUseCase: SearchVacanciesUseCase, private val context: Context
 ) : ViewModel() {
 
     private val state = MutableStateFlow(ViewState())
@@ -32,6 +34,12 @@ class GeneralViewModel @Inject constructor(
 
 
     fun search(query: String, page: Int = 0) {
+        if (isOnline(context)) {
+            state.update {
+                it.copy(status = ResponseState.NetworkError)
+            }
+            return
+        }
         if (this.query == query) return
         this.query = query
 
@@ -47,7 +55,7 @@ class GeneralViewModel @Inject constructor(
     private fun makeSearchRequest(query: String, page: Int, isPagination: Boolean) {
         viewModelScope.launch {
             try {
-                val response = vacanciesRepository.search(query, page)
+                val response = searchVacanciesUseCase(query, page)
                 maxPages = response.pages
 
                 val vacancies = response.items
@@ -64,8 +72,6 @@ class GeneralViewModel @Inject constructor(
                         status = if (currentList.isNotEmpty()) ResponseState.Content else ResponseState.Empty,
                     )
                 }
-            } catch (e: UnknownHostException) {
-                state.update { it.copy(status = ResponseState.NetworkError) }
             } catch (e: HttpException) {
                 Log.d("NetError", e.code().toString())
                 state.update { it.copy(status = ResponseState.ServerError) }
@@ -84,6 +90,26 @@ class GeneralViewModel @Inject constructor(
         state.update { it.copy(isLoading = false, vacanciesProgress = true) }
 
         makeSearchRequest(query, page, true)
+    }
+
+    private fun isOnline(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                return true
+            }
+        }
+        return false
     }
 
     fun onLastItemReached() {
