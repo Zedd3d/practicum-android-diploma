@@ -29,7 +29,7 @@ class FavoritesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun isFavorite(vacID: String): Boolean {
-        return appDatabase.favoriteDao().isVacancyFromFavorite(vacID).isNotEmpty()
+        return appDatabase.favoriteDao().elementById(vacID).isNotEmpty()
     }
 
     private fun convertFromVacancyEntity(vacancy: List<FavoritesVacanciesEntity>): List<FavoriteDbModel> {
