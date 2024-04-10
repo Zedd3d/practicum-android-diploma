@@ -18,6 +18,12 @@ import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.util.SalaryUtil
 
 class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
+
+    companion object {
+        private const val RADIUS = 8
+    }
+
+
     private val vacancyId: String? by lazy { requireArguments().getString("id") }
 
     private var _binding: FragmentVacancyBinding? = null
@@ -61,38 +67,34 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
 
     private fun render(state: ViewState) {
         val vacancy = state.vacancy
-        with(binding) {
-            jobName.text = vacancy?.name ?: ""
-            vacancy?.salary?.let {
-                jobSalary.text = SalaryUtil.formatSalary(requireContext(), vacancy.salary)
-            }
 
-            vacancy?.employer?.let {
-                Glide.with(requireContext())
-                    .load(vacancy.employer.logoUrls) // false
-                    .placeholder(R.drawable.placeholder_company_icon)
-                    .fitCenter()
-                    .transform(RoundedCorners(8))
-                    .into(ivCompany)
-            }
+        binding.jobName.text = vacancy?.name ?: ""
+        vacancy?.salary?.let {
+            binding.jobSalary.text = SalaryUtil.formatSalary(requireContext(), vacancy.salary)
+        }
+        binding.companyName.text = vacancy?.area ?: ""
+        binding.neededExperience.text = vacancy?.experience ?: ""
+        binding.jobTime.text = vacancy?.employment ?: ""
+        vacancy?.employer?.let {
+            Glide.with(requireContext())
+                .load(vacancy.employer.logoUrls) // false
+                .placeholder(R.drawable.placeholder_company_icon)
+                .fitCenter()
+                .transform(RoundedCorners(RADIUS))
+                .into(binding.ivCompany)
+        }
 
-            companyName.text = vacancy?.area ?: ""
-            neededExperience.text = vacancy?.experience ?: ""
-            jobTime.text = vacancy?.employment ?: ""
+        vacancy?.description?.let {
+            val markwon = Markwon.builder(requireContext())
+                .usePlugin(HtmlPlugin.create())
+                .build()
+            markwon.setMarkdown(binding.vacancyDescription, it)
+        }
 
-            vacancy?.description?.let {
-                val markwon = Markwon.builder(requireContext())
-                    .usePlugin(HtmlPlugin.create())
-                    .build()
-                markwon.setMarkdown(vacancyDescription, it)
-            }
-
-            if (state.isFavorite) {
-                binding.buttonAddToFavorites.setImageResource(R.drawable.favorite_vacancy_drawable_fill)
-            } else {
-                binding.buttonAddToFavorites.setImageResource(R.drawable.favorite_vacancy_drawable_empty)
-            }
+        if (state.isFavorite) {
+            binding.buttonAddToFavorites.setImageResource(R.drawable.favorite_vacancy_drawable_fill)
+        } else {
+            binding.buttonAddToFavorites.setImageResource(R.drawable.favorite_vacancy_drawable_empty)
         }
     }
-
 }
