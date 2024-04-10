@@ -22,7 +22,7 @@ class FiltersCountryFragment : Fragment(R.layout.fragment_filters_country) {
 
     private val viewModel by viewModels<FiltersCountryViewModel> {
         Factory {
-            App.appComponent.generalComponent().viewModel()
+            (requireContext().applicationContext as App).appComponent.generalComponent().viewModel()
         }
     }
 

@@ -40,7 +40,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
 
     private val viewModel by viewModels<GeneralViewModel> {
         Factory {
-            App.appComponent.generalComponent().viewModel()
+            (requireContext().applicationContext as App).appComponent.generalComponent().viewModel()
         }
     }
 
