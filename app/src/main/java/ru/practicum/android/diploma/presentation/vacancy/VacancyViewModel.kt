@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.favorites.api.FavoritesInteractor
 import ru.practicum.android.diploma.domain.impl.VacanciesRepository
-import ru.practicum.android.diploma.domain.favorites.models.FavoriteDbModel
 import ru.practicum.android.diploma.domain.models.VacancyDetail
 import javax.inject.Inject
 
@@ -29,19 +28,11 @@ class VacancyViewModel @Inject constructor(
 
     fun setIndb(vacDb: VacancyDetail) {
         viewModelScope.launch {
-            favoritesInteractor.insertDbVacanciToFavorite(
-                vacanci = FavoriteDbModel(
-                    idDto = vacDb.id,
-                    nameDto = vacDb.name,
-                    salaryDto = vacDb.salary.toString(),
-                    experienceDto = vacDb.experience.toString(),
-                    descriptionDto = vacDb.description.toString(),
-                    employerDto = vacDb.employer.toString(),
-                    keySkillsDto = vacDb.keySkills.toString(),
-                    areaDto = vacDb.area.toString(),
-                    employmentDto = vacDb.employment.toString(),
+            state.value.vacancy?.let {
+                favoritesInteractor.insertDbVacanciToFavorite(
+                    it
                 )
-            )
+            }
         }
     }
 }
