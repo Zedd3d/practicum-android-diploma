@@ -15,4 +15,12 @@ class FavoritesInteractorImpl
     override suspend fun insertDbVacanciToFavorite(vacanci: FavoriteDbModel) {
         favoritesRepository.insertDbVacanciToFavorite(vacanci)
     }
+
+    override suspend fun deleteDbVacanciFromFavorite(vacID: String) {
+        favoritesRepository.deleteDbVacanciFromFavorite(vacID)
+    }
+
+    override suspend fun isFavorite(vacID: String) : Boolean {
+        favoritesRepository.isFavorite(vacID)
+    }
 }

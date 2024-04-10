@@ -7,5 +7,6 @@ interface FavoritesRepository {
     fun favoritesVacancies(): Flow<List<FavoriteDbModel>>
     suspend fun deleteDbVacanciFromFavorite(vacID: String)
     suspend fun insertDbVacanciToFavorite(vacanci: FavoriteDbModel)
+    suspend fun isFavorite(vacID: String) : Boolean
 
 }

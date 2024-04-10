@@ -17,7 +17,7 @@ interface FavoritesVacancyDao {
     @Query("SELECT * FROM favorites_vacancies_table  ORDER BY inDbTime DESC")
     suspend fun getVacancyFromFavorite(): List<FavoritesVacanciesEntity>
 
-    /*@Query("UPDATE favorites_vacancies_table SET isFavorite = 0 WHERE id = :vacancyID")
-    suspend fun updateVacancyFromFavorite(vacancyID: String)*/
+    @Query("SELECT * FROM favorites_vacancies_table WHERE  id = :vacancyID")
+    suspend fun isVacancyFromFavorite(vacancyID: String)
 
 }
