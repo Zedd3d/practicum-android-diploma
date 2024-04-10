@@ -7,8 +7,4 @@
         <item name="android:drawableTint">@color/BlackUniversal_yp</item>
     </style>
 
-    <style name="dayNightTextColor">
-        <item name="android:textColor">@color/WhiteUniversal_yp</item>
-    </style>
-
 </resources>

@@ -42,7 +42,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/card"
         app:layout_constraintTop_toTopOf="parent"
-        style="@style/dayNightTextColor"
+        android:textColor="@color/BlackDay_WhiteNight"
         tools:text="Разработчик на С++ в команду внутренних сервисов, Москва" />
 
     <TextView
@@ -55,7 +55,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/card"
         app:layout_constraintTop_toBottomOf="@id/tv_vacancy_name"
-        style="@style/dayNightTextColor"
+        android:textColor="@color/BlackDay_WhiteNight"
         tools:text="Авто.ру" />
 
     <TextView
@@ -68,7 +68,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/card"
         app:layout_constraintTop_toBottomOf="@id/department"
-        style="@style/dayNightTextColor"
+        android:textColor="@color/BlackDay_WhiteNight"
         tools:text="от 40 000 до 80 000 ₽" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
