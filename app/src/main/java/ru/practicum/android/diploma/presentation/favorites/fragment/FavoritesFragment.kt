@@ -128,7 +128,6 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
         }
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
