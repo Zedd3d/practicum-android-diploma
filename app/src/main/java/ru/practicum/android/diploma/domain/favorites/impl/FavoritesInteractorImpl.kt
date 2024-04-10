@@ -21,6 +21,6 @@ class FavoritesInteractorImpl
     }
 
     override suspend fun isFavorite(vacID: String) : Boolean {
-        favoritesRepository.isFavorite(vacID)
+       return favoritesRepository.isFavorite(vacID)
     }
 }
