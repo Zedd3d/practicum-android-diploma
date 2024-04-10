@@ -16,7 +16,7 @@ class VacanciesRepositoryImpl @Inject constructor(
     private val headHunterService: HeadHunterService
 ) : VacanciesRepository {
 
-    private lateinit var vacanciesList: List<Vacancy>
+    private var vacanciesList = emptyList<Vacancy>()
     private var found: Int = 0
     override suspend fun search(text: String, page: Int): Vacancies {
         return withContext(Dispatchers.IO) {

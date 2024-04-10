@@ -22,7 +22,6 @@ class FiltersAreaAdapter(
     }
 
     override fun onBindViewHolder(holder: FiltersAreaViewHolder, position: Int) {
-
         holder.itemView.setOnClickListener {
             clickListener.invoke(listFilterValues[position])
         }
@@ -30,4 +29,3 @@ class FiltersAreaAdapter(
         holder.bind(item)
     }
 }
-
