@@ -11,4 +11,3 @@ sealed interface FavoritesState {
 
     data object Error : FavoritesState
 }
-

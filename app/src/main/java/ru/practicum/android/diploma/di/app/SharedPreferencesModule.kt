@@ -6,9 +6,10 @@ import ru.practicum.android.diploma.domain.sharedpreferences.api.SharedPreferenc
 import ru.practicum.android.diploma.domain.sharedpreferences.impl.SharedPreferencesInteractorImpl
 
 @Module
-object TemporaryInteractorModule {
+object SharedPreferencesModule {
     @Provides
-    fun providesSharedPreferencesInteractor(spinteractor: SharedPreferencesInteractorImpl): SharedPreferencesInteractor =
-        spinteractor
+    fun providesSharedPreferencesInteractor(
+        spinteractor: SharedPreferencesInteractorImpl
+    ): SharedPreferencesInteractor = spinteractor
 
 }

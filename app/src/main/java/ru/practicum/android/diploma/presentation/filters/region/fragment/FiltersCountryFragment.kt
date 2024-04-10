@@ -58,7 +58,7 @@ class FiltersCountryFragment : Fragment(R.layout.fragment_filters_country) {
     }
 
     private fun clickListener(filterValue: FilterValue) {
-
+        TODO()
     }
 
     private fun onBackPressed() {
@@ -67,7 +67,7 @@ class FiltersCountryFragment : Fragment(R.layout.fragment_filters_country) {
     }
 
     private fun onChangeViewState(state: FiltersMainViewState) {
-
+        TODO()
     }
 
     override fun onDestroyView() {

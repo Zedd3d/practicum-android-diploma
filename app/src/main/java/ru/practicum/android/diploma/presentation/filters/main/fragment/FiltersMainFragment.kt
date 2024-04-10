@@ -106,7 +106,6 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
         binding.btnAccept.isVisible = false
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
