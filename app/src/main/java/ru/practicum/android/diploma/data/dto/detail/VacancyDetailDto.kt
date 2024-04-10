@@ -10,7 +10,7 @@ data class VacancyDetailDto(
     val salary: SalaryDto?,
     val experience: ExperienceDto?,
     val description: String?,
-    val employerDto: EmployerDto?,
+    val employer: EmployerDto?,
     val keySkills: List<KeySkillDto>?,
     val area: VacancyAreaDto?,
     val employment: EmploymentDto?,
