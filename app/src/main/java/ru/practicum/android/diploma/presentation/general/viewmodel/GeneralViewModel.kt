@@ -2,7 +2,6 @@ package ru.practicum.android.diploma.presentation.general.viewmodel
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,7 +15,8 @@ import ru.practicum.android.diploma.domain.models.Vacancy
 import javax.inject.Inject
 
 class GeneralViewModel @Inject constructor(
-    private val searchVacanciesUseCase: SearchVacanciesUseCase, private val context: Context
+    private val searchVacanciesUseCase: SearchVacanciesUseCase,
+    private val context: Context
 ) : ViewModel() {
 
     private val state = MutableStateFlow(ViewState())
