@@ -1,34 +1,50 @@
 package ru.practicum.android.diploma.data.converters
 
-import ru.practicum.android.diploma.data.entity.FavoritesVacanciesEntity
-import ru.practicum.android.diploma.domain.favorites.models.FavoriteDbModel
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import ru.practicum.android.diploma.data.favorites.entity.FavoritesVacanciesEntity
+import ru.practicum.android.diploma.domain.models.Salary
+import ru.practicum.android.diploma.domain.models.Vacancy
+import ru.practicum.android.diploma.domain.models.VacancyDetail
 
 object VacancyDbConvertor {
-    fun map(vacancy: FavoriteDbModel): FavoritesVacanciesEntity {
+    fun map(vacancy: VacancyDetail): FavoritesVacanciesEntity {
+        val gson = Gson()
         return FavoritesVacanciesEntity(
-            vacancy.idDto,
-            vacancy.nameDto,
-            vacancy.salaryDto,
-            vacancy.experienceDto,
-            vacancy.descriptionDto,
-            vacancy.employerDto,
-            vacancy.keySkillsDto,
-            vacancy.areaDto,
-            vacancy.employmentDto
+            vacancy.id,
+            vacancy.employer?.logoUrls ?: "",
+            vacancy.employer?.name ?: "",
+            vacancy.name,
+            vacancy.area ?: "",
+            gson.toJson(vacancy),
+            vacancy.salary?.currency ?: "",
+            vacancy.salary?.from ?: 0,
+            vacancy.salary?.to ?: 0,
+            vacancy.salary?.gross ?: false
         )
     }
 
-    fun map(vacancy: FavoritesVacanciesEntity): FavoriteDbModel {
-        return FavoriteDbModel(
+    fun mapToVacancy(vacancy: FavoritesVacanciesEntity): Vacancy {
+        return Vacancy(
             vacancy.id,
-            vacancy.name,
-            vacancy.salary,
-            vacancy.experience,
-            vacancy.description,
+            vacancy.img,
             vacancy.employer,
-            vacancy.keySkills,
-            vacancy.area,
-            vacancy.employment
+            vacancy.name,
+            Salary(
+                vacancy.salaryCurrency,
+                vacancy.salaryFrom,
+                vacancy.salaryGross,
+                vacancy.salaryTo
+            ),
+            vacancy.area
+        )
+    }
+
+    fun mapToVacancyDetail(vacancy: FavoritesVacanciesEntity): VacancyDetail {
+        val gson = Gson()
+        return gson.fromJson<VacancyDetail>(
+            vacancy.vacancyDetailData,
+            object : TypeToken<VacancyDetail>() {}.type
         )
     }
 }

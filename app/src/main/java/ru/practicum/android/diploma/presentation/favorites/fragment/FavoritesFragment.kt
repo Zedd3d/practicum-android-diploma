@@ -9,15 +9,24 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentFavoritesBinding
+import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.presentation.Factory
+import ru.practicum.android.diploma.presentation.favorites.state.FavoritesState
 import ru.practicum.android.diploma.presentation.favorites.viewmodel.FavoritesViewModel
 import ru.practicum.android.diploma.presentation.general.VacanciesAdapter
 
 class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
+
+    companion object {
+        const val VACANCY_DATA = "id"
+        fun createArgs(vacancyId: String): Bundle =
+            bundleOf(VACANCY_DATA to vacancyId)
+    }
 
     private val viewModel by viewModels<FavoritesViewModel> {
         Factory {
@@ -30,8 +39,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
 
     private val adapter by lazy {
         VacanciesAdapter() {
-            val params = bundleOf("id" to it)
-            findNavController().navigate(R.id.action_generalFragment_to_vacancyFragment, params)
+            viewModel.showDetails(it)
         }
     }
 
@@ -42,6 +50,58 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.rvFavorite.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvFavorite.adapter = adapter
+
+        viewModel.getState().observe(viewLifecycleOwner) { state ->
+            showListState(state)
+        }
+
+        viewModel.getShowPlayerTrigger().observe(viewLifecycleOwner) { vacancy ->
+            showDetails(vacancy)
+        }
+    }
+
+    private fun showDetails(vacancyId: String) {
+
+        findNavController().navigate(
+            R.id.action_favoritesFragment_to_vacancyFragment,
+            createArgs(vacancyId)
+        )
+    }
+
+    private fun showListState(state: FavoritesState) {
+
+        binding.ivFavorite.visibility = when (state) {
+            is FavoritesState.Empty -> View.VISIBLE
+            else -> View.GONE
+        }
+
+        binding.tvFavorite.visibility = when (state) {
+            is FavoritesState.Empty -> View.VISIBLE
+            else -> View.GONE
+        }
+
+        binding.rvFavorite.visibility = when (state) {
+            is FavoritesState.Content -> {
+                adapter.submitList(state.favoritesVacancies)
+                View.VISIBLE
+            }
+
+            else -> {
+                View.GONE
+            }
+        }
+
+        binding.pbLoading.visibility = when (state) {
+            is FavoritesState.Loading -> View.VISIBLE
+            else -> View.GONE
+        }
+
+        if (binding.rvFavorite.visibility == View.GONE && !(state is FavoritesState.Content)) {
+            adapter.submitList(emptyList<Vacancy>())
+        }
     }
 
     override fun onDestroyView() {
@@ -51,6 +111,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
 
     override fun onResume() {
         super.onResume()
+        viewModel.loadFavorites()
         activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = true
     }
 }
