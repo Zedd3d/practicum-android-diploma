@@ -92,7 +92,6 @@ class GeneralViewModel @Inject constructor(
 
         isNextPageLoading = true
         state.update { it.copy(isLoading = false, vacanciesProgress = true) }
-
         makeSearchRequest(query, page, true)
     }
 
