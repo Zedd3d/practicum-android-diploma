@@ -210,11 +210,11 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     fun getNoun(count: Int): String {
         val lastNumber = count.toString().last()
         return when (lastNumber) {
-            '1' -> "вакансия"
-            '2' -> "вакансии"
-            '3' -> "вакансии"
-            '4' -> "вакансии"
-            else -> "вакансий"
+            '1' -> getString(R.string.NounOne)
+            '2' -> getString(R.string.NounTwo)
+            '3' -> getString(R.string.NounTwo)
+            '4' -> getString(R.string.NounTwo)
+            else -> getString(R.string.NounThree)
         }
     }
 
