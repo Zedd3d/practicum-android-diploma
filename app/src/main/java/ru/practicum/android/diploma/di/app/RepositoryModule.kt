@@ -27,6 +27,7 @@ object RepositoryModule {
 
     @Provides
     fun providesEmailRepository(impl: EmailRepositoryImpl): EmailRepository = impl
+
     @Provides
     fun providesFavoritiesInteractor(impl: FavoritesInteractorImpl): FavoritesInteractor = impl
 
