@@ -33,12 +33,6 @@ class GeneralViewModel @Inject constructor(
     fun observeUi() = state.asStateFlow()
 
     fun search(query: String, page: Int = 0) {
-        if (!isOnline(context)) {
-            state.update {
-                it.copy(status = ResponseState.NetworkError)
-            }
-            return
-        }
         if (this.query == query) return
         this.query = query
 
@@ -47,8 +41,19 @@ class GeneralViewModel @Inject constructor(
             return
         }
 
-        state.update { it.copy(isLoading = true, vacanciesProgress = false) }
-        makeSearchRequest(query, page, false)
+        when (isOnline(context)) {
+            true -> {
+                state.update { it.copy(isLoading = true, vacanciesProgress = false) }
+                makeSearchRequest(query, page, false)
+            }
+
+            else -> {
+                state.update {
+                    it.copy(status = ResponseState.NetworkError)
+                }
+            }
+        }
+
     }
 
     private fun makeSearchRequest(query: String, page: Int, isPagination: Boolean) {
@@ -87,7 +92,6 @@ class GeneralViewModel @Inject constructor(
 
         isNextPageLoading = true
         state.update { it.copy(isLoading = false, vacanciesProgress = true) }
-
         makeSearchRequest(query, page, true)
     }
 
