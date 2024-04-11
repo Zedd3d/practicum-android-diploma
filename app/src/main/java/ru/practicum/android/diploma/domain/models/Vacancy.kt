@@ -6,6 +6,5 @@ data class Vacancy(
     val employer: String,
     val name: String,
     val salary: Salary?,
-    val area: String?,
-    val contacts: Contacts
+    val area: String?
 )

@@ -21,8 +21,7 @@ fun VacancyDto.asDomain(): Vacancy = Vacancy(
     employer = this.employer.name,
     name = name,
     salary = salary?.asDomain(),
-    area = this.area.name,
-    contacts = this.contacts.asDomain()
+    area = this.area.name
 )
 
 fun SalaryDto.asDomain(): Salary = Salary(

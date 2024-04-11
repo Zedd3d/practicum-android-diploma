@@ -53,7 +53,6 @@ class GeneralViewModel @Inject constructor(
                 }
             }
         }
-
     }
 
     private fun makeSearchRequest(query: String, page: Int, isPagination: Boolean) {
