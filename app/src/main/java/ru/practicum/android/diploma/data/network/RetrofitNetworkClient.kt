@@ -2,10 +2,7 @@ package ru.practicum.android.diploma.data.network
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.util.Log
-import kotlinx.coroutines.flow.update
 import retrofit2.HttpException
-import ru.practicum.android.diploma.domain.general.models.ResponseState
 import java.io.IOException
 import javax.inject.Inject
 
@@ -16,6 +13,7 @@ class RetrofitNetworkClient @Inject constructor(
     override suspend fun doRequest(query: Map<String, String>): Response {
         if (!isOnline(context)) return Response().apply { resultCode = -1 }
 
+        @Suppress("SwallowedException")
         return try {
             val resp = headHunterService.vacancies(query)
             resp.apply { resultCode = 200 }
