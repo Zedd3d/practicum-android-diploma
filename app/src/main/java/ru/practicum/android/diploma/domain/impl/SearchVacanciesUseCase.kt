@@ -1,6 +1,5 @@
 package ru.practicum.android.diploma.domain.impl
 
-import ru.practicum.android.diploma.data.dto.Vacancies
 import ru.practicum.android.diploma.domain.general.models.ResponseState
 
 interface SearchVacanciesUseCase {

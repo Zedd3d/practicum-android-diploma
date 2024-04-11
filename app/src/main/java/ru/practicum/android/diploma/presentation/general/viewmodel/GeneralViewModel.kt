@@ -1,17 +1,10 @@
 package ru.practicum.android.diploma.presentation.general.viewmodel
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
 import ru.practicum.android.diploma.domain.general.models.ResponseState
 import ru.practicum.android.diploma.domain.impl.SearchVacanciesUseCase
 import ru.practicum.android.diploma.domain.models.Vacancy
@@ -61,7 +54,13 @@ class GeneralViewModel @Inject constructor(
                         response.listVacancy
                     }
 
-                    state.postValue(ResponseState.ContentVacanciesList(currentListVacancies, response.found, response.pages))
+                    state.postValue(
+                        ResponseState.ContentVacanciesList(
+                            currentListVacancies,
+                            response.found,
+                            response.pages
+                        )
+                    )
                 }
 
                 is ResponseState.Loading -> state.postValue(ResponseState.Loading(isPagination))

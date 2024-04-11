@@ -69,6 +69,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             override fun afterTextChanged(p0: Editable?) {
                 setupIcon(p0.toString())
             }
+
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         })
@@ -151,7 +152,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     }
 
     private fun updatePreStatus(state: ResponseState) {
-        binding.vacanciesRv.isVisible = when(state){
+        binding.vacanciesRv.isVisible = when (state) {
             is ResponseState.Loading -> state.isPagination
             is ResponseState.ContentVacanciesList -> true
             else -> false

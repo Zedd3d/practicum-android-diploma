@@ -1,19 +1,11 @@
 package ru.practicum.android.diploma.data.general.impl
 
-import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import retrofit2.HttpException
 import ru.practicum.android.diploma.data.asDomain
-import ru.practicum.android.diploma.data.dto.Vacancies
 import ru.practicum.android.diploma.data.dto.VacanciesResponse
 import ru.practicum.android.diploma.data.dto.detail.VacancyDetailDto
-import ru.practicum.android.diploma.data.network.HeadHunterService
 import ru.practicum.android.diploma.data.network.RetrofitNetworkClient
 import ru.practicum.android.diploma.domain.general.models.ResponseState
 import ru.practicum.android.diploma.domain.impl.VacanciesRepository
-import ru.practicum.android.diploma.domain.models.Vacancy
-import ru.practicum.android.diploma.domain.models.VacancyDetail
 import javax.inject.Inject
 
 const val PAGINATION_COUNT_PAGES = "20"
