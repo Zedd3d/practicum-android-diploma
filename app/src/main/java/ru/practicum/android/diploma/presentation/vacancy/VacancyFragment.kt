@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -14,7 +15,9 @@ import io.noties.markwon.html.HtmlPlugin
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentVacancyBinding
+import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.presentation.Factory
+import ru.practicum.android.diploma.presentation.vacancy.models.VacancyViewState
 import ru.practicum.android.diploma.util.SalaryUtil
 
 class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
@@ -64,28 +67,47 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
         _binding = null
     }
 
-    private fun render(state: ViewState) {
-        val vacancy = state.vacancy
+    private fun render(state: VacancyViewState) {
+        binding.fragmentNotifications.isVisible = when (state) {
+            is VacancyViewState.Content -> true
+            else -> false
+        }
+        binding.clPlaceholderTrouble.isVisible = when (state) {
+            is VacancyViewState.ServerError -> true
+            else -> false
+        }
+        binding.progressBar.isVisible = when (state) {
+            is VacancyViewState.Loading -> true
+            else -> false
+        }
 
+        when (state) {
+            is VacancyViewState.Content -> {
+                renderVacancyDetail(state.vacancyDetail)
+
+                if (state.isFavorite) {
+                    binding.buttonAddToFavorites.setImageResource(R.drawable.favorite_vacancy_drawable_fill)
+                } else {
+                    binding.buttonAddToFavorites.setImageResource(R.drawable.favorite_vacancy_drawable_empty)
+                }
+            }
+
+            else -> null
+        }
+    }
+
+    private fun renderVacancyDetail(vacancy: VacancyDetail) {
         binding.jobName.text = vacancy?.name ?: ""
         vacancy?.salary?.let {
             binding.jobSalary.text = SalaryUtil.formatSalary(requireContext(), vacancy.salary)
         }
-        binding.companyName.text = vacancy?.area ?: ""
+        binding.companyName.text = vacancy?.employer?.name ?: ""
         binding.neededExperience.text = vacancy?.experience ?: ""
+        binding.companyCity.text = vacancy?.area ?: ""
         binding.jobTime.text = vacancy?.employment ?: ""
-        binding.contactPersonData.text = vacancy?.contacts?.name ?: ""
-        binding.contactPersonEmailData.text = vacancy?.contacts?.email ?: ""
-        // if(vacancy?.contacts?.phones?.comment.isNullOrBlank) {
-        //      binding.contactCommentData.text.setText("")
-        //      binding.contactComment.visibility = View.GONE
-        // else {
-        //      binding.contactCommentData.text = vacancy?.contacts?.phones?.comment
-        //      binding.contactComment.visibility = View.VISIBLE
-        //}
         vacancy?.employer?.let {
             Glide.with(requireContext())
-                .load(vacancy.employer.logoUrls)
+                .load(vacancy.employer.logoUrls) // false
                 .placeholder(R.drawable.placeholder_company_icon)
                 .fitCenter()
                 .transform(RoundedCorners(RADIUS))
@@ -97,12 +119,6 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
                 .usePlugin(HtmlPlugin.create())
                 .build()
             markwon.setMarkdown(binding.vacancyDescription, it)
-        }
-
-        if (state.isFavorite) {
-            binding.buttonAddToFavorites.setImageResource(R.drawable.favorite_vacancy_drawable_fill)
-        } else {
-            binding.buttonAddToFavorites.setImageResource(R.drawable.favorite_vacancy_drawable_empty)
         }
     }
 }

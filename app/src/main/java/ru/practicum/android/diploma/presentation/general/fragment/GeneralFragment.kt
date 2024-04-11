@@ -59,26 +59,11 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupVacancies()
-        binding.searchEditText.onTextChangeDebounce().debounce(DEBOUNCE)
-            .onEach {
-                val query = it?.toString().orEmpty()
-                viewModel.search(query)
-            }.launchIn(lifecycleScope)
+        setListeners()
+        setObservers()
+    }
 
-        binding.searchEditText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-                setupIcon(p0.toString())
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-        })
-
-        binding.clearButton.setOnClickListener {
-            binding.searchEditText.text = null
-        }
-
-
+    private fun setObservers() {
         viewModel.observeUi().observe(viewLifecycleOwner) { state ->
             if (state is ResponseState.ContentVacanciesList) {
                 adapter.submitList(state.listVacancy)
@@ -107,6 +92,27 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             }
             if (state is ResponseState.Loading) hideKeyBoard()
 
+        }
+    }
+
+    private fun setListeners() {
+        binding.searchEditText.onTextChangeDebounce().debounce(DEBOUNCE)
+            .onEach {
+                val query = it?.toString().orEmpty()
+                viewModel.search(query)
+            }.launchIn(lifecycleScope)
+
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                setupIcon(p0.toString())
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+        })
+
+        binding.clearButton.setOnClickListener {
+            binding.searchEditText.text = null
         }
 
         binding.vacanciesRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {

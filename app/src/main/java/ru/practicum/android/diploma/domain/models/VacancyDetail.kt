@@ -10,5 +10,5 @@ data class VacancyDetail(
     val keySkills: List<String>?,
     val area: String?,
     val employment: String?,
-    val contacts: Contacts?
+    val alternateUrl: String?
 )
