@@ -44,14 +44,14 @@ class VacanciesRepositoryImpl @Inject constructor(
 
     override suspend fun searchById(id: String): ResponseState {
         val response = retrofitNetworkClient.doRequestById(id)
-        return if (
-            (@Suppress("MagicNumber")
-            response.resultCode == 200) && (response is VacancyDetailDto)
+        @Suppress("MagicNumber")
+        return if
+                   (
+            response.resultCode == 200 && response is VacancyDetailDto
         ) {
             ResponseState.ContentVacancyDetail(response.asDomain())
         } else if (
-            (@Suppress("MagicNumber")
-            response.resultCode == 400)
+            response.resultCode == 400
         ) {
             ResponseState.ServerError
         } else {
