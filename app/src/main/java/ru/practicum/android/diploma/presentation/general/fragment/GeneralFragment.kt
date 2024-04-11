@@ -2,6 +2,8 @@ package ru.practicum.android.diploma.presentation.general.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +12,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +21,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentGeneralBinding
@@ -29,8 +28,6 @@ import ru.practicum.android.diploma.domain.general.models.ResponseState
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.general.VacanciesAdapter
 import ru.practicum.android.diploma.presentation.general.viewmodel.GeneralViewModel
-import ru.practicum.android.diploma.presentation.general.viewmodel.ViewState
-import ru.practicum.android.diploma.util.onTextChange
 import ru.practicum.android.diploma.util.onTextChangeDebounce
 import ru.practicum.android.diploma.util.visibleOrGone
 
@@ -68,9 +65,13 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 viewModel.search(query)
             }.launchIn(lifecycleScope)
 
-        binding.searchEditText.onTextChange {
-            setupIcon(it)
-        }
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                setupIcon(p0.toString())
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        })
 
         binding.clearButton.setOnClickListener {
             binding.searchEditText.text = null
@@ -79,7 +80,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
 
         viewModel.observeUi().observe(viewLifecycleOwner) { state ->
             if (state is ResponseState.ContentVacanciesList) {
-                adapter.submitList((state as ResponseState.ContentVacanciesList).listVacancy)
+                adapter.submitList(state.listVacancy)
             }
             updateStatus(state)
             binding.vacanciesProgress.isVisible = when (state) {
@@ -89,14 +90,14 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
 
             binding.foundCountText.text = when (state) {
                 is ResponseState.ContentVacanciesList -> {
-                    if (state.found != 0) {
+                    if (state.found > 0) {
                         getString(R.string.found_count, state.found.toString()).plus(" ").plus(getNoun(state.found))
                     } else {
-                        getString(R.string.no_vacancies_lil)
+                        null
                     }
                 }
 
-                else -> null
+                else -> getString(R.string.no_vacancies_lil)
             }
 
             binding.vacanciesLoading.isVisible = when (state) {
@@ -193,6 +194,8 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     private fun setupVacancies() {
         binding.vacanciesRv.adapter = adapter
         binding.vacanciesRv.layoutManager = LinearLayoutManager(requireContext())
+        binding.foundCount.visibleOrGone(false)
+
     }
 
     private fun hideKeyBoard() {
@@ -209,6 +212,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_clear, 0)
             binding.clearButton.isEnabled = true
         } else {
+            hideKeyBoard()
             binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_search, 0)
             binding.clearButton.isEnabled = false
         }
