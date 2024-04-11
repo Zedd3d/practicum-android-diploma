@@ -2,7 +2,6 @@ package ru.practicum.android.diploma.data.favorites.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ru.practicum.android.diploma.data.dto.PhoneDto
 import java.util.Calendar
 
 @Entity(tableName = "favorites_vacancies_table")
