@@ -3,6 +3,8 @@ package ru.practicum.android.diploma.presentation.general.viewmodel
 import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,16 +12,20 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import ru.practicum.android.diploma.domain.general.models.ResponseState
 import ru.practicum.android.diploma.domain.impl.SearchVacanciesUseCase
 import ru.practicum.android.diploma.domain.models.Vacancy
 import javax.inject.Inject
 
 class GeneralViewModel @Inject constructor(
     private val searchVacanciesUseCase: SearchVacanciesUseCase,
-    private val context: Context
 ) : ViewModel() {
 
-    private val state = MutableStateFlow(ViewState())
+    private val state = MutableLiveData<ResponseState>()
+
+    private var currentListVacancies = emptyList<Vacancy>()
+
+    fun observeUi(): LiveData<ResponseState> = state
 
     private var isNextPageLoading = false
 
@@ -30,54 +36,40 @@ class GeneralViewModel @Inject constructor(
         }
 
     private var maxPages: Int? = 0
-    fun observeUi() = state.asStateFlow()
 
     fun search(query: String, page: Int = 0) {
-        if (!isOnline(context)) {
-            state.update {
-                it.copy(status = ResponseState.NetworkError)
-            }
-            return
-        }
         if (this.query == query) return
         this.query = query
 
         if (query.isEmpty()) {
-            state.update { it.copy(status = ResponseState.Start) }
+            state.postValue(ResponseState.Start)
             return
         }
-
-        state.update { it.copy(isLoading = true, vacanciesProgress = false) }
         makeSearchRequest(query, page, false)
     }
 
     private fun makeSearchRequest(query: String, page: Int, isPagination: Boolean) {
+        state.postValue(ResponseState.Loading(isPagination))
         viewModelScope.launch {
-            try {
-                val response = searchVacanciesUseCase(query, page)
-                maxPages = response.pages
+            val response = searchVacanciesUseCase(query, page)
+            when (response) {
+                is ResponseState.ContentVacanciesList -> {
+                    maxPages = response.pages
+                    currentListVacancies = if (isPagination) {
+                        currentListVacancies + response.listVacancy
+                    } else {
+                        response.listVacancy
+                    }
 
-                val vacancies = response.items
-                val currentList = if (isPagination) {
-                    state.value.vacancies + vacancies
-                } else {
-                    vacancies
+                    state.postValue(ResponseState.ContentVacanciesList(currentListVacancies, response.found, response.pages))
                 }
 
-                state.update {
-                    it.copy(
-                        vacancies = currentList,
-                        found = response.found,
-                        status = if (currentList.isNotEmpty()) ResponseState.Content else ResponseState.Empty,
-                    )
+                is ResponseState.Loading -> state.postValue(ResponseState.Loading(isPagination))
+                else -> {
+                    state.postValue(response)
                 }
-            } catch (e: HttpException) {
-                Log.d("NetError", e.code().toString())
-                state.update { it.copy(status = ResponseState.ServerError) }
-            } finally {
-                isNextPageLoading = false
-                state.update { it.copy(isLoading = false, vacanciesProgress = false) }
             }
+            isNextPageLoading = false
         }
     }
 
@@ -86,21 +78,16 @@ class GeneralViewModel @Inject constructor(
         maxPages?.let { if (page + 1 >= it) return }
 
         isNextPageLoading = true
-        state.update { it.copy(isLoading = false, vacanciesProgress = true) }
 
         makeSearchRequest(query, page, true)
     }
 
-    private fun isOnline(context: Context): Boolean {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val capabilities =
-            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-        return capabilities != null
-    }
-
     fun onLastItemReached() {
-        val page = state.value.vacancies.size / PAG_COUNT
+        val page = if (state.value is ResponseState.ContentVacanciesList) {
+            (state.value as ResponseState.ContentVacanciesList).listVacancy.size / PAG_COUNT
+        } else {
+            1
+        }
         query?.let { searchPagination(it, page) }
     }
 
@@ -116,12 +103,3 @@ data class ViewState(
     val isLoading: Boolean = false,
     val vacanciesProgress: Boolean = false
 )
-
-sealed class ResponseState {
-
-    data object Start : ResponseState()
-    data object Empty : ResponseState()
-    data object Content : ResponseState()
-    data object NetworkError : ResponseState()
-    data object ServerError : ResponseState()
-}

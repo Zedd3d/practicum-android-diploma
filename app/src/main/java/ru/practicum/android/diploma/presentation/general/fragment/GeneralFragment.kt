@@ -25,10 +25,10 @@ import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentGeneralBinding
+import ru.practicum.android.diploma.domain.general.models.ResponseState
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.general.VacanciesAdapter
 import ru.practicum.android.diploma.presentation.general.viewmodel.GeneralViewModel
-import ru.practicum.android.diploma.presentation.general.viewmodel.ResponseState
 import ru.practicum.android.diploma.presentation.general.viewmodel.ViewState
 import ru.practicum.android.diploma.util.onTextChange
 import ru.practicum.android.diploma.util.onTextChangeDebounce
@@ -76,22 +76,37 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             binding.searchEditText.text = null
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.observeUi().collect { state ->
-                    adapter.submitList(state.vacancies)
-                    updateStatus(state.status, state)
-                    binding.vacanciesProgress.visibleOrGone(state.vacanciesProgress)
-                    binding.foundCountText.text = if (state.found != 0) {
+
+        viewModel.observeUi().observe(viewLifecycleOwner) { state ->
+            if (state is ResponseState.ContentVacanciesList) {
+                adapter.submitList((state as ResponseState.ContentVacanciesList).listVacancy)
+            }
+            updateStatus(state)
+            binding.vacanciesProgress.isVisible = when (state) {
+                is ResponseState.Loading -> state.isPagination
+                else -> false
+            }
+
+            binding.foundCountText.text = when (state) {
+                is ResponseState.ContentVacanciesList -> {
+                    if (state.found != 0) {
                         getString(R.string.found_count, state.found.toString()).plus(" ").plus(getNoun(state.found))
                     } else {
                         getString(R.string.no_vacancies_lil)
                     }
-                    binding.vacanciesLoading.visibleOrGone(state.isLoading)
-                    if (state.isLoading) hideKeyBoard()
                 }
+
+                else -> null
             }
+
+            binding.vacanciesLoading.isVisible = when (state) {
+                is ResponseState.Loading -> !state.isPagination
+                else -> false
+            }
+            if (state is ResponseState.Loading) hideKeyBoard()
+
         }
+
         binding.vacanciesRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -111,9 +126,9 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         }
     }
 
-    private fun updateStatus(status: ResponseState, state: ViewState) {
-        updatePreStatus(status, state)
-        when (status) {
+    private fun updateStatus(state: ResponseState) {
+        updatePreStatus(state)
+        when (state) {
             ResponseState.Empty -> {
                 binding.srcText.setText(R.string.no_vacancies)
                 binding.foundCountText.setText(R.string.no_vacancies_lil)
@@ -131,17 +146,18 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 binding.srcText.text = ""
             }
         }
-        updatePicture(status)
+        updatePicture(state)
     }
 
-    private fun updatePreStatus(status: ResponseState, state: ViewState) {
-        binding.vacanciesRv.visibleOrGone(status == ResponseState.Content && !state.isLoading)
-        binding.src.visibleOrGone(status != ResponseState.Content && !state.isLoading)
-        binding.srcText.visibleOrGone(status != ResponseState.Content && !state.isLoading)
-        binding.foundCount.visibleOrGone(
-            status == ResponseState.Content ||
-                status == ResponseState.Empty && !state.isLoading
-        )
+    private fun updatePreStatus(state: ResponseState) {
+        binding.vacanciesRv.isVisible = when(state){
+            is ResponseState.Loading -> state.isPagination
+            is ResponseState.ContentVacanciesList -> true
+            else -> false
+        }
+        binding.src.visibleOrGone(state !is ResponseState.Loading && state !is ResponseState.ContentVacanciesList)
+        binding.srcText.visibleOrGone(binding.src.isVisible)
+        binding.foundCount.visibleOrGone(state is ResponseState.ContentVacanciesList || state is ResponseState.Empty)
     }
 
     private fun updatePicture(status: ResponseState) {
