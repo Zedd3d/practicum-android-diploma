@@ -20,7 +20,10 @@ class VacanciesRepositoryImpl @Inject constructor(
             "per_page" to PAGINATION_COUNT_PAGES
         )
         val response = retrofitNetworkClient.doRequest(query)
-        return if (response.resultCode == 200 && response is VacanciesResponse) {
+        return if (
+            @Suppress("MagicNumber")
+            response.resultCode == 200 && response is VacanciesResponse
+        ) {
             val listVacancies = response.items.asDomain()
 
             if (listVacancies.isEmpty()) {
@@ -29,7 +32,10 @@ class VacanciesRepositoryImpl @Inject constructor(
                 ResponseState.ContentVacanciesList(listVacancies, response.found, response.pages)
             }
 
-        } else if (response.resultCode >= 400) {
+        } else if (
+            @Suppress("MagicNumber")
+            response.resultCode >= 400
+        ) {
             ResponseState.ServerError
         } else {
             ResponseState.NetworkError
@@ -38,9 +44,15 @@ class VacanciesRepositoryImpl @Inject constructor(
 
     override suspend fun searchById(id: String): ResponseState {
         val response = retrofitNetworkClient.doRequestById(id)
-        return if (response.resultCode == 200 && response is VacancyDetailDto) {
+        return if (
+            @Suppress("MagicNumber")
+            response.resultCode == 200 && response is VacancyDetailDto
+        ) {
             ResponseState.ContentVacancyDetail(response.asDomain())
-        } else if (response.resultCode == 400) {
+        } else if (
+            @Suppress("MagicNumber")
+            response.resultCode == 400
+        ) {
             ResponseState.ServerError
         } else {
             ResponseState.NetworkError
