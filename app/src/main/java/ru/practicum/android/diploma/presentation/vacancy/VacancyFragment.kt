@@ -17,7 +17,6 @@ import ru.practicum.android.diploma.databinding.FragmentVacancyBinding
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.util.SalaryUtil
 
-
 class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
 
     companion object {
