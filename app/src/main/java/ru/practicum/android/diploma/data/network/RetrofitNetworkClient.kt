@@ -16,10 +16,15 @@ class RetrofitNetworkClient @Inject constructor(
         @Suppress("SwallowedException")
         return try {
             val resp = headHunterService.vacancies(query)
-            resp.apply { @Suppress("MagicNumber")
-            resultCode = 200 }
+            resp.apply {
+                @Suppress("MagicNumber")
+                resultCode = 200
+            }
         } catch (e: IOException) {
-            Response().apply { resultCode = 500 }
+            Response().apply {
+                @Suppress("MagicNumber")
+                resultCode = 500
+            }
         } catch (e: HttpException) {
             Response().apply { resultCode = e.code() }
         }
