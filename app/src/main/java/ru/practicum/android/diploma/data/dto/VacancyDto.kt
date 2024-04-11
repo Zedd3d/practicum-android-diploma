@@ -7,5 +7,6 @@ data class VacancyDto(
     val area: VacancyAreaDto,
     val employer: EmployerDto,
     val salary: SalaryDto?,
-    val type: VacancyTypeDto
+    val type: VacancyTypeDto,
+    val contacts: ContactsDto
 )

@@ -1,40 +1,58 @@
 package ru.practicum.android.diploma.data.general.impl
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import ru.practicum.android.diploma.data.asDomain
-import ru.practicum.android.diploma.data.dto.Vacancies
-import ru.practicum.android.diploma.data.network.HeadHunterService
+import ru.practicum.android.diploma.data.dto.VacanciesResponse
+import ru.practicum.android.diploma.data.dto.detail.VacancyDetailDto
+import ru.practicum.android.diploma.data.network.RetrofitNetworkClient
+import ru.practicum.android.diploma.domain.general.models.ResponseState
 import ru.practicum.android.diploma.domain.impl.VacanciesRepository
-import ru.practicum.android.diploma.domain.models.Vacancy
-import ru.practicum.android.diploma.domain.models.VacancyDetail
 import javax.inject.Inject
 
 const val PAGINATION_COUNT_PAGES = "20"
 
 class VacanciesRepositoryImpl @Inject constructor(
-    private val headHunterService: HeadHunterService
+    private val retrofitNetworkClient: RetrofitNetworkClient
 ) : VacanciesRepository {
 
-    private var vacanciesList = emptyList<Vacancy>()
-    private var found: Int = 0
-    override suspend fun search(text: String, page: Int): Vacancies {
-        return withContext(Dispatchers.IO) {
-            val query = mapOf(
-                "text" to text,
-                "page" to page.toString(),
-                "per_page" to PAGINATION_COUNT_PAGES
-            )
-            val response = headHunterService.vacancies(query)
-            vacanciesList = response.items.asDomain()
-            found = response.found
-            Vacancies(vacanciesList, found, response.pages)
+    companion object {
+        const val HTTP_OK = 200
+        const val HTTP_CLIENT_ERROR = 400
+    }
+
+    override suspend fun search(text: String, page: Int): ResponseState {
+        val query = mapOf(
+            "text" to text,
+            "page" to page.toString(),
+            "per_page" to PAGINATION_COUNT_PAGES
+        )
+        val response = retrofitNetworkClient.doRequest(query)
+        return if (response.resultCode == HTTP_OK && response is VacanciesResponse) {
+            val listVacancies = response.items.asDomain()
+
+            if (listVacancies.isEmpty()) {
+                ResponseState.Empty
+            } else {
+                ResponseState.ContentVacanciesList(listVacancies, response.found, response.pages)
+            }
+        } else if (response.resultCode >= HTTP_CLIENT_ERROR) {
+            ResponseState.ServerError
+        } else {
+            ResponseState.NetworkError
         }
     }
 
-    override suspend fun searchById(id: String): VacancyDetail {
-        return withContext(Dispatchers.IO) {
-            headHunterService.getVacancyById(id).asDomain()
+    override suspend fun searchById(id: String): ResponseState {
+        val response = retrofitNetworkClient.doRequestById(id)
+        return if (
+            response.resultCode == HTTP_OK && response is VacancyDetailDto
+        ) {
+            ResponseState.ContentVacancyDetail(response.asDomain())
+        } else if (
+            response.resultCode == HTTP_CLIENT_ERROR
+        ) {
+            ResponseState.ServerError
+        } else {
+            ResponseState.NetworkError
         }
     }
 }

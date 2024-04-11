@@ -1,9 +1,9 @@
 package ru.practicum.android.diploma.data.dto
 
-import ru.practicum.android.diploma.domain.models.Vacancy
+import ru.practicum.android.diploma.domain.general.models.ResponseState
 
 data class Vacancies(
-    val items: List<Vacancy>,
+    val state: ResponseState,
     val found: Int,
     val pages: Int
 )

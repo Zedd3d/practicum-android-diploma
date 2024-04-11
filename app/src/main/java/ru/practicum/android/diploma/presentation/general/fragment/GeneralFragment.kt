@@ -2,6 +2,8 @@ package ru.practicum.android.diploma.presentation.general.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +12,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,16 +21,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentGeneralBinding
+import ru.practicum.android.diploma.domain.general.models.ResponseState
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.general.VacanciesAdapter
 import ru.practicum.android.diploma.presentation.general.viewmodel.GeneralViewModel
-import ru.practicum.android.diploma.presentation.general.viewmodel.ResponseState
-import ru.practicum.android.diploma.presentation.general.viewmodel.ViewState
-import ru.practicum.android.diploma.util.onTextChange
 import ru.practicum.android.diploma.util.onTextChangeDebounce
 import ru.practicum.android.diploma.util.visibleOrGone
 
@@ -62,36 +59,62 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupVacancies()
+        setListeners()
+        setObservers()
+    }
+
+    private fun setObservers() {
+        viewModel.observeUi().observe(viewLifecycleOwner) { state ->
+            if (state is ResponseState.ContentVacanciesList) {
+                adapter.submitList(state.listVacancy)
+            }
+            updateStatus(state)
+            binding.vacanciesProgress.isVisible = when (state) {
+                is ResponseState.Loading -> state.isPagination
+                else -> false
+            }
+
+            binding.foundCountText.text = when (state) {
+                is ResponseState.ContentVacanciesList -> {
+                    if (state.found > 0) {
+                        getString(R.string.found_count, state.found.toString()).plus(" ").plus(getNoun(state.found))
+                    } else {
+                        null
+                    }
+                }
+
+                else -> getString(R.string.no_vacancies_lil)
+            }
+
+            binding.vacanciesLoading.isVisible = when (state) {
+                is ResponseState.Loading -> !state.isPagination
+                else -> false
+            }
+            if (state is ResponseState.Loading) hideKeyBoard()
+
+        }
+    }
+
+    private fun setListeners() {
         binding.searchEditText.onTextChangeDebounce().debounce(DEBOUNCE)
             .onEach {
                 val query = it?.toString().orEmpty()
                 viewModel.search(query)
             }.launchIn(lifecycleScope)
 
-        binding.searchEditText.onTextChange {
-            setupIcon(it)
-        }
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                setupIcon(p0.toString())
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+        })
 
         binding.clearButton.setOnClickListener {
             binding.searchEditText.text = null
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.observeUi().collect { state ->
-                    adapter.submitList(state.vacancies)
-                    updateStatus(state.status, state)
-                    binding.vacanciesProgress.visibleOrGone(state.vacanciesProgress)
-                    binding.foundCountText.text = if (state.found != 0) {
-                        getString(R.string.found_count, state.found.toString()).plus(" ").plus(getNoun(state.found))
-                    } else {
-                        getString(R.string.no_vacancies_lil)
-                    }
-                    binding.vacanciesLoading.visibleOrGone(state.isLoading)
-                    if (state.isLoading) hideKeyBoard()
-                }
-            }
-        }
         binding.vacanciesRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -111,9 +134,9 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         }
     }
 
-    private fun updateStatus(status: ResponseState, state: ViewState) {
-        updatePreStatus(status, state)
-        when (status) {
+    private fun updateStatus(state: ResponseState) {
+        updatePreStatus(state)
+        when (state) {
             ResponseState.Empty -> {
                 binding.srcText.setText(R.string.no_vacancies)
                 binding.foundCountText.setText(R.string.no_vacancies_lil)
@@ -131,17 +154,18 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 binding.srcText.text = ""
             }
         }
-        updatePicture(status)
+        updatePicture(state)
     }
 
-    private fun updatePreStatus(status: ResponseState, state: ViewState) {
-        binding.vacanciesRv.visibleOrGone(status == ResponseState.Content && !state.isLoading)
-        binding.src.visibleOrGone(status != ResponseState.Content && !state.isLoading)
-        binding.srcText.visibleOrGone(status != ResponseState.Content && !state.isLoading)
-        binding.foundCount.visibleOrGone(
-            status == ResponseState.Content ||
-                status == ResponseState.Empty && !state.isLoading
-        )
+    private fun updatePreStatus(state: ResponseState) {
+        binding.vacanciesRv.isVisible = when (state) {
+            is ResponseState.Loading -> state.isPagination
+            is ResponseState.ContentVacanciesList -> true
+            else -> false
+        }
+        binding.src.visibleOrGone(state !is ResponseState.Loading && state !is ResponseState.ContentVacanciesList)
+        binding.srcText.visibleOrGone(binding.src.isVisible)
+        binding.foundCount.visibleOrGone(state is ResponseState.ContentVacanciesList || state is ResponseState.Empty)
     }
 
     private fun updatePicture(status: ResponseState) {
@@ -177,6 +201,8 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     private fun setupVacancies() {
         binding.vacanciesRv.adapter = adapter
         binding.vacanciesRv.layoutManager = LinearLayoutManager(requireContext())
+        binding.foundCount.visibleOrGone(false)
+
     }
 
     private fun hideKeyBoard() {
@@ -193,6 +219,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_clear, 0)
             binding.clearButton.isEnabled = true
         } else {
+            hideKeyBoard()
             binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_search, 0)
             binding.clearButton.isEnabled = false
         }

@@ -30,6 +30,15 @@ class FavoritesRepositoryImpl @Inject constructor(
         return appDatabase.favoriteDao().elementById(vacID).isNotEmpty()
     }
 
+    override suspend fun loadFavoriteVacancy(vacID: String): VacancyDetail? {
+        val list = appDatabase.favoriteDao().elementById(vacID)
+        return if (list.isEmpty()) {
+            null
+        } else {
+            VacancyDbConvertor.mapToVacancyDetail(list.first())
+        }
+    }
+
     private fun convertFromVacancyEntity(vacancyList: List<FavoritesVacanciesEntity>): List<Vacancy> {
         return vacancyList.map { vac -> VacancyDbConvertor.mapToVacancy(vac) }
     }

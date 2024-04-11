@@ -17,5 +17,9 @@ data class FavoritesVacanciesEntity(
     val salaryFrom: Int = 0,
     val salaryTo: Int = 0,
     val salaryGross: Boolean = false,
-    val inDbTime: Long = Calendar.getInstance().time.time
+    val inDbTime: Long = Calendar.getInstance().time.time,
+    val contactsEmail: String = "",
+    val contactsFormattedPhone: String = "",
+    val contactsComment: String = "",
+    val contactsName: String = ""
 )

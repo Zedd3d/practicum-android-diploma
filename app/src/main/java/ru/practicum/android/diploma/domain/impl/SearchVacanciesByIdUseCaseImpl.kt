@@ -5,12 +5,12 @@ import kotlinx.coroutines.withContext
 import ru.practicum.android.diploma.domain.general.models.ResponseState
 import javax.inject.Inject
 
-class SearchVacanciesUseCaseImpl @Inject constructor(
+class SearchVacanciesByIdUseCaseImpl @Inject constructor(
     private val vacanciesRepository: VacanciesRepository
-) : SearchVacanciesUseCase {
-    override suspend fun invoke(query: String, page: Int): ResponseState {
+) : SearchVacanciesByIdUseCase {
+    override suspend fun invoke(id: String): ResponseState {
         return withContext(Dispatchers.IO) {
-            vacanciesRepository.search(query, page)
+            vacanciesRepository.searchById(id)
         }
     }
 }
