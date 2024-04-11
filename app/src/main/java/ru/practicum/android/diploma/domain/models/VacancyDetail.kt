@@ -9,5 +9,6 @@ data class VacancyDetail(
     val employer: Employer?,
     val keySkills: List<String>?,
     val area: String?,
-    val employment: String?
+    val employment: String?,
+    val contacts: Contacts?
 )

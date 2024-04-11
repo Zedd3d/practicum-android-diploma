@@ -3,6 +3,8 @@ package ru.practicum.android.diploma.data.converters
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import ru.practicum.android.diploma.data.favorites.entity.FavoritesVacanciesEntity
+import ru.practicum.android.diploma.domain.models.Contacts
+import ru.practicum.android.diploma.domain.models.Phone
 import ru.practicum.android.diploma.domain.models.Salary
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.models.VacancyDetail
@@ -36,7 +38,12 @@ object VacancyDbConvertor {
                 vacancy.salaryGross,
                 vacancy.salaryTo
             ),
-            vacancy.area
+            vacancy.area,
+            Contacts(
+                vacancy.contactsEmail,
+                vacancy.contactsName,
+                List<Phone>() // Не очень понятно, как это правильно записать
+            )
         )
     }
 

@@ -1,10 +1,14 @@
 package ru.practicum.android.diploma.data
 
+import ru.practicum.android.diploma.data.dto.ContactsDto
 import ru.practicum.android.diploma.data.dto.EmployerDto
+import ru.practicum.android.diploma.data.dto.PhoneDto
 import ru.practicum.android.diploma.data.dto.SalaryDto
 import ru.practicum.android.diploma.data.dto.VacancyDto
 import ru.practicum.android.diploma.data.dto.detail.VacancyDetailDto
+import ru.practicum.android.diploma.domain.models.Contacts
 import ru.practicum.android.diploma.domain.models.Employer
+import ru.practicum.android.diploma.domain.models.Phone
 import ru.practicum.android.diploma.domain.models.Salary
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.models.VacancyDetail
@@ -17,7 +21,8 @@ fun VacancyDto.asDomain(): Vacancy = Vacancy(
     employer = this.employer.name,
     name = name,
     salary = salary?.asDomain(),
-    area = this.area.name
+    area = this.area.name,
+    contacts = this.contacts.asDomain()
 )
 
 fun SalaryDto.asDomain(): Salary = Salary(
@@ -25,6 +30,15 @@ fun SalaryDto.asDomain(): Salary = Salary(
     from = from,
     gross = gross,
     to = to
+)
+fun ContactsDto.asDomain(): Contacts = Contacts(
+    name = name,
+    email = email,
+    phones = this.phones
+)
+fun PhoneDto.asDomain(): Phone = Phone(
+    comment = this.comment,
+    formatted = this.formatted
 )
 
 fun EmployerDto.asDomain(): Employer = Employer(
@@ -50,6 +64,7 @@ fun VacancyDetailDto.asDomain(): VacancyDetail {
         employer = employer?.asDomain(),
         keySkills = keySkills?.map { it.name },
         area = area?.name,
-        employment = employment
+        employment = employment,
+        contacts = contacts?.asDomain()
     )
 }

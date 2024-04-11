@@ -75,9 +75,18 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
         binding.companyName.text = vacancy?.area ?: ""
         binding.neededExperience.text = vacancy?.experience ?: ""
         binding.jobTime.text = vacancy?.employment ?: ""
+        binding.contactPersonData.text = vacancy?.contacts?.name ?: ""
+        binding.contactPersonEmailData.text = vacancy?.contacts?.email ?: ""
+        // if(vacancy?.contacts?.phones?.comment.isNullOrBlank) {
+        //      binding.contactCommentData.text.setText("")
+        //      binding.contactComment.visibility = View.GONE
+        // else {
+        //      binding.contactCommentData.text = vacancy?.contacts?.phones?.comment
+        //      binding.contactComment.visibility = View.VISIBLE
+        //}
         vacancy?.employer?.let {
             Glide.with(requireContext())
-                .load(vacancy.employer.logoUrls) // false
+                .load(vacancy.employer.logoUrls)
                 .placeholder(R.drawable.placeholder_company_icon)
                 .fitCenter()
                 .transform(RoundedCorners(RADIUS))
