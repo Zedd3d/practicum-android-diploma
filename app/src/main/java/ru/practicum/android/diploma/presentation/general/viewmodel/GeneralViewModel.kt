@@ -77,7 +77,6 @@ class GeneralViewModel @Inject constructor(
         maxPages?.let { if (page + 1 >= it) return }
 
         isNextPageLoading = true
-
         makeSearchRequest(query, page, true)
     }
 
