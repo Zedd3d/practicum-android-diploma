@@ -47,5 +47,3 @@ class VacanciesRepositoryImpl @Inject constructor(
         }
     }
 }
-
-

@@ -26,7 +26,7 @@ class RetrofitNetworkClient @Inject constructor(
 
     override suspend fun doRequestById(id: String): Response {
         if (!isOnline(context)) return Response().apply { resultCode = -1 }
-
+        @Suppress("SwallowedException")
         return try {
             val resp = headHunterService.getVacancyById(id)
             resp.apply { resultCode = 200 }
