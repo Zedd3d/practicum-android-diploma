@@ -10,6 +10,12 @@ class RetrofitNetworkClient @Inject constructor(
     private val headHunterService: HeadHunterService,
     private val context: Context
 ) : NetworkClient {
+
+    companion object {
+        const val HTTP_OK = 200
+        const val HTTP_ERROR = 500
+    }
+
     override suspend fun doRequest(query: Map<String, String>): Response {
         if (!isOnline(context)) return Response().apply { resultCode = -1 }
 
@@ -17,13 +23,11 @@ class RetrofitNetworkClient @Inject constructor(
         return try {
             val resp = headHunterService.vacancies(query)
             resp.apply {
-                @Suppress("MagicNumber")
-                resultCode = 200
+                resultCode = HTTP_OK
             }
         } catch (e: IOException) {
             Response().apply {
-                @Suppress("MagicNumber")
-                resultCode = 500
+                resultCode = HTTP_ERROR
             }
         } catch (e: HttpException) {
             Response().apply { resultCode = e.code() }
@@ -36,13 +40,11 @@ class RetrofitNetworkClient @Inject constructor(
         return try {
             val resp = headHunterService.getVacancyById(id)
             resp.apply {
-                @Suppress("MagicNumber")
-                resultCode = 200
+                resultCode = HTTP_OK
             }
         } catch (e: IOException) {
             Response().apply {
-                @Suppress("MagicNumber")
-                resultCode = 500
+                resultCode = HTTP_ERROR
             }
         } catch (e: HttpException) {
             Response().apply { resultCode = e.code() }

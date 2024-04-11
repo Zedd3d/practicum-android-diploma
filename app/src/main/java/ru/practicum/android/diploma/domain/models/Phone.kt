@@ -4,4 +4,3 @@ data class Phone(
     val comment: String?,
     val formatted: String?
 )
-
