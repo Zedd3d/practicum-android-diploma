@@ -9,4 +9,5 @@ interface FavoritesRepository {
     suspend fun deleteDbVacanciFromFavorite(vacID: String)
     suspend fun insertDbVacanciToFavorite(vacancyDetail: VacancyDetail)
     suspend fun isFavorite(vacID: String): Boolean
+    suspend fun loadFavoriteVacancy(vacID: String): VacancyDetail?
 }

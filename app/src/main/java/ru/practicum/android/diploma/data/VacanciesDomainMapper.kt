@@ -50,6 +50,7 @@ fun VacancyDetailDto.asDomain(): VacancyDetail {
         employer = employer?.asDomain(),
         keySkills = keySkills?.map { it.name },
         area = area?.name,
-        employment = employment
+        employment = employment,
+        alternateUrl = alternateUrl
     )
 }

@@ -6,21 +6,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.favorites.api.FavoritesInteractor
-import ru.practicum.android.diploma.domain.impl.VacanciesRepository
-import ru.practicum.android.diploma.domain.models.VacancyDetail
+import ru.practicum.android.diploma.domain.general.models.ResponseState
+import ru.practicum.android.diploma.domain.impl.SearchVacanciesByIdUseCase
+import ru.practicum.android.diploma.presentation.vacancy.models.VacancyViewState
+import java.io.IOException
 import javax.inject.Inject
 
 class VacancyViewModel @Inject constructor(
     private val vacancyId: String,
-    private val repository: VacanciesRepository,
+    private val searchVacanciesByIdUseCase: SearchVacanciesByIdUseCase,
     private val emailRepository: EmailRepository,
     private val favoritesInteractor: FavoritesInteractor
 ) : ViewModel() {
-    private val state = MutableLiveData<ViewState>()
-    private var likeIndicator = MutableLiveData<Boolean>()
-    private var vacancy: VacancyDetail? = null
+    private val state = MutableLiveData<VacancyViewState>()
 
-    fun observeUi(): LiveData<ViewState> = state
+    fun observeUi(): LiveData<VacancyViewState> = state
 
     var isFav: Boolean = false
 
@@ -30,59 +30,85 @@ class VacancyViewModel @Inject constructor(
 
     fun loadData() {
         viewModelScope.launch {
-            vacancy = repository.searchById(vacancyId)
-            state.postValue(
-                ViewState(
-                    vacancy = vacancy,
-                    isLoading = false,
-                    isFavorite(vacancyId)
-                )
-            )
+            state.postValue(VacancyViewState.Loading)
+            val isFavorite = isFavorite(vacancyId)
+            @Suppress("SwallowedException")
+            try {
+                val response = searchVacanciesByIdUseCase(vacancyId)
+
+                when (response) {
+                    is ResponseState.ContentVacancyDetail -> {
+                        if (isFavorite) favoritesInteractor.insertDbVacanciToFavorite(response.vacancyDetail)
+                        state.postValue(VacancyViewState.Content(response.vacancyDetail, isFavorite))
+                    }
+
+                    else -> if (isFavorite) loadFromFavorites()
+                }
+            } catch (e: IOException) {
+                state.postValue(VacancyViewState.ServerError)
+            }
         }
     }
 
     fun clickFavorite() {
         viewModelScope.launch {
+            var isFavorite = false
             if (isFavorite(vacancyId)) {
                 deleteFavVac()
             } else {
                 setFavorite()
+                isFavorite = true
             }
-            loadData()
+
+            val currentValue = state.value
+
+            state.postValue(
+                when (currentValue) {
+                    is VacancyViewState.Content -> VacancyViewState.Content(currentValue.vacancyDetail, isFavorite)
+                    else -> VacancyViewState.Loading
+                }
+            )
         }
     }
 
     fun shareVacancy() {
-        emailRepository.shareLink("https://ekaterinburg.hh.ru/vacancy/${vacancy!!.id}")
+        val currentVal = state.value
+        when (currentVal) {
+            is VacancyViewState.Content -> currentVal.vacancyDetail.alternateUrl?.let { emailRepository.shareLink(it) }
+            else -> {
+                null
+            }
+        }
     }
 
     fun setFavorite() {
         viewModelScope.launch {
-            state.value?.vacancy?.let {
-                favoritesInteractor.insertDbVacanciToFavorite(
-                    it
-                )
+            val valueState = state.value
+            when (valueState) {
+                is VacancyViewState.Content -> favoritesInteractor.insertDbVacanciToFavorite(valueState.vacancyDetail)
+                else -> null
             }
+        }
+    }
+
+    suspend fun loadFromFavorites() {
+        val res = favoritesInteractor.loadFavoriteVacancy(vacancyId)
+        if (res == null) {
+            state.postValue(VacancyViewState.ServerError)
+        } else {
+            state.postValue(VacancyViewState.Content(res, true))
         }
     }
 
     fun deleteFavVac() {
         viewModelScope.launch {
-            state.value?.vacancy?.let {
-                favoritesInteractor.deleteDbVacanciFromFavorite(it.id)
-            }
+            favoritesInteractor.deleteDbVacanciFromFavorite(vacancyId)
         }
     }
 
     suspend fun isFavorite(id: String): Boolean {
         isFav = favoritesInteractor.isFavorite(id)
-        likeIndicator.postValue(isFav)
         return isFav
     }
 }
 
-data class ViewState(
-    val vacancy: VacancyDetail? = null,
-    val isLoading: Boolean = true,
-    val isFavorite: Boolean = false
-)
