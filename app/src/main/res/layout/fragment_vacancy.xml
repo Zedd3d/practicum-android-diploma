@@ -226,7 +226,7 @@
                     app:layout_constraintEnd_toEndOf="@id/guidelineVertical2"
                     app:layout_constraintStart_toStartOf="@id/guidelineVertical"
                     app:layout_constraintTop_toBottomOf="@id/key_skills_recycler_view"
-                    tools:text="@string/contacts" />
+                    android:text="@string/contacts" />
 
                 <TextView
                     android:id="@+id/contact_person"
@@ -286,7 +286,7 @@
                     app:layout_constraintEnd_toEndOf="@id/guidelineVertical2"
                     app:layout_constraintStart_toStartOf="@id/guidelineVertical"
                     app:layout_constraintTop_toBottomOf="@id/contact_person_email_data"
-                    tools:text="Телефон" />
+                    android:text="Телефон" />
 
                 <TextView
                     android:id="@+id/contact_person_phone_data"

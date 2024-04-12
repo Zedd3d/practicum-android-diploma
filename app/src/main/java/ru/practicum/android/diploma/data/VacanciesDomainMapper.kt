@@ -1,10 +1,14 @@
 package ru.practicum.android.diploma.data
 
+import ru.practicum.android.diploma.data.dto.ContactsDto
 import ru.practicum.android.diploma.data.dto.EmployerDto
+import ru.practicum.android.diploma.data.dto.PhoneDto
 import ru.practicum.android.diploma.data.dto.SalaryDto
 import ru.practicum.android.diploma.data.dto.VacancyDto
 import ru.practicum.android.diploma.data.dto.detail.VacancyDetailDto
+import ru.practicum.android.diploma.domain.models.Contacts
 import ru.practicum.android.diploma.domain.models.Employer
+import ru.practicum.android.diploma.domain.models.Phone
 import ru.practicum.android.diploma.domain.models.Salary
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.models.VacancyDetail
@@ -34,12 +38,23 @@ fun EmployerDto.asDomain(): Employer = Employer(
     trusted = trusted,
     vacanciesUrl = vacanciesUrl
 )
+//fun ContactsDto.asDomain(): Contacts = Contacts(
+//    name = this.name,
+//    email = this.email,
+//    phones = this.phones
+//)
 
 fun VacancyDetailDto.asDomain(): VacancyDetail {
     val employment = listOfNotNull(
         this.employment?.name,
         this.schedule?.name
     ).joinToString(", ")
+    var contactComments = ""
+    this.contacts?.phones?.forEach {
+        if (it.comment?.isNotEmpty() == true) {
+            contactComments += "${it.comment}\n"
+        }
+    }
 
     return VacancyDetail(
         id = id,
@@ -51,6 +66,15 @@ fun VacancyDetailDto.asDomain(): VacancyDetail {
         keySkills = keySkills?.map { it.name },
         area = area?.name,
         employment = employment,
-        alternateUrl = alternateUrl
+        alternateUrl = alternateUrl,
+       // contacts = contacts?
+        contactsEmail = contacts?.email,
+        contactsName = contacts?.name,
+        contactsPhones = contacts?.phones.let { list -> list?.map { createPhone(it) } },
+        comment = contactComments,
     )
 }
+private fun createPhone(phone: PhoneDto): String {
+    return "+${phone.country}" + " (${phone.city})" + " ${phone.number}"
+}
+

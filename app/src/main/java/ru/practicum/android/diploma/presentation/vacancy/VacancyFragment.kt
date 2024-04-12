@@ -1,9 +1,13 @@
 package ru.practicum.android.diploma.presentation.vacancy
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -20,6 +24,7 @@ import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.vacancy.models.VacancyViewState
 import ru.practicum.android.diploma.util.SalaryUtil
 
+
 class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
 
     companion object {
@@ -30,6 +35,10 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
 
     private var _binding: FragmentVacancyBinding? = null
     private val binding get() = _binding!!
+    var name: String = "Имя"
+    var phones: String = "+7 (985) 000-00-00"
+    var email: String = "user@example.com"
+    var comment: String = "Заполнить анкету по форме можно на нашем сайте"
 
     private val viewModel by viewModels<VacancyViewModel> {
         Factory {
@@ -81,6 +90,7 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
             else -> false
         }
 
+
         when (state) {
             is VacancyViewState.Content -> {
                 renderVacancyDetail(state.vacancyDetail)
@@ -97,15 +107,54 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
     }
 
     private fun renderVacancyDetail(vacancy: VacancyDetail) {
-        binding.jobName.text = vacancy?.name ?: ""
-        vacancy?.salary?.let {
+        binding.jobName.text = vacancy.name ?: ""
+        vacancy.salary?.let {
             binding.jobSalary.text = SalaryUtil.formatSalary(requireContext(), vacancy.salary)
         }
-        binding.companyName.text = vacancy?.employer?.name ?: ""
-        binding.neededExperience.text = vacancy?.experience ?: ""
-        binding.companyCity.text = vacancy?.area ?: ""
-        binding.jobTime.text = vacancy?.employment ?: ""
-        vacancy?.employer?.let {
+        binding.companyName.text = vacancy.employer?.name ?: ""
+        binding.neededExperience.text = vacancy.experience ?: ""
+        binding.companyCity.text = vacancy.area ?: ""
+        binding.jobTime.text = vacancy.employment ?: ""
+        //     binding.contactPersonEmailData.text = vacancy.contactsEmail
+        binding.contactPersonEmailData.text = email
+        binding.contactPersonData.text = name
+        binding.contactPersonEmailData.setOnClickListener {
+//            Intent(Intent.ACTION_SENDTO).apply {
+//                //         data = Uri.parse("mail_to:" + "${vacancy.contactsEmail}")
+//                data = Uri.parse("mail_to:$email")
+//            }
+            val i = Intent(Intent.ACTION_SEND)
+            i.setType("message/rfc822")
+            i.putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
+            try {
+                startActivity(Intent.createChooser(i, "Отправить письмо..."))
+            } catch (ex: ActivityNotFoundException) {
+                Toast.makeText(requireContext(), "Почтовые клиенты не установлены.", Toast.LENGTH_SHORT).show()
+            }
+        }
+//        else {
+//            binding.contactPersonEmail.visibility = View.GONE
+//            binding.contactPersonEmailData.visibility = View.GONE
+//        }
+//            vacancy.contactsPhones?.forEach { phone ->
+//                phones += " ${phone}\n"
+//            }
+        binding.contactPersonPhoneData.text = phones
+        binding.contactPersonPhoneData.setOnClickListener {
+            Intent(Intent.ACTION_DIAL).apply {
+//                    data = Uri.parse("tel:$phones")
+                data = Uri.parse("tel:$phones")
+            }
+        }
+        binding.contactCommentData.text = comment
+//        else {
+//            binding.contactPersonPhoneData.visibility = View.GONE
+//            binding.contactPersonPhone.visibility = View.GONE
+//        }
+//        if (vacancy.contactsName.isNullOrEmpty() and vacancy.contactsEmail.isNullOrEmpty() and vacancy.contactsPhones.isNullOrEmpty()) {
+//            binding.contactInformation.visibility = View.GONE
+//        }
+        vacancy.employer?.let {
             Glide.with(requireContext())
                 .load(vacancy.employer.logoUrls) // false
                 .placeholder(R.drawable.placeholder_company_icon)
@@ -114,11 +163,17 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
                 .into(binding.ivCompany)
         }
 
-        vacancy?.description?.let {
+        vacancy.description?.let {
             val markwon = Markwon.builder(requireContext())
                 .usePlugin(HtmlPlugin.create())
                 .build()
             markwon.setMarkdown(binding.vacancyDescription, it)
         }
+//        vacancy.keySkills?.let {
+//            val markwon = Markwon.builder(requireContext())
+//                .usePlugin(HtmlPlugin.create())
+//                .build()
+//            markwon.setMarkdown(binding.keySkillsRecyclerView, it)
+//        }
     }
 }
