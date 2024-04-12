@@ -49,4 +49,6 @@
     <string name="contact_p">Контактное лицо</string>
     <string name="contacts">Контакты</string>
     <string name="vacancy">Вакансия</string>
+    <string name="item_from">от</string>
+    <string name="item_to">до</string>
 </resources>
