@@ -20,4 +20,4 @@ data class VacancyDetailDto(
     val schedule: ScheduleDto?,
     @SerializedName("alternate_url") val alternateUrl: String,
     @SerializedName("contacts") val contacts: ContactsDto?
-): Response()
+) : Response()

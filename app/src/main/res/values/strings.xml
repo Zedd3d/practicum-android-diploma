@@ -49,4 +49,11 @@
     <string name="contact_p">Контактное лицо</string>
     <string name="contacts">Контакты</string>
     <string name="vacancy">Вакансия</string>
+    <string name="SendingMessage">Отправить письмо...</string>
+    <string name="message_type">message/rfc822</string>
+    <string name="mail_clients_not_installed">Почтовые клиенты не установлены.</string>
+    <string name="comment_text">Заполнить анкету по форме можно на нашем сайте</string>
+    <string name="email_text">user@example.com</string>
+    <string name="phone_number_text">+7 (985) 000-00-00</string>
+    <string name="name_text">Имя</string>
 </resources>
