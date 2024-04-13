@@ -38,7 +38,7 @@
                 android:layout_gravity="end"
                 android:layout_marginEnd="8dp"
                 android:paddingEnd="16dp"
-                android:src="@drawable/favorite_vacancy_drawable_empty"
+                style="@style/FavoriteButtonStyle"
                 android:visibility="visible" />
 
             <ImageView
@@ -193,13 +193,13 @@
                     style="@style/TitleTextStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="24dp"
                     android:textColor="?colorPrimary"
                     android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="@id/guidelineVertical2"
                     app:layout_constraintStart_toStartOf="@id/guidelineVertical"
                     app:layout_constraintTop_toBottomOf="@id/vacancy_description"
-                    tools:text="SKILLS" />
+                    android:text="Ключевые навыки" />
 
                 <TextView
                     android:id="@+id/key_skills_recycler_view"
@@ -209,7 +209,7 @@
                     android:layout_marginTop="8dp"
                     android:paddingHorizontal="16dp"
                     android:textColor="?colorPrimary"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="@id/card_view_company"
                     app:layout_constraintStart_toStartOf="@id/guidelineVertical"
                     app:layout_constraintTop_toBottomOf="@id/key_skills"
@@ -221,7 +221,7 @@
                     style="@style/TitleTextStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="24dp"
                     android:textColor="?colorPrimary"
                     app:layout_constraintEnd_toEndOf="@id/guidelineVertical2"
                     app:layout_constraintStart_toStartOf="@id/guidelineVertical"
@@ -233,7 +233,7 @@
                     style="@style/LowTitleTextStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="16dp"
                     android:text="@string/contact_p"
                     android:textColor="?colorPrimary"
                     app:layout_constraintEnd_toEndOf="@id/guidelineVertical2"

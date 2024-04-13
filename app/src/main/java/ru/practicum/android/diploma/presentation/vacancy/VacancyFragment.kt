@@ -1,13 +1,16 @@
 package ru.practicum.android.diploma.presentation.vacancy
 
+import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -36,9 +39,20 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
     private var _binding: FragmentVacancyBinding? = null
     private val binding get() = _binding!!
     var name: String = "Имя"
-    var phones: String = "+7 (985) 000-00-00"
-    var email: String = "user@example.com"
-    var comment: String = "Заполнить анкету по форме можно на нашем сайте"
+    private var phones: String = "+7 (985) 000-00-00"
+    private var email: String = "user@example.com"
+    private var comment: String = "Заполнить анкету по форме можно на нашем сайте"
+    private var skillLength = 0
+    private var skillsListLength = 0
+    private var activityRequest = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            val intent = Intent(Intent.ACTION_CALL);
+            intent.data = Uri.parse("tel:$phones")
+            startActivity(intent)
+        }
+    }
 
     private val viewModel by viewModels<VacancyViewModel> {
         Factory {
@@ -115,14 +129,9 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
         binding.neededExperience.text = vacancy.experience ?: ""
         binding.companyCity.text = vacancy.area ?: ""
         binding.jobTime.text = vacancy.employment ?: ""
-        //     binding.contactPersonEmailData.text = vacancy.contactsEmail
         binding.contactPersonEmailData.text = email
         binding.contactPersonData.text = name
         binding.contactPersonEmailData.setOnClickListener {
-//            Intent(Intent.ACTION_SENDTO).apply {
-//                //         data = Uri.parse("mail_to:" + "${vacancy.contactsEmail}")
-//                data = Uri.parse("mail_to:$email")
-//            }
             val i = Intent(Intent.ACTION_SEND)
             i.setType("message/rfc822")
             i.putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
@@ -132,48 +141,53 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
                 Toast.makeText(requireContext(), "Почтовые клиенты не установлены.", Toast.LENGTH_SHORT).show()
             }
         }
-//        else {
-//            binding.contactPersonEmail.visibility = View.GONE
-//            binding.contactPersonEmailData.visibility = View.GONE
-//        }
-//            vacancy.contactsPhones?.forEach { phone ->
-//                phones += " ${phone}\n"
-//            }
-        binding.contactPersonPhoneData.text = phones
-        binding.contactPersonPhoneData.setOnClickListener {
-            Intent(Intent.ACTION_DIAL).apply {
-//                    data = Uri.parse("tel:$phones")
-                data = Uri.parse("tel:$phones")
+
+        with(binding) {
+            if (vacancy.keySkills.isNullOrEmpty()) {
+                keySkillsRecyclerView.visibility = View.GONE
+                binding.keySkills.visibility = View.GONE
+            } else {
+                keySkillsRecyclerView.visibility = View.VISIBLE
+                binding.keySkills.visibility = View.VISIBLE
+                var skills = "• "
+                skillsListLength = vacancy.keySkills.count()
+                vacancy.keySkills.forEach { skill ->
+                    skillLength = skill.length
+                    while (skillLength != 0) {
+                        skill.forEach {
+                            skills += it
+                            skillLength--
+                        }
+                        skillsListLength--
+                    }
+                    if (skillsListLength != 0) {
+                        skills += "\n• "
+                    }
+                }
+                keySkillsRecyclerView.text = skills
+            }
+
+            binding.contactPersonPhoneData.text = phones
+            binding.contactPersonPhoneData.setOnClickListener {
+                activityRequest.launch(Manifest.permission.CALL_PHONE)
+            }
+            binding.contactCommentData.text = comment
+
+            vacancy.employer?.let {
+                Glide.with(requireContext())
+                    .load(vacancy.employer.logoUrls) // false
+                    .placeholder(R.drawable.placeholder_company_icon)
+                    .fitCenter()
+                    .transform(RoundedCorners(RADIUS))
+                    .into(binding.ivCompany)
+            }
+
+            vacancy.description?.let {
+                val markwon = Markwon.builder(requireContext())
+                    .usePlugin(HtmlPlugin.create())
+                    .build()
+                markwon.setMarkdown(binding.vacancyDescription, it)
             }
         }
-        binding.contactCommentData.text = comment
-//        else {
-//            binding.contactPersonPhoneData.visibility = View.GONE
-//            binding.contactPersonPhone.visibility = View.GONE
-//        }
-//        if (vacancy.contactsName.isNullOrEmpty() and vacancy.contactsEmail.isNullOrEmpty() and vacancy.contactsPhones.isNullOrEmpty()) {
-//            binding.contactInformation.visibility = View.GONE
-//        }
-        vacancy.employer?.let {
-            Glide.with(requireContext())
-                .load(vacancy.employer.logoUrls) // false
-                .placeholder(R.drawable.placeholder_company_icon)
-                .fitCenter()
-                .transform(RoundedCorners(RADIUS))
-                .into(binding.ivCompany)
-        }
-
-        vacancy.description?.let {
-            val markwon = Markwon.builder(requireContext())
-                .usePlugin(HtmlPlugin.create())
-                .build()
-            markwon.setMarkdown(binding.vacancyDescription, it)
-        }
-//        vacancy.keySkills?.let {
-//            val markwon = Markwon.builder(requireContext())
-//                .usePlugin(HtmlPlugin.create())
-//                .build()
-//            markwon.setMarkdown(binding.keySkillsRecyclerView, it)
-//        }
     }
 }
