@@ -14,4 +14,3 @@ sealed class ResponseState {
     data class Loading(val isPagination: Boolean) : ResponseState()
 
 }
-
