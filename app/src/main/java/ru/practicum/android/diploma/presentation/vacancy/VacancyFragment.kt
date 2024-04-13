@@ -36,10 +36,10 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
 
     private var _binding: FragmentVacancyBinding? = null
     private val binding get() = _binding!!
-    var name: String = getString(R.string.name_text)
-    private var phones: String = getString(R.string.phone_number_text)
-    private var email: String = getString(R.string.email_text)
-    private var comment: String = getString(R.string.comment_text)
+    var name: String = "Имя"
+    private var phones: String = "+7 (985) 000-00-00"
+    private var email: String = "user@example.com"
+    private var comment: String = "Заполнить анкету по форме можно на нашем сайте"
     private var skillLength = 0
     private var skillsListLength = 0
     private var activityRequest = registerForActivityResult(
@@ -118,7 +118,7 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
     }
 
     private fun renderVacancyDetail(vacancy: VacancyDetail) {
-        binding.jobName.text = vacancy.name ?: ""
+        binding.jobName.text = vacancy.name
         vacancy.salary?.let {
             binding.jobSalary.text = SalaryUtil.formatSalary(requireContext(), vacancy.salary)
         }
@@ -130,7 +130,7 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
         binding.contactPersonData.text = name
         binding.contactPersonEmailData.setOnClickListener {
             val i = Intent(Intent.ACTION_SEND)
-            i.setType(getString(R.string.message_type))
+            i.setType("message/rfc822")
             i.putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
             try {
                 startActivity(Intent.createChooser(i, getString(R.string.SendingMessage)))
