@@ -6,4 +6,4 @@ data class VacanciesResponse(
     val items: List<VacancyDto>,
     val found: Int,
     val pages: Int
-): Response()
+) : Response()

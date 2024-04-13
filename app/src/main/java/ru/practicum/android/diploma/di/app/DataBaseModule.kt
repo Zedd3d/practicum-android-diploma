@@ -12,7 +12,7 @@ object DataBaseModule {
     @Singleton
     @Provides
     fun provideAppDatabase(context: Context): AppDatabase {
-        return Room.databaseBuilder(context, AppDatabase::class.java, "HHDatabase.db")
+        return Room.databaseBuilder(context, AppDatabase::class.java, "HHDatabase3.db")
             .build()
     }
 

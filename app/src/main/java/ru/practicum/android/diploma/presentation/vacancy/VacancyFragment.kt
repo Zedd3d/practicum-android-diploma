@@ -26,7 +26,6 @@ import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.vacancy.models.VacancyViewState
 import ru.practicum.android.diploma.util.SalaryUtil
 
-
 class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
 
     companion object {
@@ -37,10 +36,10 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
 
     private var _binding: FragmentVacancyBinding? = null
     private val binding get() = _binding!!
-    var name: String = "Имя"
-    private var phones: String = "+7 (985) 000-00-00"
-    private var email: String = "user@example.com"
-    private var comment: String = "Заполнить анкету по форме можно на нашем сайте"
+    var name: String = getString(R.string.name_text)
+    private var phones: String = getString(R.string.phone_number_text)
+    private var email: String = getString(R.string.email_text)
+    private var comment: String = getString(R.string.comment_text)
     private var skillLength = 0
     private var skillsListLength = 0
     private var activityRequest = registerForActivityResult(
@@ -103,7 +102,6 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
             else -> false
         }
 
-
         when (state) {
             is VacancyViewState.Content -> {
                 renderVacancyDetail(state.vacancyDetail)
@@ -132,7 +130,7 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
         binding.contactPersonData.text = name
         binding.contactPersonEmailData.setOnClickListener {
             val i = Intent(Intent.ACTION_SEND)
-            i.setType("message/rfc822")
+            i.setType(getString(R.string.message_type))
             i.putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
             try {
                 startActivity(Intent.createChooser(i, getString(R.string.SendingMessage)))
@@ -174,7 +172,7 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
 
             vacancy.employer?.let {
                 Glide.with(requireContext())
-                    .load(vacancy.employer.logoUrls) // false
+                    .load(vacancy.employer.logoUrls)
                     .placeholder(R.drawable.placeholder_company_icon)
                     .fitCenter()
                     .transform(RoundedCorners(RADIUS))
