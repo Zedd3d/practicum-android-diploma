@@ -49,4 +49,6 @@
     <string name="contact_p">Контактное лицо</string>
     <string name="contacts">Контакты</string>
     <string name="vacancy">Вакансия</string>
+    <string name="SendingMessage">Отправить письмо...</string>
+    <string name="mail_clients_not_installed">Почтовые клиенты не установлены.</string>
 </resources>

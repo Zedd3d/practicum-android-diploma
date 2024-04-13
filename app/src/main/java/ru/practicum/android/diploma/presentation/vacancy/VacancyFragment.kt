@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,7 +47,7 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            val intent = Intent(Intent.ACTION_CALL);
+            val intent = Intent(Intent.ACTION_CALL)
             intent.data = Uri.parse("tel:$phones")
             startActivity(intent)
         }
@@ -61,7 +60,7 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentVacancyBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -136,9 +135,9 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
             i.setType("message/rfc822")
             i.putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
             try {
-                startActivity(Intent.createChooser(i, "Отправить письмо..."))
+                startActivity(Intent.createChooser(i, getString(R.string.SendingMessage)))
             } catch (ex: ActivityNotFoundException) {
-                Toast.makeText(requireContext(), "Почтовые клиенты не установлены.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.mail_clients_not_installed), Toast.LENGTH_SHORT).show()
             }
         }
 
