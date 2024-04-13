@@ -13,12 +13,16 @@ object SalaryUtil {
     fun formatSalary(context: Context, salary: Salary?): String {
         val text = StringBuilder()
 
-        salary?.from?.let {
-            text.append("от ${formatSalary(it)}")
+        if (salary?.from != 0) {
+            salary?.from?.let {
+                text.append("${context.getString(R.string.item_from)} ${formatSalary(it)}")
+            }
         }
 
-        salary?.to?.let {
-            text.append(" до ${formatSalary(it)}")
+        if (salary?.to != 0) {
+            salary?.to?.let {
+                text.append(" ${context.getString(R.string.item_to)} ${formatSalary(it)}")
+            }
         }
 
         if (text.isEmpty()) {

@@ -6,4 +6,3 @@ data class Phone(
     val country: String,
     val number: String
 )
-

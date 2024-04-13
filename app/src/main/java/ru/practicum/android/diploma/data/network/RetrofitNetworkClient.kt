@@ -2,10 +2,7 @@ package ru.practicum.android.diploma.data.network
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.util.Log
-import kotlinx.coroutines.flow.update
 import retrofit2.HttpException
-import ru.practicum.android.diploma.domain.general.models.ResponseState
 import java.io.IOException
 import javax.inject.Inject
 
@@ -13,14 +10,25 @@ class RetrofitNetworkClient @Inject constructor(
     private val headHunterService: HeadHunterService,
     private val context: Context
 ) : NetworkClient {
+
+    companion object {
+        const val HTTP_OK = 200
+        const val HTTP_ERROR = 500
+    }
+
     override suspend fun doRequest(query: Map<String, String>): Response {
         if (!isOnline(context)) return Response().apply { resultCode = -1 }
 
+        @Suppress("SwallowedException")
         return try {
             val resp = headHunterService.vacancies(query)
-            resp.apply { resultCode = 200 }
+            resp.apply {
+                resultCode = HTTP_OK
+            }
         } catch (e: IOException) {
-            Response().apply { resultCode = 500 }
+            Response().apply {
+                resultCode = HTTP_ERROR
+            }
         } catch (e: HttpException) {
             Response().apply { resultCode = e.code() }
         }
@@ -28,12 +36,16 @@ class RetrofitNetworkClient @Inject constructor(
 
     override suspend fun doRequestById(id: String): Response {
         if (!isOnline(context)) return Response().apply { resultCode = -1 }
-
+        @Suppress("SwallowedException")
         return try {
             val resp = headHunterService.getVacancyById(id)
-            resp.apply { resultCode = 200 }
+            resp.apply {
+                resultCode = HTTP_OK
+            }
         } catch (e: IOException) {
-            Response().apply { resultCode = 500 }
+            Response().apply {
+                resultCode = HTTP_ERROR
+            }
         } catch (e: HttpException) {
             Response().apply { resultCode = e.code() }
         }

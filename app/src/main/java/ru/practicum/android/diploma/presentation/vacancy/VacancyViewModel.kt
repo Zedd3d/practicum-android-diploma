@@ -111,4 +111,3 @@ class VacancyViewModel @Inject constructor(
         return isFav
     }
 }
-
