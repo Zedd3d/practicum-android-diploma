@@ -9,7 +9,7 @@ class SharedPreferencesInteractorImpl @Inject constructor(
     private val sharedPreferencesRepository: SharedPreferencesRepository
 ) : SharedPreferencesInteractor {
 
-    override fun getAllFilters(): HashMap<String, String> {
+    override fun getAllFilters(): Map<String, String> {
         return sharedPreferencesRepository.getAllFilters()
     }
 

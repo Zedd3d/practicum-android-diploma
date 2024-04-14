@@ -19,7 +19,7 @@ class SharedPreferencesRepositoryImpl(
         )
     }
 
-    override fun getAllFilters(): HashMap<String, String> {
+    override fun getAllFilters(): Map<String, String> {
         val result = HashMap<String, String>()
 
         val areaFilter = sharedPref.getString(SharedFilterNames.AREA, null)
@@ -42,7 +42,7 @@ class SharedPreferencesRepositoryImpl(
             result.put(SharedFilterNames.ONLY_WITH_SALARY, getFilterValue(inlyWithSalaryFilter).valueString)
         }
 
-        return result
+        return result.toMap()
     }
 
     override fun setFilter(filterName: String, filterValue: FilterValue) {

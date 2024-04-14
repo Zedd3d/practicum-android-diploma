@@ -25,7 +25,7 @@ class FiltersMainViewModel @Inject constructor(
     fun getWorkPlace(): String {
         val country = sharedPreferencesInteractor.getFilter(SharedFilterNames.COUNTRY)?.valueString ?: ""
         val region = sharedPreferencesInteractor.getFilter(SharedFilterNames.AREA)?.valueString ?: ""
-        return if (country.isEmpty()) region else "$country $region"
+        return if (country.isEmpty()) region else "$country, $region"
     }
 
     fun getCurrentFilters(): FiltersMainViewState {
