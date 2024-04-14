@@ -7,7 +7,7 @@ sealed class ResponseState {
 
     data object Start : ResponseState()
     data object Empty : ResponseState()
-    data class ContentVacanciesList(val listVacancy: List<Vacancy>, val found: Int, val pages: Int) : ResponseState()
+    data class ContentVacanciesList(val listVacancy: List<Vacancy>, val found: Int, val pages: Int, val isWithFilters : Boolean) : ResponseState()
     data class ContentVacancyDetail(val vacancyDetail: VacancyDetail) : ResponseState()
     data class NetworkError(val isPagination: Boolean) : ResponseState()
     data object ServerError : ResponseState()

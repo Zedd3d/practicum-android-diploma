@@ -8,9 +8,9 @@ import javax.inject.Inject
 class SearchVacanciesUseCaseImpl @Inject constructor(
     private val vacanciesRepository: VacanciesRepository
 ) : SearchVacanciesUseCase {
-    override suspend fun invoke(query: String, page: Int): ResponseState {
+    override suspend fun invoke(query: String, page: Int, filters: Map<String, String>): ResponseState {
         return withContext(Dispatchers.IO) {
-            vacanciesRepository.search(query, page)
+            vacanciesRepository.search(query, page, filters)
         }
     }
 }
