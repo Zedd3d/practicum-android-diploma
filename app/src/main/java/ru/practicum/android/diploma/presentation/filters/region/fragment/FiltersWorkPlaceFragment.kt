@@ -9,6 +9,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -19,6 +20,7 @@ import ru.practicum.android.diploma.databinding.FragmentFiltersWorkplaceBinding
 import ru.practicum.android.diploma.domain.filters.models.FilterValue
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.filters.CustomViewPropertysSetter.setViewPropertys
+import ru.practicum.android.diploma.presentation.filters.main.fragment.FiltersMainFragment
 import ru.practicum.android.diploma.presentation.filters.region.state.FiltersWorkPlaceViewState
 import ru.practicum.android.diploma.presentation.filters.region.viewmodel.FiltersWorkPlaceViewModel
 
@@ -99,13 +101,6 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
                 } else {
                     it.getParcelable<FilterValue>(s)
                 }
-
-                val filterValueCountry = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    it.getParcelable(s, FilterValue::class.java)
-                } else {
-                    it.getParcelable<FilterValue>(s)
-                }
-
                 viewModel.setFilterRegion(filterValue)
             }
         }
@@ -116,6 +111,7 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
 
         binding.btnSelect.setOnClickListener {
             viewModel.saveFilters()
+            setFragmentResult(FiltersMainFragment.FILTER_CHANGED, bundleOf())
             onBackPressed()
         }
 

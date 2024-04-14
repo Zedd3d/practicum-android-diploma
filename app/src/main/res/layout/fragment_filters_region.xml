@@ -78,6 +78,8 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="32dp"
         android:gravity="center"
+        android:visibility="gone"
+        tools:visibility="visible"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

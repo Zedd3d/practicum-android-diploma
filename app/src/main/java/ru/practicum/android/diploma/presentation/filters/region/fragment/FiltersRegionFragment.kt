@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
@@ -24,6 +25,7 @@ import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentFiltersRegionBinding
 import ru.practicum.android.diploma.domain.models.Area
 import ru.practicum.android.diploma.presentation.Factory
+import ru.practicum.android.diploma.presentation.filters.main.fragment.FiltersMainFragment
 import ru.practicum.android.diploma.presentation.filters.region.state.AreaViewState
 import ru.practicum.android.diploma.presentation.filters.region.state.RegionSelectResult
 import ru.practicum.android.diploma.presentation.filters.region.viewmodel.FiltersRegionViewModel
@@ -113,6 +115,8 @@ class FiltersRegionFragment : Fragment(R.layout.fragment_filters_region) {
     }
 
     private fun selectRegion(selectResult: RegionSelectResult) {
+        setFragmentResult(FiltersMainFragment.FILTER_CHANGED, bundleOf())
+
         setFragmentResult(
             FiltersWorkPlaceFragment.RESULT_NAME_REGION,
             bundleOf(FiltersWorkPlaceFragment.RESULT_NAME_REGION to selectResult.filterRegion)
@@ -150,9 +154,51 @@ class FiltersRegionFragment : Fragment(R.layout.fragment_filters_region) {
         }
 
         binding.llPlaceholderTrouble.isVisible = when (state) {
-            is AreaViewState.Error -> true
+            is AreaViewState.Error, AreaViewState.Empty -> {
+                setPlaceholder(state)
+                true
+            }
+
             else -> false
         }
+    }
+
+    private fun setPlaceholder(state: AreaViewState) {
+        when (state) {
+            AreaViewState.Empty -> {
+                binding.srcText.setText(R.string.no_region)
+            }
+
+            AreaViewState.Error -> {
+                binding.srcText.setText(R.string.load_list_failure)
+            }
+
+            else -> {
+                binding.srcText.text = ""
+            }
+        }
+
+        val image = when (state) {
+            AreaViewState.Empty -> {
+                R.drawable.state_image_nothing_found
+            }
+
+            AreaViewState.Error -> {
+                R.drawable.state_image_failure
+            }
+
+            else -> {
+                null
+            }
+        }
+
+        image?.let {
+            Glide.with(requireContext())
+                .load(image)
+                .fitCenter()
+                .into(binding.src)
+        }
+
     }
 
     override fun onDestroyView() {
