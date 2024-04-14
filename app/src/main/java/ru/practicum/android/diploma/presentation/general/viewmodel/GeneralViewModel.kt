@@ -21,6 +21,7 @@ class GeneralViewModel @Inject constructor(
     fun observeUi(): LiveData<ResponseState> = state
 
     private var isNextPageLoading = false
+    private var listCount: Int = 1
 
     private var query: String? = null
         set(value) {
@@ -44,8 +45,7 @@ class GeneralViewModel @Inject constructor(
     private fun makeSearchRequest(query: String, page: Int, isPagination: Boolean) {
         state.postValue(ResponseState.Loading(isPagination))
         viewModelScope.launch {
-            val response = searchVacanciesUseCase(query, page)
-            when (response) {
+            when (val response = searchVacanciesUseCase(query, page)) {
                 is ResponseState.ContentVacanciesList -> {
                     maxPages = response.pages
                     currentListVacancies = if (isPagination) {
@@ -62,6 +62,8 @@ class GeneralViewModel @Inject constructor(
                         )
                     )
                 }
+
+                is ResponseState.NetworkError -> state.postValue(ResponseState.NetworkError(isPagination))
 
                 is ResponseState.Loading -> state.postValue(ResponseState.Loading(isPagination))
                 else -> {
@@ -93,11 +95,3 @@ class GeneralViewModel @Inject constructor(
         const val PAG_COUNT: Int = 20
     }
 }
-
-data class ViewState(
-    val vacancies: List<Vacancy> = emptyList(),
-    val status: ResponseState = ResponseState.Start,
-    val found: Int = 0,
-    val isLoading: Boolean = false,
-    val vacanciesProgress: Boolean = false
-)

@@ -37,7 +37,7 @@ class VacanciesRepositoryImpl @Inject constructor(
         } else if (response.resultCode >= HTTP_CLIENT_ERROR) {
             ResponseState.ServerError
         } else {
-            ResponseState.NetworkError
+            ResponseState.NetworkError(false)
         }
     }
 
@@ -52,7 +52,7 @@ class VacanciesRepositoryImpl @Inject constructor(
         ) {
             ResponseState.ServerError
         } else {
-            ResponseState.NetworkError
+            ResponseState.NetworkError(false)
         }
     }
 }
