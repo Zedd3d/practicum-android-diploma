@@ -19,12 +19,12 @@ class VacanciesRepositoryImpl @Inject constructor(
         const val HTTP_CLIENT_ERROR = 400
     }
 
-    override suspend fun search(text: String, page: Int): ResponseState {
+    override suspend fun search(text: String, page: Int, filters: Map<String, String>): ResponseState {
         val query = mapOf(
             "text" to text,
             "page" to page.toString(),
             "per_page" to PAGINATION_COUNT_PAGES
-        )
+        ).plus(filters)
         val response = retrofitNetworkClient.doRequest(query)
         return if (response.resultCode == HTTP_OK && response is VacanciesResponse) {
             val listVacancies = response.items.asDomain()
@@ -32,7 +32,7 @@ class VacanciesRepositoryImpl @Inject constructor(
             if (listVacancies.isEmpty()) {
                 ResponseState.Empty
             } else {
-                ResponseState.ContentVacanciesList(listVacancies, response.found, response.pages)
+                ResponseState.ContentVacanciesList(listVacancies, response.found, response.pages, filters.isNotEmpty())
             }
         } else if (response.resultCode >= HTTP_CLIENT_ERROR) {
             ResponseState.ServerError
