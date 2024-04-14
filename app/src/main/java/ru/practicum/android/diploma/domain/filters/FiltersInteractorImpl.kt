@@ -31,4 +31,11 @@ class FiltersInteractorImpl @Inject constructor(
     override suspend fun getAreasByParentId(id: String): ResponseStateArea {
         return filtersRepository.getAreasById(id)
     }
+
+    override fun clearAllFilters() {
+        val allFilters = sharedPreferencesRepository.getAllFilters()
+        allFilters.forEach {
+            sharedPreferencesRepository.setFilter(it.key, null)
+        }
+    }
 }

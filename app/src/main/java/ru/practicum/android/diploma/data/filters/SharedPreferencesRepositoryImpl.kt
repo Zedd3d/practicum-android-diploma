@@ -47,7 +47,7 @@ class SharedPreferencesRepositoryImpl(
 
     override fun setFilter(filterName: String, filterValue: FilterValue?) {
         if (filterValue == null) {
-            sharedPref.edit().remove(filterName)
+            sharedPref.edit().remove(filterName).apply()
             return
         }
         val savingFilterValue = filterValue.copy(name = filterName)
