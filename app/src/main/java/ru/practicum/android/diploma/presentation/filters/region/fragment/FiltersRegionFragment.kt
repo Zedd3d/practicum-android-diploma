@@ -24,6 +24,7 @@ import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentFiltersRegionBinding
 import ru.practicum.android.diploma.domain.models.Area
 import ru.practicum.android.diploma.presentation.Factory
+import ru.practicum.android.diploma.presentation.filters.main.fragment.FiltersMainFragment
 import ru.practicum.android.diploma.presentation.filters.region.state.AreaViewState
 import ru.practicum.android.diploma.presentation.filters.region.state.RegionSelectResult
 import ru.practicum.android.diploma.presentation.filters.region.viewmodel.FiltersRegionViewModel
@@ -113,6 +114,8 @@ class FiltersRegionFragment : Fragment(R.layout.fragment_filters_region) {
     }
 
     private fun selectRegion(selectResult: RegionSelectResult) {
+        setFragmentResult(FiltersMainFragment.FILTER_CHANGED, bundleOf())
+
         setFragmentResult(
             FiltersWorkPlaceFragment.RESULT_NAME_REGION,
             bundleOf(FiltersWorkPlaceFragment.RESULT_NAME_REGION to selectResult.filterRegion)
@@ -151,6 +154,7 @@ class FiltersRegionFragment : Fragment(R.layout.fragment_filters_region) {
 
         binding.llPlaceholderTrouble.isVisible = when (state) {
             is AreaViewState.Error -> true
+            is AreaViewState.Empty -> true
             else -> false
         }
     }

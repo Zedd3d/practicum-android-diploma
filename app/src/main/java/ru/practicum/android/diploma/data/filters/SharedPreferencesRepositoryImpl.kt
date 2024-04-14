@@ -25,6 +25,11 @@ class SharedPreferencesRepositoryImpl(
         val areaFilter = sharedPref.getString(SharedFilterNames.AREA, null)
         if (!areaFilter.isNullOrEmpty()) {
             result.put(SharedFilterNames.AREA, getFilterValue(areaFilter).id)
+        } else {
+            val areaFilterCountry = sharedPref.getString(SharedFilterNames.COUNTRY, null)
+            if (!areaFilterCountry.isNullOrEmpty()) {
+                result.put(SharedFilterNames.AREA, getFilterValue(areaFilterCountry).id)
+            }
         }
 
         val industryFilter = sharedPref.getString(SharedFilterNames.INDUSTRY, null)
@@ -45,6 +50,7 @@ class SharedPreferencesRepositoryImpl(
         return result.toMap()
     }
 
+    @Synchronized
     override fun setFilter(filterName: String, filterValue: FilterValue?) {
         if (filterValue == null) {
             sharedPref.edit().remove(filterName).apply()

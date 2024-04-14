@@ -5,6 +5,7 @@ import ru.practicum.android.diploma.domain.filters.models.FilterValue
 import ru.practicum.android.diploma.domain.filters.models.ResponseStateArea
 import ru.practicum.android.diploma.domain.sharedpreferences.api.FiltersInteractor
 import ru.practicum.android.diploma.domain.sharedpreferences.api.SharedPreferencesRepository
+import ru.practicum.android.diploma.domain.sharedpreferences.model.SharedFilterNames
 import javax.inject.Inject
 
 class FiltersInteractorImpl @Inject constructor(
@@ -37,5 +38,8 @@ class FiltersInteractorImpl @Inject constructor(
         allFilters.forEach {
             sharedPreferencesRepository.setFilter(it.key, null)
         }
+        sharedPreferencesRepository.setFilter(SharedFilterNames.COUNTRY, null)
     }
+
+
 }

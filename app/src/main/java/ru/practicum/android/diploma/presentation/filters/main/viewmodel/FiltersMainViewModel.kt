@@ -22,13 +22,23 @@ class FiltersMainViewModel @Inject constructor(
     fun getAcceptAviable(): LiveData<Boolean> = acceptAviable
 
     init {
-        state.postValue(getCurrentFilters())
+        loadCurrentFilters()
     }
 
     fun getWorkPlace(): String {
-        val country = filtersInteractor.getFilter(SharedFilterNames.COUNTRY)?.valueString ?: ""
-        val region = filtersInteractor.getFilter(SharedFilterNames.AREA)?.valueString ?: ""
-        return if (country.isEmpty()) region else "$country, $region"
+        val array = mutableListOf<String>()
+        filtersInteractor.getFilter(SharedFilterNames.COUNTRY)?.valueString?.let {
+            array.add(it)
+        }
+
+        filtersInteractor.getFilter(SharedFilterNames.AREA)?.valueString?.let {
+            array.add(it)
+        }
+
+
+        val result = array.joinToString(", ")
+
+        return result
     }
 
     fun getCurrentFilters(): FiltersMainViewState {
@@ -89,6 +99,10 @@ class FiltersMainViewModel @Inject constructor(
     fun clearAllFilters() {
         filtersInteractor.clearAllFilters()
         acceptAviable.postValue(false)
+        loadCurrentFilters()
+    }
+
+    fun loadCurrentFilters() {
         state.postValue(getCurrentFilters())
     }
 }

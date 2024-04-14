@@ -9,6 +9,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -38,6 +39,7 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
 
     companion object {
         const val DEBOUNCE = 1000L
+        const val FILTER_CHANGED = "filter_changed"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -105,6 +107,10 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
         viewModel.getAcceptAviable().observe(viewLifecycleOwner) { acceptAvaiable ->
             onChangeAcceptAvaiable(acceptAvaiable)
         }
+
+        setFragmentResultListener(FILTER_CHANGED) { s: String, bundle: Bundle ->
+            viewModel.loadCurrentFilters()
+        }
     }
 
     private fun onChangeAcceptAvaiable(acceptAvaiable: Boolean) {
@@ -126,6 +132,8 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
             is FiltersMainViewState.Empty -> {
                 setViewPropertys(binding.llWorkPlace, "")
                 setViewPropertys(binding.llIndustries, "")
+                binding.tietSalary.setText("")
+                binding.cbOnlyWithSalary.isChecked = false
             }
 
             is FiltersMainViewState.Content -> {
@@ -135,6 +143,11 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
                 binding.cbOnlyWithSalary.isChecked = state.onlyWithSalary
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadCurrentFilters()
     }
 
     override fun onDestroyView() {

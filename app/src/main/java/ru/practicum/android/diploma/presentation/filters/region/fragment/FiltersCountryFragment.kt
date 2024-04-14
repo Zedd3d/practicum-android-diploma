@@ -19,6 +19,7 @@ import ru.practicum.android.diploma.databinding.FragmentFiltersCountryBinding
 import ru.practicum.android.diploma.domain.filters.models.FilterValue
 import ru.practicum.android.diploma.domain.models.Area
 import ru.practicum.android.diploma.presentation.Factory
+import ru.practicum.android.diploma.presentation.filters.main.fragment.FiltersMainFragment
 import ru.practicum.android.diploma.presentation.filters.region.state.AreaViewState
 import ru.practicum.android.diploma.presentation.filters.region.viewmodel.FiltersCountryViewModel
 
@@ -80,6 +81,7 @@ class FiltersCountryFragment : Fragment(R.layout.fragment_filters_country) {
     }
 
     private fun selectCountry(filterValue: FilterValue) {
+        setFragmentResult(FiltersMainFragment.FILTER_CHANGED, bundleOf())
         setFragmentResult(RESULT_NAME, bundleOf(RESULT_NAME to filterValue))
         onBackPressed()
     }
