@@ -14,9 +14,9 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
-import ru.practicum.android.diploma.databinding.FilterCategotyElementBinding
 import ru.practicum.android.diploma.databinding.FragmentFiltersMainBinding
 import ru.practicum.android.diploma.presentation.Factory
+import ru.practicum.android.diploma.presentation.filters.CustomViewPropertysSetter.setViewPropertys
 import ru.practicum.android.diploma.presentation.filters.main.state.FiltersMainViewState
 import ru.practicum.android.diploma.presentation.filters.main.viewmodel.FiltersMainViewModel
 import ru.practicum.android.diploma.util.onTextChange
@@ -25,7 +25,7 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
 
     private val viewModel by viewModels<FiltersMainViewModel> {
         Factory {
-            (requireContext() as App).appComponent.generalComponent().viewModel()
+            (requireContext().applicationContext as App).appComponent.filtersMainComponent().viewModel()
         }
     }
 
@@ -34,6 +34,8 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentFiltersMainBinding.inflate(layoutInflater)
+        binding.llWorkPlace.smallTextBlock.setText(getString(R.string.filter_workplace))
+        binding.llIndustries.smallTextBlock.setText(getString(R.string.filter_industries))
         return binding.root
     }
 
@@ -42,9 +44,6 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
 
         binding.btnCancel.isSelected = true
         activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = false
-
-        binding.llWorkPlace.smallTextBlock.setText(getString(R.string.filter_workplace))
-        binding.llIndustries.smallTextBlock.setText(getString(R.string.filter_industries))
 
         binding.tietSalary.onTextChange {
             setHintTextColor(it)
@@ -69,8 +68,15 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
             Toast.makeText(context, "Сбросить", Toast.LENGTH_SHORT).show()
         }
 
-        onChangeViewState(FiltersMainViewState.Empty)
+        binding.llWorkPlace.root.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_filtersMainFragment_to_filtersWorkPlaceFragment
+            )
+        }
 
+        viewModel.getState().observe(viewLifecycleOwner) { state ->
+            onChangeViewState(state)
+        }
     }
 
     private fun onBackPressed() {
@@ -98,19 +104,6 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
 
         binding.btnCancel.isVisible = false
         binding.btnAccept.isVisible = false
-    }
-
-    @SuppressLint("ResourceAsColor")
-    private fun setViewPropertys(v: FilterCategotyElementBinding, textValue: String) {
-        if (textValue.isEmpty()) {
-            v.smallTextBlock.isVisible = false
-            v.standardTextBlock.text = v.smallTextBlock.text
-            v.standardTextBlock.setTextColor(R.color.Gray_yp)
-        } else {
-            v.smallTextBlock.isVisible = true
-            v.standardTextBlock.text = textValue
-            v.standardTextBlock.setTextColor(R.color.BlackDay_WhiteNight)
-        }
     }
 
     override fun onDestroyView() {

@@ -3,6 +3,7 @@
 dagger = "2.51"
 glide = "4.16.0"
 gson = "2.10.1"
+html = "4.6.2"
 java = "VERSION_1_8"
 
 # Build constants
@@ -26,10 +27,12 @@ kotlin = "1.9.22"
 
 # Detekt
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+core = { module = "io.noties.markwon:core", version.ref = "html" }
 dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+html = { module = "io.noties.markwon:html", version.ref = "html" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 lifecycle-compiler = { module = "androidx.lifecycle:lifecycle-compiler", version.ref = "lifecycleViewmodelKtx" }
 lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
@@ -42,6 +45,7 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+simple-ext = { module = "io.noties.markwon:simple-ext", version.ref = "html" }
 staticAnalysis-detektPlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 staticAnalysis-detektCli = { module = "io.gitlab.arturbosch.detekt:detekt-cli", version.ref = "detekt" }
 staticAnalysis-detektApi = { module = "io.gitlab.arturbosch.detekt:detekt-api", version.ref = "detekt" }

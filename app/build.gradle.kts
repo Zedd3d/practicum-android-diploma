@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("ru.practicum.android.diploma.plugins.developproperties")
     id("kotlin-kapt")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -88,4 +89,6 @@ dependencies {
 
     // ui
     implementation(libs.glide)
+    implementation(libs.core)
+    implementation(libs.html)
 }

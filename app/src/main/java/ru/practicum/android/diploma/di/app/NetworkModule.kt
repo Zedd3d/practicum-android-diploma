@@ -7,8 +7,10 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.practicum.android.diploma.BuildConfig
-import ru.practicum.android.diploma.data.network.ApiEndpoints
 import ru.practicum.android.diploma.data.network.HeadHunterService
+import javax.inject.Singleton
+
+const val BASE_URL = "https://api.hh.ru/"
 
 @Module
 object NetworkModule {
@@ -32,10 +34,11 @@ object NetworkModule {
     @Provides
     fun provideRetrofit(client: OkHttpClient) = Retrofit.Builder()
         .client(client)
-        .baseUrl(ApiEndpoints.BASE_URL)
+        .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
     @Provides
+    @Singleton
     fun provideHeadHunterService(retrofit: Retrofit): HeadHunterService = retrofit.create(HeadHunterService::class.java)
 }
