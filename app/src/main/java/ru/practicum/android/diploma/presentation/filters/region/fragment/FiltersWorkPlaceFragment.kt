@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.clearFragmentResultListener
@@ -35,6 +36,11 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
 
     companion object {
         const val RESULT_NAME_COUNTRY = "result_country"
+        const val RESULT_NAME_REGION = "result_region"
+        const val COUNTRY_ID = "countryId"
+        fun createArgs(countryId: String): Bundle =
+            bundleOf(COUNTRY_ID to countryId)
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -60,6 +66,14 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
             onBackPressed()
         }
 
+        binding.llCountry.ivBtnClear.setOnClickListener {
+            viewModel.clearCountry()
+        }
+
+        binding.llRegion.ivBtnClear.setOnClickListener {
+            viewModel.clearRegion()
+        }
+
         binding.llCountry.root.setOnClickListener {
             setFragmentResultListener(RESULT_NAME_COUNTRY) { s: String, bundle: Bundle ->
                 bundle.let {
@@ -79,15 +93,26 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
             )
         }
 
+        binding.llRegion.root.setOnClickListener {
+            setFragmentResultListener(RESULT_NAME_REGION) { s: String, bundle: Bundle ->
+                bundle.let {
+                    val filterValue = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        it.getParcelable(s, FilterValue::class.java)
+                    } else {
+                        it.getParcelable<FilterValue>(s)
+                    }
+
+                    viewModel.setFilterRegion(filterValue)
+                }
+
+                clearFragmentResultListener(RESULT_NAME_COUNTRY)
+            }
+            viewModel.selectRegion()
+        }
+
         binding.btnSelect.setOnClickListener {
             viewModel.saveFilters()
             onBackPressed()
-        }
-
-        binding.llRegion.root.setOnClickListener {
-            findNavController().navigate(
-                R.id.action_filtersWorkPlaceFragment_to_filtersRegionFragment
-            )
         }
 
         viewModel.getState().observe(viewLifecycleOwner) { state ->
@@ -97,6 +122,17 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
         viewModel.getFilterChanged().observe(viewLifecycleOwner) { filterChanged ->
             onFilterChanged(filterChanged)
         }
+
+        viewModel.getSelectRegion().observe(viewLifecycleOwner) { countryId ->
+            selectRegion(countryId)
+        }
+    }
+
+    private fun selectRegion(countryId: String) {
+        findNavController().navigate(
+            R.id.action_filtersWorkPlaceFragment_to_filtersRegionFragment,
+            createArgs(countryId)
+        )
     }
 
     private fun onFilterChanged(filterChanged: Boolean) {
@@ -118,7 +154,6 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
     }
 
     private fun onBackPressed() {
-        activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = true
         findNavController().popBackStack()
     }
 

@@ -9,7 +9,7 @@ import ru.practicum.android.diploma.domain.filters.models.FilterValue
 import ru.practicum.android.diploma.domain.filters.models.ResponseStateArea
 import ru.practicum.android.diploma.domain.models.Area
 import ru.practicum.android.diploma.domain.sharedpreferences.api.FiltersInteractor
-import ru.practicum.android.diploma.presentation.filters.region.state.CountryViewState
+import ru.practicum.android.diploma.presentation.filters.region.state.AreaViewState
 import ru.practicum.android.diploma.ui.SingleLiveEvent
 import ru.practicum.android.diploma.util.debounceFun
 import javax.inject.Inject
@@ -18,7 +18,7 @@ class FiltersCountryViewModel @Inject constructor(
     private val filtersInteractor: FiltersInteractor
 ) : ViewModel() {
 
-    private val state = MutableLiveData<CountryViewState>()
+    private val state = MutableLiveData<AreaViewState>()
 
     private val onCountryClickDebounce =
         debounceFun<FilterValue>(CLICK_DELAY, viewModelScope, false) { filterValue ->
@@ -37,7 +37,7 @@ class FiltersCountryViewModel @Inject constructor(
 
     fun getSelectCountry(): SingleLiveEvent<FilterValue> = selectCountry
 
-    fun getState(): LiveData<CountryViewState> = state
+    fun getState(): LiveData<AreaViewState> = state
     fun loadAreas() {
         viewModelScope.launch {
             asyncLoadData()
@@ -45,18 +45,18 @@ class FiltersCountryViewModel @Inject constructor(
     }
 
     suspend fun asyncLoadData() {
-        state.postValue(CountryViewState.Loading)
+        state.postValue(AreaViewState.Loading)
 
         val response = filtersInteractor.getAreas()
 
         when (response) {
             is ResponseStateArea.ContentArea -> {
-                state.postValue(CountryViewState.Content(response.listAreas))
+                state.postValue(AreaViewState.Content(response.listAreas))
             }
 
-            is ResponseStateArea.Loading -> state.postValue(CountryViewState.Loading)
+            is ResponseStateArea.Loading -> state.postValue(AreaViewState.Loading)
 
-            else -> state.postValue(CountryViewState.Error)
+            else -> state.postValue(AreaViewState.Error)
         }
     }
 

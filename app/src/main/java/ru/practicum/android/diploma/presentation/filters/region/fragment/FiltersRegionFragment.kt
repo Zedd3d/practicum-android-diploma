@@ -1,38 +1,55 @@
 package ru.practicum.android.diploma.presentation.filters.region.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentFiltersRegionBinding
+import ru.practicum.android.diploma.domain.filters.models.FilterValue
 import ru.practicum.android.diploma.domain.models.Area
 import ru.practicum.android.diploma.presentation.Factory
-import ru.practicum.android.diploma.presentation.filters.main.state.FiltersMainViewState
+import ru.practicum.android.diploma.presentation.filters.region.state.AreaViewState
 import ru.practicum.android.diploma.presentation.filters.region.viewmodel.FiltersRegionViewModel
+import ru.practicum.android.diploma.util.onTextChangeDebounce
 
 class FiltersRegionFragment : Fragment(R.layout.fragment_filters_region) {
 
     private val viewModel by viewModels<FiltersRegionViewModel> {
         Factory {
-            (requireContext().applicationContext as App).appComponent.generalComponent().viewModel()
+            (requireContext().applicationContext as App).appComponent.regionComponent()
+                .create(requireNotNull(requireArguments().getString("countryId"))).viewModel()
         }
     }
 
     private var _binding: FragmentFiltersRegionBinding? = null
     private val binding get() = _binding!!
 
-    private val adapter = FiltersAreaAdapter(emptyList<Area>()) { area: Area ->
+    private val adapter = FiltersAreaAdapter(emptyList<Area>()) { filterValue: Area ->
         clickListener(
-            area
+            filterValue
         )
+    }
+
+    companion object {
+        const val RESULT_NAME = "result_region"
+        const val DEBOUNCE = 1000L
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -42,8 +59,27 @@ class FiltersRegionFragment : Fragment(R.layout.fragment_filters_region) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = false
+
+        binding.rvAreas.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvAreas.adapter = adapter
+
+        binding.searchEditText.onTextChangeDebounce().debounce(DEBOUNCE)
+            .onEach {
+                val query = it?.toString().orEmpty()
+                viewModel.search(query)
+            }.launchIn(lifecycleScope)
+
+        binding.searchEditText.ena
+
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                setupIcon(p0.toString())
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+        })
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -55,21 +91,58 @@ class FiltersRegionFragment : Fragment(R.layout.fragment_filters_region) {
         binding.toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
-        onChangeViewState(FiltersMainViewState.Empty)
 
+        viewModel.getState().observe(viewLifecycleOwner) { state ->
+            onChangeViewState(state)
+        }
+
+        viewModel.getSelectRegion().observe(viewLifecycleOwner) { filterValue ->
+            selectRegion(filterValue)
+        }
+    }
+
+    private fun setupIcon(it: String) {
+        if (it.isNotBlank()) {
+            binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_clear, 0)
+        } else {
+            binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_search, 0)
+        }
+    }
+
+    private fun selectRegion(filterValue: FilterValue) {
+        setFragmentResult(RESULT_NAME, bundleOf(RESULT_NAME to filterValue))
+        onBackPressed()
     }
 
     private fun clickListener(area: Area) {
-
+        viewModel.selectRegion(area)
     }
 
     private fun onBackPressed() {
-        activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = true
         findNavController().popBackStack()
     }
 
-    private fun onChangeViewState(state: FiltersMainViewState) {
+    private fun onChangeViewState(state: AreaViewState) {
+        if (state is AreaViewState.Content) adapter.setNewList(state.listAreas)
 
+        binding.rvAreas.isVisible = when (state) {
+            is AreaViewState.Content -> true
+            else -> false
+        }
+        binding.rvAreas.isVisible = when (state) {
+            is AreaViewState.Content -> true
+            else -> false
+        }
+
+        binding.progressBar.isVisible = when (state) {
+            is AreaViewState.Loading -> true
+            else -> false
+        }
+
+        binding.llPlaceholderTrouble.isVisible = when (state) {
+            is AreaViewState.Error -> true
+            else -> false
+        }
     }
 
     override fun onDestroyView() {
