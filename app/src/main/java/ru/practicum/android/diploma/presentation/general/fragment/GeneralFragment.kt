@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -51,7 +52,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentGeneralBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -146,8 +147,13 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 binding.srcText.setText(R.string.server_error)
             }
 
-            ResponseState.NetworkError -> {
+            ResponseState.NetworkError(false) -> {
                 binding.srcText.setText(R.string.no_internet)
+            }
+
+            ResponseState.NetworkError(true) -> {
+                binding.src.isVisible = false
+                Toast.makeText(requireContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show()
             }
 
             else -> {
@@ -161,6 +167,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         binding.vacanciesRv.isVisible = when (state) {
             is ResponseState.Loading -> state.isPagination
             is ResponseState.ContentVacanciesList -> true
+            is ResponseState.NetworkError -> true
             else -> false
         }
         binding.src.visibleOrGone(state !is ResponseState.Loading && state !is ResponseState.ContentVacanciesList)
@@ -178,7 +185,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 R.drawable.state_image_server_error_search
             }
 
-            ResponseState.NetworkError -> {
+            ResponseState.NetworkError(false) -> {
                 R.drawable.state_image_no_internet
             }
 
