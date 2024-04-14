@@ -45,8 +45,13 @@ class SharedPreferencesRepositoryImpl(
         return result.toMap()
     }
 
-    override fun setFilter(filterName: String, filterValue: FilterValue) {
-        val json = gson.toJson(filterValue)
+    override fun setFilter(filterName: String, filterValue: FilterValue?) {
+        if (filterValue == null) {
+            sharedPref.edit().remove(filterName)
+            return
+        }
+        val savingFilterValue = filterValue.copy(name = filterName)
+        val json = gson.toJson(savingFilterValue)
         sharedPref.edit().putString(filterName, json).apply()
     }
 

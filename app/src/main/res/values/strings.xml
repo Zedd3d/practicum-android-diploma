@@ -16,6 +16,7 @@
     <string name="favorite_head_name">Избранное</string>
     <string name="favorite_empty">Список пуст</string>
     <!-- TODO: general strings -->
+    <string name="load_list_failure">Не удалось получить \n список</string>
     <string name="no_vacancies">Не удалось получить \n список вакансий</string>
     <string name="no_vacancies_lil">Таких вакансий нет</string>
     <string name="no_internet">Нет интернета</string>

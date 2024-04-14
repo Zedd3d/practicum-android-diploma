@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
+import ru.practicum.android.diploma.data.network.models.AreasResponse
 import java.io.IOException
 import javax.inject.Inject
 
@@ -54,6 +55,26 @@ class RetrofitNetworkClient @Inject constructor(
             } catch (e: HttpException) {
                 Response().apply { resultCode = e.code() }
             }
+        }
+    }
+
+    override suspend fun getAreas(): Response {
+        if (!isOnline(context)) return Response().apply { resultCode = -1 }
+
+        return try {
+            val response = headHunterService.getAreas()
+
+            val resp = AreasResponse(response)
+
+            resp.apply {
+                resultCode = HTTP_OK
+            }
+        } catch (e: IOException) {
+            Response().apply {
+                resultCode = HTTP_ERROR
+            }
+        } catch (e: HttpException) {
+            Response().apply { resultCode = e.code() }
         }
     }
 

@@ -80,7 +80,6 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
     }
 
     private fun onBackPressed() {
-        activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = true
         findNavController().popBackStack()
     }
 

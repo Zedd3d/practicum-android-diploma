@@ -7,5 +7,5 @@ interface SharedPreferencesRepository {
 
     fun getFilter(filterName: String): FilterValue?
 
-    fun setFilter(filterName: String, filterValue: FilterValue)
+    fun setFilter(filterName: String, filterValue: FilterValue?)
 }
