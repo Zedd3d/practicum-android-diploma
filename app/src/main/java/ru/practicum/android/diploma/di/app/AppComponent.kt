@@ -33,7 +33,7 @@ interface AppComponent {
 
     fun countryComponent(): CountryComponent
 
-    fun regionComponent(): RegionComponent
+    fun regionComponent(): RegionComponent.RegionComponentFactory
 
     fun filtersMainComponent(): FiltersMainComponent
 

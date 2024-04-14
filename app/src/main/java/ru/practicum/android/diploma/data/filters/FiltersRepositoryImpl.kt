@@ -33,12 +33,46 @@ class FiltersRepositoryImpl @Inject constructor(
             ResponseStateArea.NetworkError
         }
     }
+
+    override suspend fun getAreasById(id: String): ResponseStateArea {
+        val response = retrofitNetworkClient.getAreasById(id)
+        return if (response.resultCode == HTTP_OK && response is AreasResponse) {
+            val listAreas = response.items.map { it.asDomain() }
+
+            val result = mutableListOf<Area>()
+            listAreas.forEach {
+                addAreas(it, it, result)
+            }
+
+            if (listAreas.isEmpty()) {
+                ResponseStateArea.Empty
+            } else {
+                ResponseStateArea.ContentArea(result.toList())
+            }
+        } else if (response.resultCode >= HTTP_CLIENT_ERROR) {
+            ResponseStateArea.ServerError
+        } else {
+            ResponseStateArea.NetworkError
+        }
+    }
+
+    private fun addAreas(vacancyArea: Area, parentArea: Area, list: MutableList<Area>) {
+        if (!vacancyArea.parentId.isNullOrEmpty()) list.add(vacancyArea)
+        vacancyArea.areas.forEach {
+            addAreas(
+                it.copy(parentArea = parentArea),
+                parentArea,
+                list
+            )
+        }
+    }
 }
 
 private fun VacancyAreaDto.asDomain(): Area {
     return Area(
         id,
         parentId ?: "",
+        null,
         name,
         areas.map { it -> it.asDomain() }
     )

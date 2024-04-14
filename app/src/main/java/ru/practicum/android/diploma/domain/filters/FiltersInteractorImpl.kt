@@ -27,4 +27,8 @@ class FiltersInteractorImpl @Inject constructor(
     override suspend fun getAreas(): ResponseStateArea {
         return filtersRepository.getAreas()
     }
+
+    override suspend fun getAreasByParentId(id: String): ResponseStateArea {
+        return filtersRepository.getAreasById(id)
+    }
 }

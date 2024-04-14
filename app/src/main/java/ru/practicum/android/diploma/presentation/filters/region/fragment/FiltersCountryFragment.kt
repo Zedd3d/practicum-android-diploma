@@ -19,7 +19,7 @@ import ru.practicum.android.diploma.databinding.FragmentFiltersCountryBinding
 import ru.practicum.android.diploma.domain.filters.models.FilterValue
 import ru.practicum.android.diploma.domain.models.Area
 import ru.practicum.android.diploma.presentation.Factory
-import ru.practicum.android.diploma.presentation.filters.region.state.CountryViewState
+import ru.practicum.android.diploma.presentation.filters.region.state.AreaViewState
 import ru.practicum.android.diploma.presentation.filters.region.viewmodel.FiltersCountryViewModel
 
 class FiltersCountryFragment : Fragment(R.layout.fragment_filters_country) {
@@ -88,26 +88,26 @@ class FiltersCountryFragment : Fragment(R.layout.fragment_filters_country) {
         findNavController().popBackStack()
     }
 
-    private fun onChangeViewState(state: CountryViewState) {
+    private fun onChangeViewState(state: AreaViewState) {
 
-        if (state is CountryViewState.Content) adapter.setNewList(state.listAreas)
+        if (state is AreaViewState.Content) adapter.setNewList(state.listAreas)
 
         binding.rvCountries.isVisible = when (state) {
-            is CountryViewState.Content -> true
+            is AreaViewState.Content -> true
             else -> false
         }
         binding.rvCountries.isVisible = when (state) {
-            is CountryViewState.Content -> true
+            is AreaViewState.Content -> true
             else -> false
         }
 
         binding.progressBar.isVisible = when (state) {
-            is CountryViewState.Loading -> true
+            is AreaViewState.Loading -> true
             else -> false
         }
 
         binding.llPlaceholderTrouble.isVisible = when (state) {
-            is CountryViewState.Error -> true
+            is AreaViewState.Error -> true
             else -> false
         }
 
