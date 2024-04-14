@@ -15,13 +15,13 @@ object SalaryUtil {
 
         if (salary?.from != 0) {
             salary?.from?.let {
-                text.append("${context.getString(R.string.item_from)} ${formatSalary(it)}")
+                text.append("от ${formatSalary(it)}")
             }
         }
 
         if (salary?.to != 0) {
             salary?.to?.let {
-                text.append(" ${context.getString(R.string.item_to)} ${formatSalary(it)}")
+                text.append(" до ${formatSalary(it)}")
             }
         }
 
