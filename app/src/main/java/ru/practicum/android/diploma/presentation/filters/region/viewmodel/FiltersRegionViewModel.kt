@@ -5,7 +5,4 @@ import javax.inject.Inject
 
 class FiltersRegionViewModel @Inject constructor() : ViewModel() {
 
-    fun toDo() {
-        TODO()
-    }
 }

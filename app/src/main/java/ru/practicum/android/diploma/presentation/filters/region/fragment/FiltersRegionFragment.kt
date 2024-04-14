@@ -13,7 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentFiltersRegionBinding
-import ru.practicum.android.diploma.domain.filters.models.FilterValue
+import ru.practicum.android.diploma.domain.models.Area
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.filters.main.state.FiltersMainViewState
 import ru.practicum.android.diploma.presentation.filters.region.viewmodel.FiltersRegionViewModel
@@ -29,9 +29,9 @@ class FiltersRegionFragment : Fragment(R.layout.fragment_filters_region) {
     private var _binding: FragmentFiltersRegionBinding? = null
     private val binding get() = _binding!!
 
-    private val adapter = FiltersAreaAdapter(emptyList<FilterValue>()) { filterValue: FilterValue ->
+    private val adapter = FiltersAreaAdapter(emptyList<Area>()) { area: Area ->
         clickListener(
-            filterValue
+            area
         )
     }
 
@@ -59,8 +59,8 @@ class FiltersRegionFragment : Fragment(R.layout.fragment_filters_region) {
 
     }
 
-    private fun clickListener(filterValue: FilterValue) {
-        TODO()
+    private fun clickListener(area: Area) {
+
     }
 
     private fun onBackPressed() {
@@ -69,7 +69,7 @@ class FiltersRegionFragment : Fragment(R.layout.fragment_filters_region) {
     }
 
     private fun onChangeViewState(state: FiltersMainViewState) {
-        TODO()
+
     }
 
     override fun onDestroyView() {

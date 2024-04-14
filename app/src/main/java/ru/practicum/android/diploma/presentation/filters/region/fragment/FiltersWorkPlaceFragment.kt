@@ -1,5 +1,6 @@
 package ru.practicum.android.diploma.presentation.filters.region.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,8 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.clearFragmentResultListener
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -23,17 +26,15 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
 
     private val viewModel by viewModels<FiltersWorkPlaceViewModel> {
         Factory {
-            (requireContext().applicationContext as App).appComponent.generalComponent().viewModel()
+            (requireContext().applicationContext as App).appComponent.workPlaceComponent().viewModel()
         }
     }
 
     private var _binding: FragmentFiltersWorkplaceBinding? = null
     private val binding get() = _binding!!
 
-    private val adapter = FiltersAreaAdapter(emptyList<FilterValue>()) { filterValue: FilterValue ->
-        clickListener(
-            filterValue
-        )
+    companion object {
+        const val RESULT_NAME_COUNTRY = "result_country"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -60,9 +61,27 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
         }
 
         binding.llCountry.root.setOnClickListener {
+            setFragmentResultListener(RESULT_NAME_COUNTRY) { s: String, bundle: Bundle ->
+                bundle.let {
+                    val filterValue = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        it.getParcelable(s, FilterValue::class.java)
+                    } else {
+                        it.getParcelable<FilterValue>(s)
+                    }
+
+                    viewModel.setFilterCountry(filterValue)
+                }
+
+                clearFragmentResultListener(RESULT_NAME_COUNTRY)
+            }
             findNavController().navigate(
                 R.id.action_filtersWorkPlaceFragment_to_filtersCountryFragment
             )
+        }
+
+        binding.btnSelect.setOnClickListener {
+            viewModel.saveFilters()
+            onBackPressed()
         }
 
         binding.llRegion.root.setOnClickListener {
@@ -71,8 +90,17 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
             )
         }
 
-        onChangeViewState(FiltersWorkPlaceViewState.Empty)
+        viewModel.getState().observe(viewLifecycleOwner) { state ->
+            onChangeViewState(state)
+        }
 
+        viewModel.getFilterChanged().observe(viewLifecycleOwner) { filterChanged ->
+            onFilterChanged(filterChanged)
+        }
+    }
+
+    private fun onFilterChanged(filterChanged: Boolean) {
+        binding.btnSelect.isVisible = filterChanged
     }
 
     private fun onChangeViewState(state: FiltersWorkPlaceViewState) {
@@ -87,10 +115,6 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
                 setViewPropertys(binding.llRegion, state.region)
             }
         }
-    }
-
-    private fun clickListener(filterValue: FilterValue) {
-        TODO()
     }
 
     private fun onBackPressed() {
