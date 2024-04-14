@@ -111,6 +111,10 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
         setFragmentResultListener(FILTER_CHANGED) { s: String, bundle: Bundle ->
             viewModel.loadCurrentFilters()
         }
+
+        binding.llWorkPlace.ivBtnClear.setOnClickListener {
+            viewModel.clearWorkPlace()
+        }
     }
 
     private fun onChangeAcceptAvaiable(acceptAvaiable: Boolean) {

@@ -105,4 +105,10 @@ class FiltersMainViewModel @Inject constructor(
     fun loadCurrentFilters() {
         state.postValue(getCurrentFilters())
     }
+
+    fun clearWorkPlace() {
+        filtersInteractor.setFilter(SharedFilterNames.COUNTRY, null)
+        filtersInteractor.setFilter(SharedFilterNames.AREA, null)
+        loadCurrentFilters()
+    }
 }
