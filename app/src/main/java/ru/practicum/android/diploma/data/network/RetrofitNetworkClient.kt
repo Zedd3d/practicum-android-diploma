@@ -3,7 +3,6 @@ package ru.practicum.android.diploma.data.network
 import android.content.Context
 import android.net.ConnectivityManager
 import retrofit2.HttpException
-import ru.practicum.android.diploma.data.dto.VacancyAreaDto
 import ru.practicum.android.diploma.data.network.models.AreasResponse
 import java.io.IOException
 import javax.inject.Inject
@@ -73,33 +72,18 @@ class RetrofitNetworkClient @Inject constructor(
         }
     }
 
-    private fun addAreas(vacancyAreaDto: VacancyAreaDto, list: MutableList<VacancyAreaDto>) {
-        list.add(vacancyAreaDto)
-        vacancyAreaDto.areas.forEach {
-            addAreas(it, list)
-        }
-    }
 
     override suspend fun getAreasById(id: String): Response {
         if (!isOnline(context)) return Response().apply { resultCode = -1 }
 
         return try {
-
             val response = when (id) {
                 "" -> {
-                    val result = mutableListOf<VacancyAreaDto>()
-                    headHunterService.getAreas().forEach {
-                        addAreas(it, result)
-                    }
-                    result
+                    headHunterService.getAreas()
                 }
 
                 else -> {
-                    val result = mutableListOf<VacancyAreaDto>()
-                    headHunterService.getAreaById(id).areas.forEach {
-                        addAreas(it, result)
-                    }
-                    result
+                    listOf(headHunterService.getAreaById(id))
                 }
             }
 

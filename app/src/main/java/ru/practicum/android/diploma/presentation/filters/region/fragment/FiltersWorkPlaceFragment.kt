@@ -9,7 +9,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.clearFragmentResultListener
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -75,38 +74,43 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
         }
 
         binding.llCountry.root.setOnClickListener {
-            setFragmentResultListener(RESULT_NAME_COUNTRY) { s: String, bundle: Bundle ->
-                bundle.let {
-                    val filterValue = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        it.getParcelable(s, FilterValue::class.java)
-                    } else {
-                        it.getParcelable<FilterValue>(s)
-                    }
-
-                    viewModel.setFilterCountry(filterValue)
-                }
-
-                clearFragmentResultListener(RESULT_NAME_COUNTRY)
-            }
             findNavController().navigate(
                 R.id.action_filtersWorkPlaceFragment_to_filtersCountryFragment
             )
         }
 
-        binding.llRegion.root.setOnClickListener {
-            setFragmentResultListener(RESULT_NAME_REGION) { s: String, bundle: Bundle ->
-                bundle.let {
-                    val filterValue = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        it.getParcelable(s, FilterValue::class.java)
-                    } else {
-                        it.getParcelable<FilterValue>(s)
-                    }
-
-                    viewModel.setFilterRegion(filterValue)
+        setFragmentResultListener(RESULT_NAME_COUNTRY) { s: String, bundle: Bundle ->
+            bundle.let {
+                val filterValue = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    it.getParcelable(s, FilterValue::class.java)
+                } else {
+                    it.getParcelable<FilterValue>(s)
                 }
 
-                clearFragmentResultListener(RESULT_NAME_COUNTRY)
+                viewModel.setFilterCountry(filterValue)
             }
+        }
+
+
+        setFragmentResultListener(RESULT_NAME_REGION) { s: String, bundle: Bundle ->
+            bundle.let {
+                val filterValue = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    it.getParcelable(s, FilterValue::class.java)
+                } else {
+                    it.getParcelable<FilterValue>(s)
+                }
+
+                val filterValueCountry = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    it.getParcelable(s, FilterValue::class.java)
+                } else {
+                    it.getParcelable<FilterValue>(s)
+                }
+
+                viewModel.setFilterRegion(filterValue)
+            }
+        }
+
+        binding.llRegion.root.setOnClickListener {
             viewModel.selectRegion()
         }
 

@@ -10,6 +10,7 @@ import ru.practicum.android.diploma.domain.filters.models.ResponseStateArea
 import ru.practicum.android.diploma.domain.models.Area
 import ru.practicum.android.diploma.domain.sharedpreferences.api.FiltersInteractor
 import ru.practicum.android.diploma.presentation.filters.region.state.AreaViewState
+import ru.practicum.android.diploma.presentation.filters.region.state.RegionSelectResult
 import ru.practicum.android.diploma.ui.SingleLiveEvent
 import ru.practicum.android.diploma.util.debounceFun
 import javax.inject.Inject
@@ -24,11 +25,11 @@ class FiltersRegionViewModel @Inject constructor(
     private val state = MutableLiveData<AreaViewState>()
 
     private val onRegionClickDebounce =
-        debounceFun<FilterValue>(CLICK_DELAY, viewModelScope, false) { filterValue ->
+        debounceFun<RegionSelectResult>(CLICK_DELAY, viewModelScope, false) { filterValue ->
             selectRegion.postValue(filterValue)
         }
 
-    private val selectRegion = SingleLiveEvent<FilterValue>()
+    private val selectRegion = SingleLiveEvent<RegionSelectResult>()
 
     companion object {
         private const val CLICK_DELAY = 300L
@@ -38,7 +39,7 @@ class FiltersRegionViewModel @Inject constructor(
         loadAreas()
     }
 
-    fun getSelectRegion(): SingleLiveEvent<FilterValue> = selectRegion
+    fun getSelectRegion(): SingleLiveEvent<RegionSelectResult> = selectRegion
 
     fun getState(): LiveData<AreaViewState> = state
     fun loadAreas() {
@@ -66,13 +67,28 @@ class FiltersRegionViewModel @Inject constructor(
     }
 
     fun selectRegion(area: Area) {
-        val filterValue = FilterValue(
-            area.id,
-            area.parentId,
-            area.name,
-            area.name
+
+        val parentArea = when (area.parentArea) {
+            null -> area
+            else -> area.parentArea
+        }
+
+        val result = RegionSelectResult(
+            filterCountry = FilterValue(
+                parentArea.id,
+                "",
+                parentArea.name,
+                parentArea.name
+            ),
+            filterRegion = FilterValue(
+                area.id,
+                area.parentId,
+                area.name,
+                area.name
+            )
         )
-        onRegionClickDebounce(filterValue)
+
+        onRegionClickDebounce(result)
     }
 
     fun search(query: String) {

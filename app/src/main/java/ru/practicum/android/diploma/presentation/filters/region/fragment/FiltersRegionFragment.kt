@@ -22,10 +22,10 @@ import kotlinx.coroutines.flow.onEach
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentFiltersRegionBinding
-import ru.practicum.android.diploma.domain.filters.models.FilterValue
 import ru.practicum.android.diploma.domain.models.Area
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.filters.region.state.AreaViewState
+import ru.practicum.android.diploma.presentation.filters.region.state.RegionSelectResult
 import ru.practicum.android.diploma.presentation.filters.region.viewmodel.FiltersRegionViewModel
 import ru.practicum.android.diploma.util.onTextChangeDebounce
 
@@ -48,7 +48,6 @@ class FiltersRegionFragment : Fragment(R.layout.fragment_filters_region) {
     }
 
     companion object {
-        const val RESULT_NAME = "result_region"
         const val DEBOUNCE = 1000L
     }
 
@@ -70,7 +69,9 @@ class FiltersRegionFragment : Fragment(R.layout.fragment_filters_region) {
                 viewModel.search(query)
             }.launchIn(lifecycleScope)
 
-        binding.searchEditText.ena
+        binding.clearButton.setOnClickListener {
+            binding.searchEditText.text = null
+        }
 
         binding.searchEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
@@ -96,21 +97,30 @@ class FiltersRegionFragment : Fragment(R.layout.fragment_filters_region) {
             onChangeViewState(state)
         }
 
-        viewModel.getSelectRegion().observe(viewLifecycleOwner) { filterValue ->
-            selectRegion(filterValue)
+        viewModel.getSelectRegion().observe(viewLifecycleOwner) { selectResult ->
+            selectRegion(selectResult)
         }
     }
 
     private fun setupIcon(it: String) {
         if (it.isNotBlank()) {
             binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_clear, 0)
+            binding.clearButton.isEnabled = true
         } else {
             binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_search, 0)
+            binding.clearButton.isEnabled = false
         }
     }
 
-    private fun selectRegion(filterValue: FilterValue) {
-        setFragmentResult(RESULT_NAME, bundleOf(RESULT_NAME to filterValue))
+    private fun selectRegion(selectResult: RegionSelectResult) {
+        setFragmentResult(
+            FiltersWorkPlaceFragment.RESULT_NAME_REGION,
+            bundleOf(FiltersWorkPlaceFragment.RESULT_NAME_REGION to selectResult.filterRegion)
+        )
+        setFragmentResult(
+            FiltersWorkPlaceFragment.RESULT_NAME_COUNTRY,
+            bundleOf(FiltersWorkPlaceFragment.RESULT_NAME_COUNTRY to selectResult.filterCountry)
+        )
         onBackPressed()
     }
 
