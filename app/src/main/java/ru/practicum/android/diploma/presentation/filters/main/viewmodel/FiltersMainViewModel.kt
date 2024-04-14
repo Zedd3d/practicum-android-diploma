@@ -58,12 +58,3 @@ class FiltersMainViewModel @Inject constructor(
 
     }
 }
-
-sealed class ResponseState {
-
-    data object Start : ResponseState()
-    data object Empty : ResponseState()
-    data object Content : ResponseState()
-    data object NetworkError : ResponseState()
-    data object ServerError : ResponseState()
-}

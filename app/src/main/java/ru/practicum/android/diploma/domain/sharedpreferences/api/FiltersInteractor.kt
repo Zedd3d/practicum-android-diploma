@@ -11,4 +11,6 @@ interface FiltersInteractor {
     fun setFilter(filterName: String, filterValue: FilterValue?)
 
     suspend fun getAreas(): ResponseStateArea
+
+    suspend fun getAreasByParentId(id: String): ResponseStateArea
 }

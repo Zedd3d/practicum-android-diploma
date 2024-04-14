@@ -6,4 +6,6 @@ interface NetworkClient {
     suspend fun doRequestById(id: String): Response
 
     suspend fun getAreas(): Response
+
+    suspend fun getAreasById(id: String): Response
 }
