@@ -52,4 +52,5 @@
     <string name="vacancy">Вакансия</string>
     <string name="SendingMessage">Отправить письмо...</string>
     <string name="mail_clients_not_installed">Почтовые клиенты не установлены.</string>
+    <string name="no_region">Такого региона нет</string>
 </resources>

@@ -68,6 +68,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         viewModel.observeUi().observe(viewLifecycleOwner) { state ->
             if (state is ResponseState.ContentVacanciesList) {
                 adapter.submitList(state.listVacancy)
+                checkFilters(state)
             }
             updateStatus(state)
             binding.vacanciesProgress.isVisible = when (state) {
@@ -198,6 +199,18 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             }
         }
 
+        image?.let {
+            Glide.with(requireContext())
+                .load(image)
+                .into(binding.src)
+        }
+    }
+
+    private fun checkFilters(status: ResponseState.ContentVacanciesList) {
+        val image = when (status.isWithFilters) {
+            true -> R.drawable.ic_filter_on
+            else -> R.drawable.ic_filter
+        }
         image?.let {
             Glide.with(requireContext())
                 .load(image)

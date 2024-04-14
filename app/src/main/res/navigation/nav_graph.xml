@@ -58,7 +58,11 @@
         android:id="@+id/filtersRegionFragment"
         android:name="ru.practicum.android.diploma.presentation.filters.region.fragment.FiltersRegionFragment"
         android:label="FiltersRegionFragment"
-        tools:layout="@layout/fragment_filters_region" />
+        tools:layout="@layout/fragment_filters_region">
+        <argument
+            android:name="countryId"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/filtersWorkPlaceFragment"
         android:name="ru.practicum.android.diploma.presentation.filters.region.fragment.FiltersWorkPlaceFragment"

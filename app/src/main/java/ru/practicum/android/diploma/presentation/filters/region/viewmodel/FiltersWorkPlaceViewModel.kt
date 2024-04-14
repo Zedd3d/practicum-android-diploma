@@ -7,6 +7,7 @@ import ru.practicum.android.diploma.domain.filters.models.FilterValue
 import ru.practicum.android.diploma.domain.sharedpreferences.api.FiltersInteractor
 import ru.practicum.android.diploma.domain.sharedpreferences.model.SharedFilterNames
 import ru.practicum.android.diploma.presentation.filters.region.state.FiltersWorkPlaceViewState
+import ru.practicum.android.diploma.ui.SingleLiveEvent
 import javax.inject.Inject
 
 class FiltersWorkPlaceViewModel @Inject constructor(
@@ -18,23 +19,46 @@ class FiltersWorkPlaceViewModel @Inject constructor(
     private val filterChanged = MutableLiveData<Boolean>()
     private val state = MutableLiveData<FiltersWorkPlaceViewState>()
 
+    private val selectRegion = SingleLiveEvent<String>()
+
     init {
         currentFilterCountry = filtersInteractor.getFilter(SharedFilterNames.COUNTRY)
         currentFilterRegion = filtersInteractor.getFilter(SharedFilterNames.AREA)
+        setNewValues()
     }
 
     fun getState(): LiveData<FiltersWorkPlaceViewState> = state
 
     fun getFilterChanged(): LiveData<Boolean> = filterChanged
 
+    fun getSelectRegion(): SingleLiveEvent<String> = selectRegion
     fun valuesChanged() {
         filterChanged.postValue(true)
     }
 
     fun setFilterCountry(filterValue: FilterValue?) {
+        currentFilterCountry = filterValue
+        currentFilterCountry?.id?.let { parId ->
+            currentFilterRegion?.parentId?.let {
+                if (it.isNotEmpty()
+                    && parId.isNotEmpty()
+                    && it != parId
+                )
+                    setFilterRegion(null)
+            }
+        }
+
+
         filtersInteractor.setFilter(SharedFilterNames.COUNTRY, filterValue)
         setNewValues()
         valuesChanged()
+    }
+
+    fun setFilterRegion(filterValue: FilterValue?) {
+        currentFilterRegion = filterValue
+        filtersInteractor.setFilter(SharedFilterNames.AREA, filterValue)
+        setNewValues()
+
     }
 
     private fun setNewValues() {
@@ -50,10 +74,27 @@ class FiltersWorkPlaceViewModel @Inject constructor(
                 )
             )
         }
+        valuesChanged()
     }
 
     fun saveFilters() {
         filtersInteractor.setFilter(SharedFilterNames.COUNTRY, currentFilterCountry)
         filtersInteractor.setFilter(SharedFilterNames.AREA, currentFilterRegion)
+    }
+
+    fun selectRegion() {
+        selectRegion.postValue(currentFilterCountry?.id ?: "")
+    }
+
+    fun clearCountry() {
+        currentFilterCountry = null
+        saveFilters()
+        setNewValues()
+    }
+
+    fun clearRegion() {
+        currentFilterRegion = null
+        saveFilters()
+        setNewValues()
     }
 }

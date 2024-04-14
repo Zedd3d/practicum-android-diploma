@@ -5,6 +5,7 @@ import ru.practicum.android.diploma.domain.filters.models.FilterValue
 import ru.practicum.android.diploma.domain.filters.models.ResponseStateArea
 import ru.practicum.android.diploma.domain.sharedpreferences.api.FiltersInteractor
 import ru.practicum.android.diploma.domain.sharedpreferences.api.SharedPreferencesRepository
+import ru.practicum.android.diploma.domain.sharedpreferences.model.SharedFilterNames
 import javax.inject.Inject
 
 class FiltersInteractorImpl @Inject constructor(
@@ -27,4 +28,18 @@ class FiltersInteractorImpl @Inject constructor(
     override suspend fun getAreas(): ResponseStateArea {
         return filtersRepository.getAreas()
     }
+
+    override suspend fun getAreasByParentId(id: String): ResponseStateArea {
+        return filtersRepository.getAreasById(id)
+    }
+
+    override fun clearAllFilters() {
+        val allFilters = sharedPreferencesRepository.getAllFilters()
+        allFilters.forEach {
+            sharedPreferencesRepository.setFilter(it.key, null)
+        }
+        sharedPreferencesRepository.setFilter(SharedFilterNames.COUNTRY, null)
+    }
+
+
 }

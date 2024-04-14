@@ -11,10 +11,14 @@ object CustomViewPropertysSetter {
             v.smallTextBlock.isVisible = false
             v.standardTextBlock.text = v.smallTextBlock.text
             v.standardTextBlock.isEnabled = false
+            v.ivBtnGo.isVisible = true
+            v.ivBtnClear.isVisible = false
         } else {
             v.smallTextBlock.isVisible = true
             v.standardTextBlock.text = textValue
             v.standardTextBlock.isEnabled = true
+            v.ivBtnGo.isVisible = false
+            v.ivBtnClear.isVisible = true
         }
     }
 }

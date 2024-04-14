@@ -23,6 +23,7 @@ class FiltersAreaAdapter(
 
     fun setNewList(list: List<Area>) {
         listAreas = list
+        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: FiltersAreaViewHolder, position: Int) {

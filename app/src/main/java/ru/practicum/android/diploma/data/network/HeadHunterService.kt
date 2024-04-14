@@ -17,4 +17,7 @@ interface HeadHunterService {
 
     @GET("/areas")
     suspend fun getAreas(): List<VacancyAreaDto>
+
+    @GET("/areas/{area_id}")
+    suspend fun getAreaById(@Path("area_id") id: String): VacancyAreaDto
 }

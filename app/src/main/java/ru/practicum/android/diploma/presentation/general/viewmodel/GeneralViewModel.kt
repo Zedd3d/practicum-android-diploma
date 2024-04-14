@@ -8,10 +8,12 @@ import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.general.models.ResponseState
 import ru.practicum.android.diploma.domain.impl.SearchVacanciesUseCase
 import ru.practicum.android.diploma.domain.models.Vacancy
+import ru.practicum.android.diploma.domain.sharedpreferences.api.SharedPreferencesRepository
 import javax.inject.Inject
 
 class GeneralViewModel @Inject constructor(
     private val searchVacanciesUseCase: SearchVacanciesUseCase,
+    private val sharedPreferencesInteractor: SharedPreferencesRepository
 ) : ViewModel() {
 
     private val state = MutableLiveData<ResponseState>()
@@ -21,7 +23,8 @@ class GeneralViewModel @Inject constructor(
     fun observeUi(): LiveData<ResponseState> = state
 
     private var isNextPageLoading = false
-    private var listCount: Int = 1
+
+    private var filtersMap = emptyMap<String, String>()
 
     private var query: String? = null
         set(value) {
@@ -44,8 +47,9 @@ class GeneralViewModel @Inject constructor(
 
     private fun makeSearchRequest(query: String, page: Int, isPagination: Boolean) {
         state.postValue(ResponseState.Loading(isPagination))
+        filtersMap = sharedPreferencesInteractor.getAllFilters()
         viewModelScope.launch {
-            when (val response = searchVacanciesUseCase(query, page)) {
+            when (val response = searchVacanciesUseCase(query, page, filtersMap)) {
                 is ResponseState.ContentVacanciesList -> {
                     maxPages = response.pages
                     currentListVacancies = if (isPagination) {
@@ -58,7 +62,8 @@ class GeneralViewModel @Inject constructor(
                         ResponseState.ContentVacanciesList(
                             currentListVacancies,
                             response.found,
-                            response.pages
+                            response.pages,
+                            filtersMap.isNotEmpty()
                         )
                     )
                 }

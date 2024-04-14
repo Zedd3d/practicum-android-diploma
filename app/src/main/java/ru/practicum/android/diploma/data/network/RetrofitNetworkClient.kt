@@ -78,6 +78,35 @@ class RetrofitNetworkClient @Inject constructor(
         }
     }
 
+
+    override suspend fun getAreasById(id: String): Response {
+        if (!isOnline(context)) return Response().apply { resultCode = -1 }
+
+        return try {
+            val response = when (id) {
+                "" -> {
+                    headHunterService.getAreas()
+                }
+
+                else -> {
+                    listOf(headHunterService.getAreaById(id))
+                }
+            }
+
+            val resp = AreasResponse(response)
+
+            resp.apply {
+                resultCode = HTTP_OK
+            }
+        } catch (e: IOException) {
+            Response().apply {
+                resultCode = HTTP_ERROR
+            }
+        } catch (e: HttpException) {
+            Response().apply { resultCode = e.code() }
+        }
+    }
+
     private fun isOnline(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
