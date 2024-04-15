@@ -91,7 +91,6 @@ class FiltersCountryFragment : Fragment(R.layout.fragment_filters_country) {
     }
 
     private fun onChangeViewState(state: AreaViewState) {
-
         if (state is AreaViewState.Content) adapter.setNewList(state.listAreas)
 
         binding.rvCountries.isVisible = when (state) {

@@ -14,12 +14,9 @@ class FiltersMainViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val state = MutableLiveData<FiltersMainViewState>()
-
     fun getState(): LiveData<FiltersMainViewState> = state
 
-    private val acceptAviable = MutableLiveData<Boolean>()
-
-    fun getAcceptAviable(): LiveData<Boolean> = acceptAviable
+    private var filterChanged: Boolean = false
 
     init {
         loadCurrentFilters()
@@ -34,7 +31,6 @@ class FiltersMainViewModel @Inject constructor(
         filtersInteractor.getFilter(SharedFilterNames.AREA)?.valueString?.let {
             array.add(it)
         }
-
 
         val result = array.joinToString(", ")
 
@@ -63,7 +59,10 @@ class FiltersMainViewModel @Inject constructor(
                 workPlace = workplace,
                 industries = industry,
                 salary = salary,
-                onlyWithSalary = onlyWithSalary
+                onlyWithSalary = onlyWithSalary,
+                filterChanged,
+                true
+
             )
         }
     }
@@ -80,7 +79,8 @@ class FiltersMainViewModel @Inject constructor(
             )
         }
         filtersInteractor.setFilter(SharedFilterNames.SALARY, filterValue)
-        acceptAviable.postValue(true)
+        filterChanged = true
+        loadCurrentFilters()
     }
 
     fun setOnlySalaryFilter(checked: Boolean) {
@@ -93,16 +93,18 @@ class FiltersMainViewModel @Inject constructor(
             )
         }
         filtersInteractor.setFilter(SharedFilterNames.ONLY_WITH_SALARY, filterValue)
-        acceptAviable.postValue(true)
+        filterChanged = true
+        loadCurrentFilters()
     }
 
     fun clearAllFilters() {
         filtersInteractor.clearAllFilters()
-        acceptAviable.postValue(false)
+        filterChanged = false
         loadCurrentFilters()
     }
 
-    fun loadCurrentFilters() {
+    fun loadCurrentFilters(changed: Boolean = false) {
+        if (changed) filterChanged = true
         state.postValue(getCurrentFilters())
     }
 
