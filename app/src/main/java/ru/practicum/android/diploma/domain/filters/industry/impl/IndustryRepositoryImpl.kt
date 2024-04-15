@@ -1,20 +1,18 @@
 package ru.practicum.android.diploma.domain.filters.industry.impl
 
-import androidx.room.TypeConverter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.practicum.android.diploma.data.Constants
 import ru.practicum.android.diploma.data.IndustriesRequest
 import ru.practicum.android.diploma.data.converters.FiltersConvertor
-import ru.practicum.android.diploma.data.converters.VacancyDbConvertor
-import ru.practicum.android.diploma.data.network.NetworkClient
 import ru.practicum.android.diploma.data.network.Resource
-import ru.practicum.android.diploma.domain.filters.industry.models.Industry
+import ru.practicum.android.diploma.data.network.RetrofitNetworkClient
 import ru.practicum.android.diploma.domain.filters.industry.api.IndustryRepository
+import ru.practicum.android.diploma.domain.filters.industry.models.Industry
 import javax.inject.Inject
 
 class IndustryRepositoryImpl @Inject constructor(
-    private val networkClient: NetworkClient
+    private val networkClient: RetrofitNetworkClient
 ) : IndustryRepository {
     override suspend fun getIndustries(): Flow<Resource<List<Industry>>> = flow {
 

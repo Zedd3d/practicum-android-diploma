@@ -23,7 +23,7 @@ class IndustryFragment : Fragment() {
 
     private val viewModel by viewModels<IndustryViewModel> {
         Factory {
-            (requireContext().applicationContext as App).appComponent.generalComponent().viewModel()
+            (requireContext().applicationContext as App).appComponent.industryComponent().viewModel()
         }
     }
     private var selectedIndustryId: String? = null

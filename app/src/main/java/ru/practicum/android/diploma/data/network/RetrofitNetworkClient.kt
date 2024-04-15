@@ -2,9 +2,6 @@ package ru.practicum.android.diploma.data.network
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.telephony.DisconnectCause
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
