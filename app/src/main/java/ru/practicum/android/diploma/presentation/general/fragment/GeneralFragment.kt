@@ -1,7 +1,6 @@
 package ru.practicum.android.diploma.presentation.general.fragment
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
