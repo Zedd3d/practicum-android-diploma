@@ -57,27 +57,39 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
         binding.btnCancel.isSelected = true
         activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = false
 
+        setListeners()
+        setObservers()
+    }
+
+    private fun setObservers() {
+        viewModel.getState().observe(viewLifecycleOwner) { state ->
+            onChangeViewState(state)
+        }
+    }
+
+    private fun setListeners() {
+        binding.llWorkPlace.ivBtnClear.setOnClickListener {
+            viewModel.clearWorkPlace()
+        }
+        setFragmentResultListener(FILTER_CHANGED) { s: String, bundle: Bundle ->
+            viewModel.loadCurrentFilters(true)
+        }
         binding.tietSalary.onTextChangeDebounce().debounce(DEBOUNCE)
             .onEach {
                 viewModel.setSalaryFilter(it?.toString().orEmpty())
             }.launchIn(lifecycleScope)
-
         binding.tietSalary.addTextChangedListener(
             onTextChanged = { charSequence, _, _, _ ->
                 onChangeSalary(charSequence.toString())
             }
         )
-
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 onBackPressed()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
-
-        binding.toolbar.setNavigationOnClickListener {
-            onBackPressed()
-        }
+        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
 
         binding.btnAccept.setOnClickListener {
             setFragmentResult(GeneralFragment.ON_FILTER_CHANGED, bundleOf())
@@ -88,37 +100,16 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
             binding.tietSalary.text = null
             viewModel.setSalaryFilter("")
         }
-
         binding.cbOnlyWithSalary.setOnClickListener {
             viewModel.setOnlySalaryFilter(binding.cbOnlyWithSalary.isChecked)
         }
-
-        binding.btnCancel.setOnClickListener {
-            viewModel.clearAllFilters()
-        }
+        binding.btnCancel.setOnClickListener { viewModel.clearAllFilters() }
 
         binding.llWorkPlace.root.setOnClickListener {
             findNavController().navigate(
                 R.id.action_filtersMainFragment_to_filtersWorkPlaceFragment
             )
         }
-
-        viewModel.getState().observe(viewLifecycleOwner) { state ->
-            onChangeViewState(state)
-        }
-
-        setFragmentResultListener(FILTER_CHANGED) { s: String, bundle: Bundle ->
-            viewModel.loadCurrentFilters(true)
-        }
-
-        binding.llWorkPlace.ivBtnClear.setOnClickListener {
-            viewModel.clearWorkPlace()
-        }
-    }
-
-    private fun onChangeAcceptAvaiable(acceptAvaiable: Boolean) {
-        binding.btnCancel.isVisible = acceptAvaiable
-        binding.btnAccept.isVisible = acceptAvaiable
     }
 
     private fun onBackPressed() {

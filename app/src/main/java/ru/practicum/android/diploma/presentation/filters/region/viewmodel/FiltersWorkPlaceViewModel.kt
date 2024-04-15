@@ -37,8 +37,9 @@ class FiltersWorkPlaceViewModel @Inject constructor(
                 if (it.isNotEmpty()
                     && parId.isNotEmpty()
                     && it != parId
-                )
+                ) {
                     setFilterRegion(null)
+                }
             }
         }
 

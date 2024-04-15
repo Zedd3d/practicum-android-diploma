@@ -56,6 +56,21 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
 
         activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = false
 
+        setListeners()
+        setObservers()
+    }
+
+    private fun setObservers() {
+        viewModel.getState().observe(viewLifecycleOwner) { state ->
+            onChangeViewState(state)
+        }
+
+        viewModel.getSelectRegion().observe(viewLifecycleOwner) { countryId ->
+            selectRegion(countryId)
+        }
+    }
+
+    private fun setListeners() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 onBackPressed()
@@ -81,6 +96,20 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
             )
         }
 
+        binding.llRegion.root.setOnClickListener {
+            viewModel.selectRegion()
+        }
+
+        binding.btnSelect.setOnClickListener {
+            viewModel.saveFilters()
+            setFragmentResult(FiltersMainFragment.FILTER_CHANGED, bundleOf())
+            onBackPressed()
+        }
+
+        setResultListeners()
+    }
+
+    private fun setResultListeners() {
         setFragmentResultListener(RESULT_NAME_COUNTRY) { s: String, bundle: Bundle ->
             bundle.let {
                 val filterValue = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -102,24 +131,6 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
                 }
                 viewModel.setFilterRegion(filterValue)
             }
-        }
-
-        binding.llRegion.root.setOnClickListener {
-            viewModel.selectRegion()
-        }
-
-        binding.btnSelect.setOnClickListener {
-            viewModel.saveFilters()
-            setFragmentResult(FiltersMainFragment.FILTER_CHANGED, bundleOf())
-            onBackPressed()
-        }
-
-        viewModel.getState().observe(viewLifecycleOwner) { state ->
-            onChangeViewState(state)
-        }
-
-        viewModel.getSelectRegion().observe(viewLifecycleOwner) { countryId ->
-            selectRegion(countryId)
         }
     }
 
