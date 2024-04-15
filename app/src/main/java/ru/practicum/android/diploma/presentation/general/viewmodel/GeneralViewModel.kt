@@ -97,7 +97,6 @@ class GeneralViewModel @Inject constructor(
     }
 
     fun searchOnFilterChanged() {
-
         if (!this.query.isNullOrEmpty()) {
             val query = this.query
             this.query = null

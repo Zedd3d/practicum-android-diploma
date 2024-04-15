@@ -27,11 +27,8 @@ import kotlinx.coroutines.flow.onEach
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentGeneralBinding
-import ru.practicum.android.diploma.domain.filters.models.FilterValue
 import ru.practicum.android.diploma.domain.general.models.ResponseState
 import ru.practicum.android.diploma.presentation.Factory
-import ru.practicum.android.diploma.presentation.filters.region.fragment.FiltersWorkPlaceFragment
-import ru.practicum.android.diploma.presentation.filters.region.viewmodel.FiltersWorkPlaceViewModel
 import ru.practicum.android.diploma.presentation.general.VacanciesAdapter
 import ru.practicum.android.diploma.presentation.general.viewmodel.GeneralViewModel
 import ru.practicum.android.diploma.util.onTextChangeDebounce
