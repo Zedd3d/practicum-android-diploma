@@ -5,6 +5,8 @@ import android.net.ConnectivityManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
+import ru.practicum.android.diploma.data.Constants
+import ru.practicum.android.diploma.data.IndustriesRequest
 import ru.practicum.android.diploma.data.dto.VacancyAreaDto
 import ru.practicum.android.diploma.data.network.models.AreasResponse
 import java.io.IOException
@@ -117,6 +119,25 @@ class RetrofitNetworkClient @Inject constructor(
         }
     }
 
+    override suspend fun doIndustryRequest(dto: Any): Response {
+        if (!isOnline(context)) return Response().apply { resultCode = Constants.NO_CONNECTIVITY_MESSAGE }
+        val response = Response()
+        return try {
+            when (dto) {
+                is IndustriesRequest -> withContext(Dispatchers.IO) {
+                    val result = headHunterService.filterIndustry()
+                    response.apply {
+                        industriesList = result
+                        resultCode = HTTP_OK
+                    }
+                }
+
+                else -> response.apply { resultCode = Constants.SERVER_ERROR }
+            }
+        } catch (exception: HttpException) {
+            Response().apply { resultCode = exception.code() }
+        }
+    }
     private fun isOnline(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

@@ -1,0 +1,118 @@
+package ru.practicum.android.diploma.presentation.filters.industry.fragment
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import ru.practicum.android.diploma.app.App
+import ru.practicum.android.diploma.databinding.FragmentFilterIndustryBinding
+import ru.practicum.android.diploma.presentation.Factory
+import ru.practicum.android.diploma.presentation.filters.industry.state.FiltersIndustriesState
+import ru.practicum.android.diploma.presentation.filters.industry.viewmodel.IndustryViewModel
+import ru.practicum.android.diploma.presentation.filters.main.fragment.FiltersMainFragment
+
+class IndustryFragment : Fragment() {
+    private var _binding: FragmentFilterIndustryBinding? = null
+    private val binding get() = _binding!!
+
+    private val viewModel by viewModels<IndustryViewModel> {
+        Factory {
+            (requireContext().applicationContext as App).appComponent.industryComponent().viewModel()
+        }
+    }
+
+    private var adapter = IndustriesAdapter { industry ->
+        viewModel.setCurrentIndustry(industry)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentFilterIndustryBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.industryList.adapter = this.adapter
+        binding.choosingIndustryEditText.doOnTextChanged { text, _, _, _ ->
+            viewModel.filterIndustries(text.toString())
+            if (text.isNullOrBlank()) {
+                binding.clearButton.visibility = View.GONE
+                binding.searchDrawable.visibility = View.VISIBLE
+                if (adapter.checkedRadioButtonId != -1) {
+                    binding.chooseIndustryButton.visibility = View.VISIBLE
+                }
+            } else {
+                binding.clearButton.visibility = View.VISIBLE
+                binding.searchDrawable.visibility = View.GONE
+                binding.clearButton.setOnClickListener {
+                    binding.choosingIndustryEditText.text?.clear()
+                }
+            }
+        }
+
+        binding.toolbarText.setNavigationOnClickListener { findNavController().popBackStack() }
+
+        binding.chooseIndustryButton.setOnClickListener {
+            viewModel.saveCurrentIndustry()
+            parentFragmentManager.setFragmentResult(FiltersMainFragment.FILTER_CHANGED, bundleOf())
+            findNavController().popBackStack()
+        }
+
+        viewModel.industriesState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is FiltersIndustriesState.Error -> {
+                }
+
+                is FiltersIndustriesState.Empty -> showEmpty()
+
+                is FiltersIndustriesState.Selected -> binding.chooseIndustryButton.isVisible = true
+
+                is FiltersIndustriesState.Loading -> showLoading()
+
+                is FiltersIndustriesState.Success -> showContent(state)
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun showContent(state: FiltersIndustriesState) {
+        if (state !is FiltersIndustriesState.Success) return
+
+        val data = state.data
+
+        binding.chooseIndustryButton.isVisible = !state.currentIndustryId.isNullOrEmpty()
+
+        adapter.updateList(data)
+
+        binding.industryList.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.GONE
+    }
+
+    private fun showEmpty() {
+        binding.chooseIndustryButton.visibility = View.GONE
+        binding.industryList.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
+    }
+
+    private fun showLoading() {
+        binding.progressBar.visibility = View.VISIBLE
+        binding.chooseIndustryButton.visibility = View.GONE
+        binding.industryList.visibility = View.GONE
+    }
+
+    companion object {
+        const val REQUEST_KEY = "KEY"
+        const val INDUSTRY_KEY = "INDUSTRY"
+        const val INDUSTRY_KEY_ID = "INDUSTRY_ID"
+    }
+}

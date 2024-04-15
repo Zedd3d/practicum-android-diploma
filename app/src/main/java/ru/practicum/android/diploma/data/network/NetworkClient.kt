@@ -8,4 +8,6 @@ interface NetworkClient {
     suspend fun getAreas(): Response
 
     suspend fun getAreasById(id: String): Response
+
+    suspend fun doIndustryRequest(dto: Any): Response
 }

@@ -40,6 +40,7 @@ android {
         buildConfig = true
         viewBinding = true
     }
+
 }
 
 dependencies {
@@ -48,6 +49,7 @@ dependencies {
     implementation(libs.androidX.appCompat)
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.lifecycle.viewmodel.savedstate)
+    implementation(libs.lifecycle.viewmodel.compose)
     kapt(libs.lifecycle.compiler)
 
     // UI layer libraries
