@@ -74,6 +74,6 @@ private fun VacancyAreaDto.asDomain(): Area {
         parentId ?: "",
         null,
         name,
-        areas.map { it -> it.asDomain() }
+        areas.map { it.asDomain() }
     )
 }

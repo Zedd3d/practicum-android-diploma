@@ -75,7 +75,6 @@ class FiltersRegionViewModel @Inject constructor(
     }
 
     fun selectRegion(area: Area) {
-
         val parentArea = when (area.parentArea) {
             null -> area
             else -> area.parentArea

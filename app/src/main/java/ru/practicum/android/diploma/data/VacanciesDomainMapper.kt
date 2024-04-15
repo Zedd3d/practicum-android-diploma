@@ -74,4 +74,3 @@ fun VacancyDetailDto.asDomain(): VacancyDetail {
 private fun createPhone(phone: PhoneDto): String {
     return "+${phone.country}" + " (${phone.city})" + " ${phone.number}"
 }
-

@@ -7,6 +7,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import ru.practicum.android.diploma.data.Constants
 import ru.practicum.android.diploma.data.IndustriesRequest
+import ru.practicum.android.diploma.data.dto.VacancyAreaDto
 import ru.practicum.android.diploma.data.network.models.AreasResponse
 import java.io.IOException
 import javax.inject.Inject
@@ -112,6 +113,18 @@ class RetrofitNetworkClient @Inject constructor(
         } catch (e: HttpException) {
             println(e)
             Response().apply { resultCode = e.code() }
+        }
+    }
+
+    private suspend fun doResponse(id: String): List<VacancyAreaDto> {
+        return when (id) {
+            "" -> {
+                headHunterService.getAreas()
+            }
+
+            else -> {
+                listOf(headHunterService.getAreaById(id))
+            }
         }
     }
 

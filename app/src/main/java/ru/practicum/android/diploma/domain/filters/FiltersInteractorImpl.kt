@@ -40,6 +40,4 @@ class FiltersInteractorImpl @Inject constructor(
         }
         sharedPreferencesRepository.setFilter(SharedFilterNames.COUNTRY, null)
     }
-
-
 }

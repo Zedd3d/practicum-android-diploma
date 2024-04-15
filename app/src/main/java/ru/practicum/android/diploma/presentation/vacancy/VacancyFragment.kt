@@ -135,7 +135,11 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
             try {
                 startActivity(Intent.createChooser(i, getString(R.string.SendingMessage)))
             } catch (ex: ActivityNotFoundException) {
-                Toast.makeText(requireContext(), getString(R.string.mail_clients_not_installed), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.mail_clients_not_installed),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
