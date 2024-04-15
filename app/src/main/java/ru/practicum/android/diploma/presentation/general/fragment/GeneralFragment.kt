@@ -8,9 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -41,6 +43,10 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         }
     }
 
+    companion object {
+        const val ON_FILTER_CHANGED = "on_filter_changed"
+    }
+
     private var _binding: FragmentGeneralBinding? = null
     private val binding get() = _binding!!
 
@@ -51,7 +57,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentGeneralBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -61,12 +67,18 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         setupVacancies()
         setListeners()
         setObservers()
+
+        setFragmentResultListener(ON_FILTER_CHANGED) { s: String, bundle: Bundle ->
+            viewModel.searchOnFilterChanged()
+        }
+
     }
 
     private fun setObservers() {
         viewModel.observeUi().observe(viewLifecycleOwner) { state ->
             if (state is ResponseState.ContentVacanciesList) {
                 adapter.submitList(state.listVacancy)
+                checkFilters(state)
             }
             updateStatus(state)
             binding.vacanciesProgress.isVisible = when (state) {
@@ -146,8 +158,13 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 binding.srcText.setText(R.string.server_error)
             }
 
-            ResponseState.NetworkError -> {
+            ResponseState.NetworkError(false) -> {
                 binding.srcText.setText(R.string.no_internet)
+            }
+
+            ResponseState.NetworkError(true) -> {
+                binding.src.isVisible = false
+                Toast.makeText(requireContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show()
             }
 
             else -> {
@@ -161,6 +178,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         binding.vacanciesRv.isVisible = when (state) {
             is ResponseState.Loading -> state.isPagination
             is ResponseState.ContentVacanciesList -> true
+            is ResponseState.NetworkError -> true
             else -> false
         }
         binding.src.visibleOrGone(state !is ResponseState.Loading && state !is ResponseState.ContentVacanciesList)
@@ -178,7 +196,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 R.drawable.state_image_server_error_search
             }
 
-            ResponseState.NetworkError -> {
+            ResponseState.NetworkError(false) -> {
                 R.drawable.state_image_no_internet
             }
 
@@ -191,6 +209,18 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             }
         }
 
+        image?.let {
+            Glide.with(requireContext())
+                .load(image)
+                .into(binding.src)
+        }
+    }
+
+    private fun checkFilters(status: ResponseState.ContentVacanciesList) {
+        val image = when (status.isWithFilters) {
+            true -> R.drawable.ic_filter_on
+            else -> R.drawable.ic_filter
+        }
         image?.let {
             Glide.with(requireContext())
                 .load(image)

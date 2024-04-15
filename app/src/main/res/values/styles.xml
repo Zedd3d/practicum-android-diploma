@@ -70,5 +70,8 @@
         <item name="android:layout_marginHorizontal">17dp</item>
         <item name="android:layout_marginBottom">24dp</item>
     </style>
+    <style name="FavoriteButtonStyle">
+        <item name="android:src">@drawable/favorite_vacancy_drawable_empty</item>
+    </style>
 
 </resources>

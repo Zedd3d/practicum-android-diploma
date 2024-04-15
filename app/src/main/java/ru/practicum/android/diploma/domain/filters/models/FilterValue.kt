@@ -8,7 +8,7 @@ data class FilterValue(
     val id: String,
     val parentId: String = "",
     val name: String,
-    val valueString: String,
-    val valueInt: Int,
-    val valueBoolean: Boolean,
+    val valueString: String = "",
+    val valueInt: Int = 0,
+    val valueBoolean: Boolean = false,
 ) : Parcelable

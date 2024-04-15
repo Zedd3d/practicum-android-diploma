@@ -18,7 +18,6 @@ import javax.inject.Singleton
     modules = [
         RepositoryModule::class,
         NetworkModule::class,
-        SharedPreferencesModule::class,
         DataBaseModule::class,
         UseCaseModule::class
     ]
@@ -37,7 +36,7 @@ interface AppComponent {
 
     fun countryComponent(): CountryComponent
 
-    fun regionComponent(): RegionComponent
+    fun regionComponent(): RegionComponent.RegionComponentFactory
 
     fun filtersMainComponent(): FiltersMainComponent
 

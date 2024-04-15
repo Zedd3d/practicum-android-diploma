@@ -8,14 +8,15 @@
     <!-- TODO: team strings -->
     <string name="team_head_name">Команда</string>
     <string name="team_works">Над приложением \nработали</string>
-    <string name="team_developer_1">Валентин Мальцев</string>
-    <string name="team_developer_2">Андрей Ярыгин</string>
-    <string name="team_developer_3">Александр Панкратов</string>
-    <string name="team_developer_4">Александр Ефремов</string>
+    <string name="team_developer_1">Валентин Вадимович Мальцев</string>
+    <string name="team_developer_2">Андрей Александрович Ярыгин</string>
+    <string name="team_developer_3">Александр Сергеевич Панкратов</string>
+    <string name="team_developer_4">Александр Михайлович Ефремов</string>
     <!-- TODO: favorites strings -->
     <string name="favorite_head_name">Избранное</string>
     <string name="favorite_empty">Список пуст</string>
     <!-- TODO: general strings -->
+    <string name="load_list_failure">Не удалось получить \n список</string>
     <string name="no_vacancies">Не удалось получить \n список вакансий</string>
     <string name="no_vacancies_lil">Таких вакансий нет</string>
     <string name="no_internet">Нет интернета</string>
@@ -49,6 +50,7 @@
     <string name="contact_p">Контактное лицо</string>
     <string name="contacts">Контакты</string>
     <string name="vacancy">Вакансия</string>
-    <string name="item_from">от</string>
-    <string name="item_to">до</string>
+    <string name="SendingMessage">Отправить письмо...</string>
+    <string name="mail_clients_not_installed">Почтовые клиенты не установлены.</string>
+    <string name="no_region">Такого региона нет</string>
 </resources>

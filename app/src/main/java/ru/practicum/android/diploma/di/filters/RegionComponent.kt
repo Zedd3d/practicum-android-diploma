@@ -1,5 +1,6 @@
 package ru.practicum.android.diploma.di.filters
 
+import dagger.BindsInstance
 import dagger.Subcomponent
 import ru.practicum.android.diploma.presentation.filters.region.viewmodel.FiltersRegionViewModel
 
@@ -7,4 +8,8 @@ import ru.practicum.android.diploma.presentation.filters.region.viewmodel.Filter
 interface RegionComponent {
     fun viewModel(): FiltersRegionViewModel
 
+    @Subcomponent.Factory
+    interface RegionComponentFactory {
+        fun create(@BindsInstance countryId: String): RegionComponent
+    }
 }

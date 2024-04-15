@@ -44,4 +44,14 @@
         app:srcCompat="@drawable/ic_arrow_forward"
         app:tint="?colorPrimary" />
 
+    <ImageView
+        android:id="@+id/ivBtnClear"
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
+        android:layout_gravity="center"
+        android:layout_margin="12dp"
+        android:layout_weight="0"
+        app:srcCompat="@drawable/ic_clear"
+        app:tint="?colorPrimary" />
+
 </LinearLayout>
