@@ -8,12 +8,12 @@ import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.general.models.ResponseState
 import ru.practicum.android.diploma.domain.impl.SearchVacanciesUseCase
 import ru.practicum.android.diploma.domain.models.Vacancy
-import ru.practicum.android.diploma.domain.sharedpreferences.api.SharedPreferencesRepository
+import ru.practicum.android.diploma.domain.sharedpreferences.api.FiltersInteractor
 import javax.inject.Inject
 
 class GeneralViewModel @Inject constructor(
     private val searchVacanciesUseCase: SearchVacanciesUseCase,
-    private val sharedPreferencesInteractor: SharedPreferencesRepository
+    private val filtersInteractor: FiltersInteractor
 ) : ViewModel() {
 
     private val state = MutableLiveData<ResponseState>()
@@ -47,7 +47,7 @@ class GeneralViewModel @Inject constructor(
 
     private fun makeSearchRequest(query: String, page: Int, isPagination: Boolean) {
         state.postValue(ResponseState.Loading(isPagination))
-        filtersMap = sharedPreferencesInteractor.getAllFilters()
+        filtersMap = filtersInteractor.getAllFilters()
         viewModelScope.launch {
             when (val response = searchVacanciesUseCase(query, page, filtersMap)) {
                 is ResponseState.ContentVacanciesList -> {
