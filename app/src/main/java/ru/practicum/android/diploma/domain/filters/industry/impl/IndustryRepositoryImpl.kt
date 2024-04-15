@@ -15,7 +15,6 @@ class IndustryRepositoryImpl @Inject constructor(
     private val networkClient: RetrofitNetworkClient
 ) : IndustryRepository {
     override suspend fun getIndustries(): Flow<Resource<List<Industry>>> = flow {
-
         val response = networkClient.doIndustryRequest(IndustriesRequest)
         when (response.resultCode) {
             Constants.NO_CONNECTIVITY_MESSAGE -> {

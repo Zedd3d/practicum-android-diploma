@@ -75,9 +75,7 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
     }
 
     private fun setListeners() {
-        binding.llWorkPlace.ivBtnClear.setOnClickListener {
-            viewModel.clearWorkPlace()
-        }
+        binding.llWorkPlace.ivBtnClear.setOnClickListener { viewModel.clearWorkPlace() }
 
         binding.tietSalary.onTextChangeDebounce().debounce(DEBOUNCE)
             .onEach {
@@ -99,9 +97,7 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
         binding.llIndustries.root.setOnClickListener {
             findNavController().navigate(R.id.action_filtersMainFragment_to_industryFragment)
         }
-        binding.llIndustries.ivBtnClear.setOnClickListener {
-            viewModel.clearIndustry()
-        }
+        binding.llIndustries.ivBtnClear.setOnClickListener { viewModel.clearIndustry() }
 
         binding.btnAccept.setOnClickListener {
             setFragmentResult(GeneralFragment.ON_FILTER_CHANGED, bundleOf())

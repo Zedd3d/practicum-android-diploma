@@ -85,20 +85,11 @@ class RetrofitNetworkClient @Inject constructor(
         }
     }
 
-
     override suspend fun getAreasById(id: String): Response {
         if (!isOnline(context)) return Response().apply { resultCode = -1 }
 
         return try {
-            val response = when (id) {
-                "" -> {
-                    headHunterService.getAreas()
-                }
-
-                else -> {
-                    listOf(headHunterService.getAreaById(id))
-                }
-            }
+            val response = doResponse(id)
 
             val resp = AreasResponse(response)
 

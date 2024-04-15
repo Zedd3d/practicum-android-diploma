@@ -46,7 +46,7 @@ class IndustriesAdapter(private val onClick: (IndustriesAdapterItem) -> Unit) :
     }
 }
 
-data class IndustriesAdapterItem(
+class IndustriesAdapterItem(
     val industry: SubIndustry,
     var active: Boolean = false
 )
