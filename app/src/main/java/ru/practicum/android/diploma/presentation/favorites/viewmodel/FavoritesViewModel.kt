@@ -50,6 +50,7 @@ class FavoritesViewModel @Inject constructor(
                         }
                     }
             } catch (e: IOException) {
+                println(e)
                 state.postValue(FavoritesState.Error)
             }
         }
