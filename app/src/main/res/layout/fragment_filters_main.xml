@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="?colorSecondary">
 
     <androidx.appcompat.widget.Toolbar
@@ -80,9 +81,18 @@
                 android:singleLine="true"
                 android:textCursorDrawable="@drawable/cursor_edit_text"
                 android:hint="@string/input_expected_salary" />
+
+
         </LinearLayout>
 
-
+        <ImageButton
+            android:id="@+id/ibClear"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="0.5dp"
+            android:backgroundTint="@color/LightGrayDay_GrayNight"
+            android:src="@drawable/ic_clear"
+            android:visibility="gone" />
     </LinearLayout>
 
     <CheckBox
@@ -107,11 +117,15 @@
         android:layout_height="59dp"
         android:clickable="true"
         android:text="@string/clear_filter"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <Button
         android:id="@+id/btnAccept"
         style="@style/StandartButton"
+        android:visibility="gone"
+        tools:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="59dp"
         android:layout_weight="0"

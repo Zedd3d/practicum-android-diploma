@@ -55,9 +55,17 @@ class FiltersRegionViewModel @Inject constructor(
 
         when (response) {
             is ResponseStateArea.ContentArea -> {
-                state.postValue(AreaViewState.Content(response.listAreas.filter {
+                val listResult = response.listAreas.filter {
                     if (queryString.isEmpty()) true else it.name.contains(queryString, true)
-                }))
+                }
+
+                state.postValue(
+                    if (listResult.isEmpty()) {
+                        AreaViewState.Empty
+                    } else {
+                        AreaViewState.Content(listResult)
+                    }
+                )
             }
 
             is ResponseStateArea.Loading -> state.postValue(AreaViewState.Loading)

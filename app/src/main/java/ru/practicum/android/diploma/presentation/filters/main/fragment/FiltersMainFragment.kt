@@ -1,6 +1,5 @@
 package ru.practicum.android.diploma.presentation.filters.main.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +7,16 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentFiltersMainBinding
@@ -19,7 +24,7 @@ import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.filters.CustomViewPropertysSetter.setViewPropertys
 import ru.practicum.android.diploma.presentation.filters.main.state.FiltersMainViewState
 import ru.practicum.android.diploma.presentation.filters.main.viewmodel.FiltersMainViewModel
-import ru.practicum.android.diploma.util.onTextChange
+import ru.practicum.android.diploma.util.onTextChangeDebounce
 
 class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
 
@@ -31,6 +36,11 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
 
     private var _binding: FragmentFiltersMainBinding? = null
     private val binding get() = _binding!!
+
+    companion object {
+        const val DEBOUNCE = 1000L
+        const val FILTER_CHANGED = "filter_changed"
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentFiltersMainBinding.inflate(layoutInflater)
@@ -45,9 +55,16 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
         binding.btnCancel.isSelected = true
         activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = false
 
-        binding.tietSalary.onTextChange {
-            setHintTextColor(it)
-        }
+        binding.tietSalary.onTextChangeDebounce().debounce(DEBOUNCE)
+            .onEach {
+                viewModel.setSalaryFilter(it?.toString().orEmpty())
+            }.launchIn(lifecycleScope)
+
+        binding.tietSalary.addTextChangedListener(
+            onTextChanged = { charSequence, _, _, _ ->
+                onChangeSalary(charSequence.toString())
+            }
+        )
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -64,8 +81,17 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
             Toast.makeText(context, "Принять", Toast.LENGTH_SHORT).show()
         }
 
+        binding.ibClear.setOnClickListener {
+            binding.tietSalary.text = null
+            viewModel.setSalaryFilter("")
+        }
+
+        binding.cbOnlyWithSalary.setOnClickListener {
+            viewModel.setOnlySalaryFilter(binding.cbOnlyWithSalary.isChecked)
+        }
+
         binding.btnCancel.setOnClickListener {
-            Toast.makeText(context, "Сбросить", Toast.LENGTH_SHORT).show()
+            viewModel.clearAllFilters()
         }
 
         binding.llWorkPlace.root.setOnClickListener {
@@ -77,15 +103,32 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
         viewModel.getState().observe(viewLifecycleOwner) { state ->
             onChangeViewState(state)
         }
+
+        viewModel.getAcceptAviable().observe(viewLifecycleOwner) { acceptAvaiable ->
+            onChangeAcceptAvaiable(acceptAvaiable)
+        }
+
+        setFragmentResultListener(FILTER_CHANGED) { s: String, bundle: Bundle ->
+            viewModel.loadCurrentFilters()
+        }
+
+        binding.llWorkPlace.ivBtnClear.setOnClickListener {
+            viewModel.clearWorkPlace()
+        }
+    }
+
+    private fun onChangeAcceptAvaiable(acceptAvaiable: Boolean) {
+        binding.btnCancel.isVisible = acceptAvaiable
+        binding.btnAccept.isVisible = acceptAvaiable
     }
 
     private fun onBackPressed() {
         findNavController().popBackStack()
     }
 
-    @SuppressLint("ResourceAsColor")
-    private fun setHintTextColor(salaryText: String) {
+    private fun onChangeSalary(salaryText: String) {
         binding.tvSalaryHint.isEnabled = salaryText.isNotBlank()
+        binding.ibClear.isVisible = salaryText.isNotBlank()
     }
 
     private fun onChangeViewState(state: FiltersMainViewState) {
@@ -93,16 +136,22 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
             is FiltersMainViewState.Empty -> {
                 setViewPropertys(binding.llWorkPlace, "")
                 setViewPropertys(binding.llIndustries, "")
+                binding.tietSalary.setText("")
+                binding.cbOnlyWithSalary.isChecked = false
             }
 
             is FiltersMainViewState.Content -> {
                 setViewPropertys(binding.llWorkPlace, state.workPlace)
                 setViewPropertys(binding.llIndustries, state.industries)
+                binding.tietSalary.setText(state.salary)
+                binding.cbOnlyWithSalary.isChecked = state.onlyWithSalary
             }
         }
+    }
 
-        binding.btnCancel.isVisible = false
-        binding.btnAccept.isVisible = false
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadCurrentFilters()
     }
 
     override fun onDestroyView() {

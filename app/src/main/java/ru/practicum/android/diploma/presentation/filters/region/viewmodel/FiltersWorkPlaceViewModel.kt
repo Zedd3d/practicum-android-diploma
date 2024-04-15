@@ -38,6 +38,17 @@ class FiltersWorkPlaceViewModel @Inject constructor(
 
     fun setFilterCountry(filterValue: FilterValue?) {
         currentFilterCountry = filterValue
+        currentFilterCountry?.id?.let { parId ->
+            currentFilterRegion?.parentId?.let {
+                if (it.isNotEmpty()
+                    && parId.isNotEmpty()
+                    && it != parId
+                )
+                    setFilterRegion(null)
+            }
+        }
+
+
         filtersInteractor.setFilter(SharedFilterNames.COUNTRY, filterValue)
         setNewValues()
         valuesChanged()

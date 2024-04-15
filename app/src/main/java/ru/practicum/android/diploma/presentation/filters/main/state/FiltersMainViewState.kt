@@ -4,7 +4,7 @@ sealed interface FiltersMainViewState {
     data class Content(
         val workPlace: String,
         val industries: String,
-        val salary: Int,
+        val salary: String,
         val onlyWithSalary: Boolean
     ) : FiltersMainViewState
 
