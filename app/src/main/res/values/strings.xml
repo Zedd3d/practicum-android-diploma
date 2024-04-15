@@ -20,7 +20,7 @@
     <string name="no_vacancies_lil">Таких вакансий нет</string>
     <string name="no_internet">Нет интернета</string>
     <string name="server_error">Ошибка сервера</string>
-    <string name="found_count">Найдено %s вакансий</string>
+    <string name="found_count">Найдено %s </string>
     <string name="no_salary">Зарплата не указана</string>
     <string name="filter_workplace">Место работы</string>
     <string name="filter_settings">Настройки фильтрации</string>
@@ -31,4 +31,24 @@
     <string name="accept">Применить</string>
     <string name="clear_filter">Сбросить</string>
     <string name="experience_title">Требуемый опыт</string>
+    <string name="filter_select_country">Выбор страны</string>
+    <string name="filter_select_region">Выбор региона</string>
+    <string name="filter_select_workplace">Выбор места работы</string>
+    <string name="input_region">Введите регион</string>
+    <string name="industry">Отрасль</string>
+    <string name="select">Выбрать</string>
+    <string name="area">Регион</string>
+    <string name="filter_country">Страна</string>
+    <string name="filter_region">Регион</string>
+    <string name="NounOne">вакансия</string>
+    <string name="NounTwo">вакансии</string>
+    <string name="NounThree">вакансий</string>
+    <string name="vacancy_description_title">Описание вакансии</string>
+    <string name="comment">Комментарий</string>
+    <string name="e_mail">E-mail</string>
+    <string name="contact_p">Контактное лицо</string>
+    <string name="contacts">Контакты</string>
+    <string name="vacancy">Вакансия</string>
+    <string name="item_from">от</string>
+    <string name="item_to">до</string>
 </resources>

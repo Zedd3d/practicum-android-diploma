@@ -21,7 +21,11 @@
         android:id="@+id/favoritesFragment"
         android:name="ru.practicum.android.diploma.presentation.favorites.fragment.FavoritesFragment"
         android:label="fragment_favorites"
-        tools:layout="@layout/fragment_favorites" />
+        tools:layout="@layout/fragment_favorites">
+        <action
+            android:id="@+id/action_favoritesFragment_to_vacancyFragment"
+            app:destination="@id/vacancyFragment" />
+    </fragment>
     <fragment
         android:id="@+id/teamFragment"
         android:name="ru.practicum.android.diploma.presentation.team.TeamFragment"
@@ -49,4 +53,31 @@
         android:id="@+id/industryFragment"
         android:name="ru.practicum.android.diploma.presentation.filters.industry.fragment.IndustryFragment"
         tools:layout="@layout/fragment_filter_industry" />
+        tools:layout="@layout/fragment_filters_main">
+        <action
+            android:id="@+id/action_filtersMainFragment_to_filtersWorkPlaceFragment"
+            app:destination="@id/filtersWorkPlaceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/filtersCountryFragment"
+        android:name="ru.practicum.android.diploma.presentation.filters.region.fragment.FiltersCountryFragment"
+        android:label="FiltersCountryFragment"
+        tools:layout="@layout/fragment_filters_country" />
+    <fragment
+        android:id="@+id/filtersRegionFragment"
+        android:name="ru.practicum.android.diploma.presentation.filters.region.fragment.FiltersRegionFragment"
+        android:label="FiltersRegionFragment"
+        tools:layout="@layout/fragment_filters_region" />
+    <fragment
+        android:id="@+id/filtersWorkPlaceFragment"
+        android:name="ru.practicum.android.diploma.presentation.filters.region.fragment.FiltersWorkPlaceFragment"
+        android:label="FiltersWorkPlaceFragment"
+        tools:layout="@layout/fragment_filters_workplace">
+        <action
+            android:id="@+id/action_filtersWorkPlaceFragment_to_filtersRegionFragment"
+            app:destination="@id/filtersRegionFragment" />
+        <action
+            android:id="@+id/action_filtersWorkPlaceFragment_to_filtersCountryFragment"
+            app:destination="@id/filtersCountryFragment" />
+    </fragment>
 </navigation>

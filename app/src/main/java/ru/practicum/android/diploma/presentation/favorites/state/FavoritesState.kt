@@ -1,10 +1,13 @@
 package ru.practicum.android.diploma.presentation.favorites.state
-sealed class FavoritesState {
-    object Loading : FavoritesState()
 
-    data object Content : FavoritesState()
+import ru.practicum.android.diploma.domain.models.Vacancy
 
-    data object Empty : FavoritesState()
+sealed interface FavoritesState {
+    object Loading : FavoritesState
 
-    data object NetworkError : FavoritesState()
+    data class Content(val favoritesVacancies: List<Vacancy>) : FavoritesState
+
+    data object Empty : FavoritesState
+
+    data object Error : FavoritesState
 }

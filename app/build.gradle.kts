@@ -66,30 +66,30 @@ dependencies {
     implementation(libs.viewbindingpropertydelegate.noreflection)
     // endregion
 
-    //room
+    // room
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     kapt(libs.room.compiler)
 
-    //coroutines
+    // coroutines
     implementation(libs.kotlinx.coroutines.android)
 
-    //dagger
+    // dagger
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
 
-    //network
+    // network
     implementation(libs.okhttp)
     implementation(libs.gson)
     implementation(libs.logging.interceptor)
-    implementation (libs.retrofit)
-    implementation (libs.converter.gson)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 
     // navigation
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
 
-    //ui
+    // ui
     implementation(libs.glide)
     implementation(libs.core)
     implementation(libs.html)

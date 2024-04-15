@@ -43,7 +43,7 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/background_corners12"
-        android:backgroundTint="@color/LightGray_yp"
+        android:backgroundTint="@color/LightGrayDay_GrayNight"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,6 +63,7 @@
             <TextView
                 android:id="@+id/tvSalaryHint"
                 style="@style/SmallTextStyle"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/expected_salary"
@@ -75,7 +76,7 @@
                 android:inputType="numberDecimal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/LightGray_yp"
+                android:background="@color/LightGrayDay_GrayNight"
                 android:singleLine="true"
                 android:textCursorDrawable="@drawable/cursor_edit_text"
                 android:hint="@string/input_expected_salary" />

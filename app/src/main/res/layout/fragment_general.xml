@@ -136,6 +136,7 @@
             android:textAlignment="center"
             android:text=""
             android:textSize="22sp"
+            android:textColor="@color/BlackDay_WhiteNight"
             tools:text="@string/no_vacancies"/>
     </LinearLayout>
 

@@ -13,5 +13,7 @@
 
     <color name="BlackDay_WhiteNight">@color/BlackUniversal_yp</color>
     <color name="WhiteDay_BlackNight">@color/WhiteUniversal_yp</color>
+    <color name="LightGrayDay_GrayNight">@color/LightGray_yp</color>
+
 
 </resources>

@@ -30,6 +30,7 @@
             style="@style/StandartTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/fixed_text_selector"
             tools:text="@string/filter_workplace" />
     </LinearLayout>
 
