@@ -2,7 +2,12 @@ package ru.practicum.android.diploma.data.network
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.telephony.DisconnectCause
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
+import ru.practicum.android.diploma.data.Constants
+import ru.practicum.android.diploma.data.IndustriesRequest
 import java.io.IOException
 import javax.inject.Inject
 
@@ -17,7 +22,7 @@ class RetrofitNetworkClient @Inject constructor(
     }
 
     override suspend fun doRequest(query: Map<String, String>): Response {
-        if (!isOnline(context)) return Response().apply { resultCode = -1 }
+        if (!isOnline(context)) return Response().apply { resultCode = Constants.NO_CONNECTIVITY_MESSAGE }
 
         @Suppress("SwallowedException")
         return try {
@@ -35,7 +40,7 @@ class RetrofitNetworkClient @Inject constructor(
     }
 
     override suspend fun doRequestById(id: String): Response {
-        if (!isOnline(context)) return Response().apply { resultCode = -1 }
+        if (!isOnline(context)) return Response().apply { resultCode = Constants.NO_CONNECTIVITY_MESSAGE }
         @Suppress("SwallowedException")
         return try {
             val resp = headHunterService.getVacancyById(id)
@@ -51,6 +56,25 @@ class RetrofitNetworkClient @Inject constructor(
         }
     }
 
+    override suspend fun doIndustryRequest(dto: Any): Response {
+        if (!isOnline(context)) return Response().apply { resultCode = Constants.NO_CONNECTIVITY_MESSAGE }
+        val response = Response()
+        return try {
+            when (dto) {
+                is IndustriesRequest -> withContext(Dispatchers.IO) {
+                    val result = headHunterService.filterIndustry()
+                    response.apply {
+                        industriesList = result
+                        resultCode = HTTP_OK
+                    }
+                }
+
+                else -> response.apply { resultCode = Constants.SERVER_ERROR }
+            }
+        } catch (exception: HttpException) {
+            Response().apply { resultCode = exception.code() }
+        }
+    }
     private fun isOnline(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -58,5 +82,4 @@ class RetrofitNetworkClient @Inject constructor(
             connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
         return capabilities != null
     }
-
 }

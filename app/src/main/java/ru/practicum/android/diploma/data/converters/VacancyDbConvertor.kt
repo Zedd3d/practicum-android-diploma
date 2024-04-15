@@ -1,8 +1,12 @@
 package ru.practicum.android.diploma.data.converters
 
+import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import ru.practicum.android.diploma.data.dto.IndustryDto
 import ru.practicum.android.diploma.data.favorites.entity.FavoritesVacanciesEntity
+import ru.practicum.android.diploma.domain.filters.industry.models.Industry
+import ru.practicum.android.diploma.domain.filters.industry.models.SubIndustry
 import ru.practicum.android.diploma.domain.models.Salary
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.models.VacancyDetail

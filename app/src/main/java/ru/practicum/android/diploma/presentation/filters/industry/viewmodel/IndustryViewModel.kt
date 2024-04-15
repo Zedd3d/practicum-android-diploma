@@ -4,21 +4,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.TypeConverter
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.data.Constants.SUCCESS_RESULT_CODE
 import ru.practicum.android.diploma.data.network.Resource
 import ru.practicum.android.diploma.domain.filters.industry.models.Industry
 import ru.practicum.android.diploma.domain.filters.industry.models.SubIndustry
-import ru.practicum.android.diploma.presentation.filters.FIlterInteractor
+import ru.practicum.android.diploma.domain.filters.industry.api.IndustryInteractor
 import ru.practicum.android.diploma.presentation.filters.industry.fragment.IndustriesAdapterItem
 import ru.practicum.android.diploma.presentation.filters.industry.state.FiltersIndustriesState
 import javax.inject.Inject
 
-class FiltersIndustryViewModel @Inject constructor(private val filterInteractor: FIlterInteractor) : ViewModel() {
+class IndustryViewModel @Inject constructor(private val filterInteractor: IndustryInteractor) : ViewModel() {
     private val _industriesState = MutableLiveData<FiltersIndustriesState>()
     val industriesState: LiveData<FiltersIndustriesState> = _industriesState
     private var currentIndustriesList = ArrayList<SubIndustry>()
-
+    var currentIndustry: SubIndustry? = null
     fun getIndustries() {
         _industriesState.value = FiltersIndustriesState.Loading
         viewModelScope.launch {
@@ -27,7 +28,6 @@ class FiltersIndustryViewModel @Inject constructor(private val filterInteractor:
             }
         }
     }
-
     private fun loadIndustries(industry: Resource<List<Industry>>) {
         if (industry.code == SUCCESS_RESULT_CODE) {
             if (industry.data != null) {
@@ -42,11 +42,10 @@ class FiltersIndustryViewModel @Inject constructor(private val filterInteractor:
             _industriesState.value = FiltersIndustriesState.Error
         }
     }
-
     private fun sortIndustries(industriesList: List<Industry>): List<SubIndustry> {
         val sortedSubIndustriesList: MutableList<SubIndustry> = mutableListOf()
         for (industry in industriesList) {
-            for (subindustry in industry.industries) {
+            for (subindustry in industry.industries!!) {
                 sortedSubIndustriesList.add(
                     SubIndustry(
                         id = subindustry.id,
@@ -64,7 +63,6 @@ class FiltersIndustryViewModel @Inject constructor(private val filterInteractor:
 
         return sortedSubIndustriesList.sortedBy { it.name }
     }
-
     fun filterIndustries(editText: String) {
         if (editText.isNotEmpty()) {
             val filteredList = currentIndustriesList.filter {

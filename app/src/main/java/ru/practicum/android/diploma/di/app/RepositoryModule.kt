@@ -13,6 +13,10 @@ import ru.practicum.android.diploma.domain.favorites.api.FavoritesRepository
 import ru.practicum.android.diploma.domain.favorites.impl.FavoritesInteractorImpl
 import ru.practicum.android.diploma.domain.impl.VacanciesRepository
 import ru.practicum.android.diploma.domain.sharedpreferences.api.SharedPreferencesRepository
+import ru.practicum.android.diploma.domain.filters.industry.api.IndustryInteractor
+import ru.practicum.android.diploma.domain.filters.industry.impl.IndustryInteractorImpl
+import ru.practicum.android.diploma.domain.filters.industry.api.IndustryRepository
+import ru.practicum.android.diploma.domain.filters.industry.impl.IndustryRepositoryImpl
 import ru.practicum.android.diploma.presentation.vacancy.EmailRepository
 import ru.practicum.android.diploma.presentation.vacancy.EmailRepositoryImpl
 
@@ -30,6 +34,12 @@ object RepositoryModule {
 
     @Provides
     fun providesFavoritiesInteractor(impl: FavoritesInteractorImpl): FavoritesInteractor = impl
+
+    @Provides
+    fun providesIndustryInteractor(impl: IndustryInteractorImpl): IndustryInteractor = impl
+
+    @Provides
+    fun providesIndustryRepository(impl: IndustryRepositoryImpl): IndustryRepository = impl
 
     @Provides
     fun providesSharedPreferencesRepository(context: Context): SharedPreferencesRepository {

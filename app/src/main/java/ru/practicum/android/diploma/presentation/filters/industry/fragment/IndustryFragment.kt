@@ -12,28 +12,25 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentFilterIndustryBinding
-import ru.practicum.android.diploma.domain.filters.industry.models.SubIndustry
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.filters.industry.state.FiltersIndustriesState
-import ru.practicum.android.diploma.presentation.filters.industry.viewmodel.FiltersIndustryViewModel
-import ru.practicum.android.diploma.presentation.general.viewmodel.GeneralViewModel
+import ru.practicum.android.diploma.presentation.filters.industry.viewmodel.IndustryViewModel
 
 
 class IndustryFragment : Fragment() {
     private var _binding: FragmentFilterIndustryBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel by viewModels<FiltersIndustryViewModel> {
+    private val viewModel by viewModels<IndustryViewModel> {
         Factory {
-            App.appComponent.industryComponent().viewModel()
+            (requireContext().applicationContext as App).appComponent.generalComponent().viewModel()
         }
     }
-    private var currentIndustry: SubIndustry? = null
     private var selectedIndustryId: String? = null
     private var selectedIndustryIndex: Int = -1
     private var adapter = IndustriesAdapter { industry ->
         binding.chooseIndustryButton.isVisible = industry.active
-        currentIndustry = industry.industry
+        viewModel.currentIndustry = industry.industry
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -66,7 +63,7 @@ class IndustryFragment : Fragment() {
             findNavController().popBackStack()
         }
         binding.chooseIndustryButton.setOnClickListener {
-            parentFragmentManager.setFragmentResult(REQUEST_KEY, bundleOf(INDUSTRY_KEY to currentIndustry))
+            parentFragmentManager.setFragmentResult(REQUEST_KEY, bundleOf(INDUSTRY_KEY to viewModel.currentIndustry))
             findNavController().popBackStack()
         }
 
@@ -97,7 +94,7 @@ class IndustryFragment : Fragment() {
     }
 
     private fun showContent(data: List<IndustriesAdapterItem>) {
-        val active = data.find { it.industry.id == currentIndustry?.id }
+        val active = data.find { it.industry.id == viewModel.currentIndustry?.id }
         if (active == null) {
             binding.chooseIndustryButton.isVisible = false
         } else {
@@ -106,7 +103,7 @@ class IndustryFragment : Fragment() {
         }
         adapter.updateList(data)
 
-        if (currentIndustry == null) {
+        if (viewModel.currentIndustry == null) {
             val industryIdPrefs = arguments?.getString(INDUSTRY_KEY_ID)
             adapter.setSelectedIndustry(industryIdPrefs)
             selectedIndustryId = industryIdPrefs
@@ -116,7 +113,7 @@ class IndustryFragment : Fragment() {
                 val position = adapter.data.indexOfFirst { it.industry.id == industryIdPrefs }
                 if (position != -1) {
                     binding.chooseIndustryButton.visibility = View.VISIBLE
-                    currentIndustry = adapter.data[position].industry
+                    viewModel.currentIndustry = adapter.data[position].industry
                 }
             }
         }

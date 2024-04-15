@@ -1,10 +1,9 @@
-package ru.practicum.android.diploma.presentation.filters
+package ru.practicum.android.diploma.domain.filters.industry.api
 
-import dagger.Provides
 import kotlinx.coroutines.flow.Flow
 import ru.practicum.android.diploma.data.network.Resource
 import ru.practicum.android.diploma.domain.filters.industry.models.Industry
 
-interface FIlterInteractor {
+interface IndustryInteractor {
     suspend fun getIndustries(): Flow<Resource<List<Industry>>>
 }
