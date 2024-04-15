@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -108,12 +107,8 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
             onChangeViewState(state)
         }
 
-        viewModel.getAcceptAviable().observe(viewLifecycleOwner) { acceptAvaiable ->
-            onChangeAcceptAvaiable(acceptAvaiable)
-        }
-
         setFragmentResultListener(FILTER_CHANGED) { s: String, bundle: Bundle ->
-            viewModel.loadCurrentFilters()
+            viewModel.loadCurrentFilters(true)
         }
 
         binding.llWorkPlace.ivBtnClear.setOnClickListener {
@@ -142,6 +137,8 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
                 setViewPropertys(binding.llIndustries, "")
                 binding.tietSalary.setText("")
                 binding.cbOnlyWithSalary.isChecked = false
+                binding.btnCancel.isVisible = false
+                binding.btnAccept.isVisible = false
             }
 
             is FiltersMainViewState.Content -> {
@@ -149,13 +146,10 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
                 setViewPropertys(binding.llIndustries, state.industries)
                 binding.tietSalary.setText(state.salary)
                 binding.cbOnlyWithSalary.isChecked = state.onlyWithSalary
+                binding.btnCancel.isVisible = state.filtresAvailable
+                binding.btnAccept.isVisible = state.filterChanged
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.loadCurrentFilters()
     }
 
     override fun onDestroyView() {

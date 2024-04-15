@@ -16,7 +16,6 @@ class FiltersWorkPlaceViewModel @Inject constructor(
 
     private var currentFilterCountry: FilterValue? = null
     private var currentFilterRegion: FilterValue? = null
-    private val filterChanged = MutableLiveData<Boolean>()
     private val state = MutableLiveData<FiltersWorkPlaceViewState>()
 
     private val selectRegion = SingleLiveEvent<String>()
@@ -24,17 +23,12 @@ class FiltersWorkPlaceViewModel @Inject constructor(
     init {
         currentFilterCountry = filtersInteractor.getFilter(SharedFilterNames.COUNTRY)
         currentFilterRegion = filtersInteractor.getFilter(SharedFilterNames.AREA)
-        setNewValues()
+        loadValues(false)
     }
 
     fun getState(): LiveData<FiltersWorkPlaceViewState> = state
 
-    fun getFilterChanged(): LiveData<Boolean> = filterChanged
-
     fun getSelectRegion(): SingleLiveEvent<String> = selectRegion
-    fun valuesChanged() {
-        filterChanged.postValue(true)
-    }
 
     fun setFilterCountry(filterValue: FilterValue?) {
         currentFilterCountry = filterValue
@@ -48,20 +42,17 @@ class FiltersWorkPlaceViewModel @Inject constructor(
             }
         }
 
-
         filtersInteractor.setFilter(SharedFilterNames.COUNTRY, filterValue)
-        setNewValues()
-        valuesChanged()
+        loadValues(true)
     }
 
     fun setFilterRegion(filterValue: FilterValue?) {
         currentFilterRegion = filterValue
         filtersInteractor.setFilter(SharedFilterNames.AREA, filterValue)
-        setNewValues()
-
+        loadValues(true)
     }
 
-    private fun setNewValues() {
+    private fun loadValues(valuesChanged: Boolean) {
         if (currentFilterCountry == null
             && currentFilterRegion == null
         ) {
@@ -70,11 +61,11 @@ class FiltersWorkPlaceViewModel @Inject constructor(
             state.postValue(
                 FiltersWorkPlaceViewState.Content(
                     country = currentFilterCountry?.valueString ?: "",
-                    region = currentFilterRegion?.valueString ?: ""
+                    region = currentFilterRegion?.valueString ?: "",
+                    filterChanged = valuesChanged
                 )
             )
         }
-        valuesChanged()
     }
 
     fun saveFilters() {
@@ -89,12 +80,12 @@ class FiltersWorkPlaceViewModel @Inject constructor(
     fun clearCountry() {
         currentFilterCountry = null
         saveFilters()
-        setNewValues()
+        loadValues(true)
     }
 
     fun clearRegion() {
         currentFilterRegion = null
         saveFilters()
-        setNewValues()
+        loadValues(true)
     }
 }

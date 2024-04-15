@@ -93,7 +93,6 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
             }
         }
 
-
         setFragmentResultListener(RESULT_NAME_REGION) { s: String, bundle: Bundle ->
             bundle.let {
                 val filterValue = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -117,10 +116,6 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
 
         viewModel.getState().observe(viewLifecycleOwner) { state ->
             onChangeViewState(state)
-        }
-
-        viewModel.getFilterChanged().observe(viewLifecycleOwner) { filterChanged ->
-            onFilterChanged(filterChanged)
         }
 
         viewModel.getSelectRegion().observe(viewLifecycleOwner) { countryId ->
@@ -149,6 +144,7 @@ class FiltersWorkPlaceFragment : Fragment(R.layout.fragment_filters_workplace) {
             is FiltersWorkPlaceViewState.Content -> {
                 setViewPropertys(binding.llCountry, state.country)
                 setViewPropertys(binding.llRegion, state.region)
+                onFilterChanged(state.filterChanged)
             }
         }
     }
