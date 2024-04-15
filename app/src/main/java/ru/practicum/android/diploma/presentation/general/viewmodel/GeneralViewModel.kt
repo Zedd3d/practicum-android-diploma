@@ -96,6 +96,15 @@ class GeneralViewModel @Inject constructor(
         query?.let { searchPagination(it, page) }
     }
 
+    fun searchOnFilterChanged() {
+
+        if (!this.query.isNullOrEmpty()) {
+            val query = this.query
+            this.query = null
+            query?.let { search(it) }
+        }
+    }
+
     companion object {
         const val PAG_COUNT: Int = 20
     }

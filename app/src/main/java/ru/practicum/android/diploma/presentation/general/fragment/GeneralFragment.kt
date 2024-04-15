@@ -1,6 +1,7 @@
 package ru.practicum.android.diploma.presentation.general.fragment
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,6 +13,7 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -25,8 +27,11 @@ import kotlinx.coroutines.flow.onEach
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentGeneralBinding
+import ru.practicum.android.diploma.domain.filters.models.FilterValue
 import ru.practicum.android.diploma.domain.general.models.ResponseState
 import ru.practicum.android.diploma.presentation.Factory
+import ru.practicum.android.diploma.presentation.filters.region.fragment.FiltersWorkPlaceFragment
+import ru.practicum.android.diploma.presentation.filters.region.viewmodel.FiltersWorkPlaceViewModel
 import ru.practicum.android.diploma.presentation.general.VacanciesAdapter
 import ru.practicum.android.diploma.presentation.general.viewmodel.GeneralViewModel
 import ru.practicum.android.diploma.util.onTextChangeDebounce
@@ -40,6 +45,10 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         Factory {
             (requireContext().applicationContext as App).appComponent.generalComponent().viewModel()
         }
+    }
+
+    companion object {
+        const val ON_FILTER_CHANGED = "on_filter_changed"
     }
 
     private var _binding: FragmentGeneralBinding? = null
@@ -62,6 +71,11 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         setupVacancies()
         setListeners()
         setObservers()
+
+        setFragmentResultListener(ON_FILTER_CHANGED) { s: String, bundle: Bundle ->
+            viewModel.searchOnFilterChanged()
+        }
+
     }
 
     private fun setObservers() {
