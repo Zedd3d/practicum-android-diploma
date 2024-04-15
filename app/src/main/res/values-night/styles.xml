@@ -6,11 +6,7 @@
         <item name="android:backgroundTint">@color/Gray_yp</item>
         <item name="android:drawableTint">@color/BlackUniversal_yp</item>
     </style>
-    <style name="IndustryButtonStyle">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:layout_marginHorizontal">17dp</item>
-        <item name="android:layout_marginBottom">24dp</item>
-    </style>
+
     <style name="FavoriteButtonStyle">
         <item name="android:src">@drawable/favorite_vacancy_drawable_empty</item>
     </style>

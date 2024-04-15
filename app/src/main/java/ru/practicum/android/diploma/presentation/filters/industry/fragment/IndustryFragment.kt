@@ -15,7 +15,7 @@ import ru.practicum.android.diploma.databinding.FragmentFilterIndustryBinding
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.filters.industry.state.FiltersIndustriesState
 import ru.practicum.android.diploma.presentation.filters.industry.viewmodel.IndustryViewModel
-
+import ru.practicum.android.diploma.presentation.filters.main.fragment.FiltersMainFragment
 
 class IndustryFragment : Fragment() {
     private var _binding: FragmentFilterIndustryBinding? = null
@@ -26,11 +26,9 @@ class IndustryFragment : Fragment() {
             (requireContext().applicationContext as App).appComponent.industryComponent().viewModel()
         }
     }
-    private var selectedIndustryId: String? = null
-    private var selectedIndustryIndex: Int = -1
+
     private var adapter = IndustriesAdapter { industry ->
-        binding.chooseIndustryButton.isVisible = industry.active
-        viewModel.currentIndustry = industry.industry
+        viewModel.setCurrentIndustry(industry)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -40,7 +38,6 @@ class IndustryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getIndustries()
         binding.industryList.adapter = this.adapter
         binding.choosingIndustryEditText.doOnTextChanged { text, _, _, _ ->
             viewModel.filterIndustries(text.toString())
@@ -59,31 +56,26 @@ class IndustryFragment : Fragment() {
             }
         }
 
-        binding.backButton.setOnClickListener {
-            findNavController().popBackStack()
-        }
+        binding.toolbarText.setNavigationOnClickListener { findNavController().popBackStack() }
+
         binding.chooseIndustryButton.setOnClickListener {
-            parentFragmentManager.setFragmentResult(REQUEST_KEY, bundleOf(INDUSTRY_KEY to viewModel.currentIndustry))
+            viewModel.saveCurrentIndustry()
+            parentFragmentManager.setFragmentResult(FiltersMainFragment.FILTER_CHANGED, bundleOf())
             findNavController().popBackStack()
         }
 
         viewModel.industriesState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                FiltersIndustriesState.Error -> {
+                is FiltersIndustriesState.Error -> {
                 }
 
-                FiltersIndustriesState.Empty -> {
-                    showEmpty()
-                }
+                is FiltersIndustriesState.Empty -> showEmpty()
 
-                FiltersIndustriesState.Initial -> Unit
-                FiltersIndustriesState.Loading -> {
-                    showLoading()
-                }
+                is FiltersIndustriesState.Selected -> binding.chooseIndustryButton.isVisible = true
 
-                is FiltersIndustriesState.Success -> {
-                    showContent(state.data)
-                }
+                is FiltersIndustriesState.Loading -> showLoading()
+
+                is FiltersIndustriesState.Success -> showContent(state)
             }
         }
     }
@@ -93,30 +85,14 @@ class IndustryFragment : Fragment() {
         _binding = null
     }
 
-    private fun showContent(data: List<IndustriesAdapterItem>) {
-        val active = data.find { it.industry.id == viewModel.currentIndustry?.id }
-        if (active == null) {
-            binding.chooseIndustryButton.isVisible = false
-        } else {
-            active.active = true
-            binding.chooseIndustryButton.isVisible = true
-        }
+    private fun showContent(state: FiltersIndustriesState) {
+        if (state !is FiltersIndustriesState.Success) return
+
+        val data = state.data
+
+        binding.chooseIndustryButton.isVisible = !state.currentIndustryId.isNullOrEmpty()
+
         adapter.updateList(data)
-
-        if (viewModel.currentIndustry == null) {
-            val industryIdPrefs = arguments?.getString(INDUSTRY_KEY_ID)
-            adapter.setSelectedIndustry(industryIdPrefs)
-            selectedIndustryId = industryIdPrefs
-            selectedIndustryIndex = adapter.checkedRadioButtonId
-
-            if (!industryIdPrefs.isNullOrEmpty()) {
-                val position = adapter.data.indexOfFirst { it.industry.id == industryIdPrefs }
-                if (position != -1) {
-                    binding.chooseIndustryButton.visibility = View.VISIBLE
-                    viewModel.currentIndustry = adapter.data[position].industry
-                }
-            }
-        }
 
         binding.industryList.visibility = View.VISIBLE
         binding.progressBar.visibility = View.GONE

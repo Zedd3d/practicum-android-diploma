@@ -59,6 +59,7 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
 
         setListeners()
         setObservers()
+        setResultListeners()
     }
 
     private fun setObservers() {
@@ -67,13 +68,17 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
         }
     }
 
+    private fun setResultListeners() {
+        setFragmentResultListener(FILTER_CHANGED) { s: String, bundle: Bundle ->
+            viewModel.loadCurrentFilters(true)
+        }
+    }
+
     private fun setListeners() {
         binding.llWorkPlace.ivBtnClear.setOnClickListener {
             viewModel.clearWorkPlace()
         }
-        setFragmentResultListener(FILTER_CHANGED) { s: String, bundle: Bundle ->
-            viewModel.loadCurrentFilters(true)
-        }
+
         binding.tietSalary.onTextChangeDebounce().debounce(DEBOUNCE)
             .onEach {
                 viewModel.setSalaryFilter(it?.toString().orEmpty())
@@ -91,8 +96,11 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
 
-        binding.llIndustries.ivBtnGo.setOnClickListener {
+        binding.llIndustries.root.setOnClickListener {
             findNavController().navigate(R.id.action_filtersMainFragment_to_industryFragment)
+        }
+        binding.llIndustries.ivBtnClear.setOnClickListener {
+            viewModel.clearIndustry()
         }
 
         binding.btnAccept.setOnClickListener {

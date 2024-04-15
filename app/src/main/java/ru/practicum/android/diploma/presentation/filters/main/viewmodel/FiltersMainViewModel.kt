@@ -113,4 +113,9 @@ class FiltersMainViewModel @Inject constructor(
         filtersInteractor.setFilter(SharedFilterNames.AREA, null)
         loadCurrentFilters()
     }
+
+    fun clearIndustry() {
+        filtersInteractor.setFilter(SharedFilterNames.INDUSTRY, null)
+        loadCurrentFilters()
+    }
 }

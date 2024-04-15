@@ -22,12 +22,8 @@ class IndustriesAdapter(private val onClick: (IndustriesAdapterItem) -> Unit) :
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: IndustryViewHolder, position: Int) {
         val item = data[position]
-        holder.bind(item.industry)
-        holder.binding.radioButton.isChecked = item.active
+        holder.bind(item)
         holder.binding.root.setOnClickListener {
-            updateSelectedIndustry(position)
-        }
-        holder.binding.radioButton.setOnClickListener {
             updateSelectedIndustry(position)
         }
     }
@@ -44,19 +40,9 @@ class IndustriesAdapter(private val onClick: (IndustriesAdapterItem) -> Unit) :
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun updateList(list: List<IndustriesAdapterItem>) {
         data = list
         notifyDataSetChanged()
-    }
-
-    fun setSelectedIndustry(industryId: String?) {
-        val position = data.indexOfFirst { it.industry.id == industryId }
-        if (position != -1) {
-            data[position].active = true
-            checkedRadioButtonId = position
-            notifyItemChanged(position)
-        }
     }
 }
 
