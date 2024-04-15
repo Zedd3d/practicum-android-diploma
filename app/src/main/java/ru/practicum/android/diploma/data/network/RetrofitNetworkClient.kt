@@ -72,10 +72,12 @@ class RetrofitNetworkClient @Inject constructor(
                 resultCode = HTTP_OK
             }
         } catch (e: IOException) {
+            println(e)
             Response().apply {
                 resultCode = HTTP_ERROR
             }
         } catch (e: HttpException) {
+            println(e)
             Response().apply { resultCode = e.code() }
         }
     }
@@ -101,10 +103,12 @@ class RetrofitNetworkClient @Inject constructor(
                 resultCode = HTTP_OK
             }
         } catch (e: IOException) {
+            println(e)
             Response().apply {
                 resultCode = HTTP_ERROR
             }
         } catch (e: HttpException) {
+            println(e)
             Response().apply { resultCode = e.code() }
         }
     }

@@ -8,10 +8,10 @@
     <!-- TODO: team strings -->
     <string name="team_head_name">Команда</string>
     <string name="team_works">Над приложением \nработали</string>
-    <string name="team_developer_1">Валентин Мальцев</string>
-    <string name="team_developer_2">Андрей Ярыгин</string>
-    <string name="team_developer_3">Александр Панкратов</string>
-    <string name="team_developer_4">Александр Ефремов</string>
+    <string name="team_developer_1">Валентин Вадимович Мальцев</string>
+    <string name="team_developer_2">Андрей Александрович Ярыгин</string>
+    <string name="team_developer_3">Александр Сергеевич Панкратов</string>
+    <string name="team_developer_4">Александр Михайлович Ефремов</string>
     <!-- TODO: favorites strings -->
     <string name="favorite_head_name">Избранное</string>
     <string name="favorite_empty">Список пуст</string>

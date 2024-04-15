@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -42,6 +43,10 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         }
     }
 
+    companion object {
+        const val ON_FILTER_CHANGED = "on_filter_changed"
+    }
+
     private var _binding: FragmentGeneralBinding? = null
     private val binding get() = _binding!!
 
@@ -62,6 +67,11 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         setupVacancies()
         setListeners()
         setObservers()
+
+        setFragmentResultListener(ON_FILTER_CHANGED) { s: String, bundle: Bundle ->
+            viewModel.searchOnFilterChanged()
+        }
+
     }
 
     private fun setObservers() {
