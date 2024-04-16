@@ -87,8 +87,8 @@
 
         <ImageButton
             android:id="@+id/ibClear"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="@dimen/big_size"
+            android:layout_height="@dimen/big_size"
             android:layout_marginTop="0.5dp"
             android:backgroundTint="@color/LightGrayDay_GrayNight"
             android:src="@drawable/ic_clear"
