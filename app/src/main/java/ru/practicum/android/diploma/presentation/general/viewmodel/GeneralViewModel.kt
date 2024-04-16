@@ -18,9 +18,12 @@ class GeneralViewModel @Inject constructor(
 
     private val state = MutableLiveData<ResponseState>()
 
+    private val stateFilters = MutableLiveData<Boolean>()
+
     private var currentListVacancies = emptyList<Vacancy>()
 
     fun observeUi(): LiveData<ResponseState> = state
+    fun observeFilters(): LiveData<Boolean> = stateFilters
 
     private var isNextPageLoading = false
 
@@ -62,8 +65,7 @@ class GeneralViewModel @Inject constructor(
                         ResponseState.ContentVacanciesList(
                             currentListVacancies,
                             response.found,
-                            response.pages,
-                            filtersMap.isNotEmpty()
+                            response.pages
                         )
                     )
                 }
@@ -75,6 +77,7 @@ class GeneralViewModel @Inject constructor(
                     state.postValue(response)
                 }
             }
+            stateFilters.postValue(filtersMap.isNotEmpty())
             isNextPageLoading = false
         }
     }
@@ -106,7 +109,7 @@ class GeneralViewModel @Inject constructor(
 
     fun updateHasFilters() {
         filtersMap = filtersInteractor.getAllFilters()
-        state.postValue(ResponseState.UpdateHasFilters(filtersMap.isNotEmpty()))
+        stateFilters.postValue(filtersMap.isNotEmpty())
     }
 
     companion object {
