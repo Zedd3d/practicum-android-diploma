@@ -109,12 +109,14 @@ class FiltersMainViewModel @Inject constructor(
     }
 
     fun clearWorkPlace() {
+        filterChanged = true
         filtersInteractor.setFilter(SharedFilterNames.COUNTRY, null)
         filtersInteractor.setFilter(SharedFilterNames.AREA, null)
         loadCurrentFilters()
     }
 
     fun clearIndustry() {
+        filterChanged = true
         filtersInteractor.setFilter(SharedFilterNames.INDUSTRY, null)
         loadCurrentFilters()
     }
