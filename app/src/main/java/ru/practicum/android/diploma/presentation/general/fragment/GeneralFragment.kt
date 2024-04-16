@@ -76,9 +76,25 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
 
     private fun setObservers() {
         viewModel.observeUi().observe(viewLifecycleOwner) { state ->
+
+            if (state is ResponseState.UpdateHasFilters) {
+                checkFilters(state.isWithFilters)
+                return@observe
+            }
+
             if (state is ResponseState.ContentVacanciesList) {
                 adapter.submitList(state.listVacancy)
-                checkFilters(state)
+
+                checkFilters(state.isWithFilters)
+            } else {
+                val needClearList = when (state) {
+                    is ResponseState.Loading -> !state.isPagination
+                    else -> true
+                }
+                if (needClearList) {
+                    adapter.submitList(emptyList())
+                    adapter.notifyDataSetChanged()
+                }
             }
             updateStatus(state)
             binding.vacanciesProgress.isVisible = when (state) {
@@ -216,15 +232,15 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         }
     }
 
-    private fun checkFilters(status: ResponseState.ContentVacanciesList) {
-        val image = when (status.isWithFilters) {
+    private fun checkFilters(isWithFilters: Boolean) {
+        val image = when (isWithFilters) {
             true -> R.drawable.ic_filter_on
             else -> R.drawable.ic_filter
         }
         image?.let {
             Glide.with(requireContext())
                 .load(image)
-                .into(binding.src)
+                .into(binding.filterImageView)
         }
     }
 
@@ -272,6 +288,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
 
     override fun onResume() {
         super.onResume()
+        viewModel.updateHasFilters()
         activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = true
     }
 }

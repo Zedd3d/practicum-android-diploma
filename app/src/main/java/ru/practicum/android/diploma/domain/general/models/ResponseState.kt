@@ -18,4 +18,5 @@ sealed class ResponseState {
     data object ServerError : ResponseState()
     data class Loading(val isPagination: Boolean) : ResponseState()
 
+    data class UpdateHasFilters(val isWithFilters: Boolean) : ResponseState()
 }

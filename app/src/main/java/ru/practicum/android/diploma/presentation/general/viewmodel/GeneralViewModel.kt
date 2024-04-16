@@ -104,6 +104,11 @@ class GeneralViewModel @Inject constructor(
         }
     }
 
+    fun updateHasFilters() {
+        filtersMap = filtersInteractor.getAllFilters()
+        state.postValue(ResponseState.UpdateHasFilters(filtersMap.isNotEmpty()))
+    }
+
     companion object {
         const val PAG_COUNT: Int = 20
     }
