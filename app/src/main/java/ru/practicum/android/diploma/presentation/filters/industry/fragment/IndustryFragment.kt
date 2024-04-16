@@ -18,7 +18,6 @@ import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.filters.industry.state.FiltersIndustriesState
 import ru.practicum.android.diploma.presentation.filters.industry.viewmodel.IndustryViewModel
 import ru.practicum.android.diploma.presentation.filters.main.fragment.FiltersMainFragment
-import ru.practicum.android.diploma.presentation.filters.region.state.AreaViewState
 
 class IndustryFragment : Fragment() {
     private var _binding: FragmentFilterIndustryBinding? = null
@@ -124,7 +123,6 @@ class IndustryFragment : Fragment() {
     }
 
     private fun setPlaceholderImage(state: FiltersIndustriesState) {
-
         val image = when (state) {
             FiltersIndustriesState.Empty -> {
                 R.drawable.state_image_failure
