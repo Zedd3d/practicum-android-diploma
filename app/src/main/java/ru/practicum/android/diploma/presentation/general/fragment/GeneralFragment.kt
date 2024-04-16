@@ -68,7 +68,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         setListeners()
         setObservers()
 
-        setFragmentResultListener(ON_FILTER_CHANGED) { s: String, bundle: Bundle ->
+        setFragmentResultListener(ON_FILTER_CHANGED) { _: String, _: Bundle ->
             viewModel.searchOnFilterChanged()
         }
 
@@ -78,29 +78,26 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         viewModel.observeUi().observe(viewLifecycleOwner) { state ->
             render(state)
         }
+        viewModel.observeFilters().observe(viewLifecycleOwner) { isWithFilters ->
+            checkFilters(isWithFilters)
+        }
     }
 
     private fun render(state: ResponseState) {
-        if (state is ResponseState.UpdateHasFilters) {
-            checkFilters(state.isWithFilters)
+        if (state is ResponseState.ContentVacanciesList) {
+            adapter.submitList(state.listVacancy)
         } else {
-            if (state is ResponseState.ContentVacanciesList) {
-                adapter.submitList(state.listVacancy)
-
-                checkFilters(state.isWithFilters)
-            } else {
-                val needClearList = when (state) {
-                    is ResponseState.Loading -> !state.isPagination
-                    is ResponseState.NetworkError -> !state.isPagination
-                    else -> true
-                }
-                if (needClearList) {
-                    adapter.submitList(emptyList())
-                    adapter.notifyDataSetChanged()
-                }
+            val needClearList = when (state) {
+                is ResponseState.Loading -> !state.isPagination
+                is ResponseState.NetworkError -> !state.isPagination
+                else -> true
             }
-            updateStatus(state)
+            if (needClearList) {
+                adapter.submitList(emptyList())
+                adapter.notifyDataSetChanged()
+            }
         }
+        updateStatus(state)
     }
 
     private fun setListeners() {
