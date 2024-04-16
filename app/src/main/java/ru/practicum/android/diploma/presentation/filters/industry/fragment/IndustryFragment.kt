@@ -70,6 +70,7 @@ class IndustryFragment : Fragment() {
             when (state) {
                 is FiltersIndustriesState.Error -> {
                     setPlaceholderImage(state)
+                    binding.llPlaceholderTrouble.isVisible = true
                     binding.srcText.setText(R.string.no_internet)
                 }
 
@@ -102,9 +103,9 @@ class IndustryFragment : Fragment() {
 
         adapter.updateList(data)
 
-        binding.industryList.visibility = View.VISIBLE
         binding.progressBar.visibility = View.GONE
         binding.llPlaceholderTrouble.visibility = View.GONE
+        binding.industryList.visibility = View.VISIBLE
     }
 
     private fun showEmpty() {
@@ -124,12 +125,13 @@ class IndustryFragment : Fragment() {
 
     private fun setPlaceholderImage(state: FiltersIndustriesState) {
         val image = when (state) {
-            FiltersIndustriesState.Empty -> {
-                R.drawable.state_image_failure
-            }
 
             FiltersIndustriesState.Error -> {
                 R.drawable.state_image_no_internet
+            }
+
+            FiltersIndustriesState.Empty -> {
+                R.drawable.state_image_failure
             }
 
             else -> {
