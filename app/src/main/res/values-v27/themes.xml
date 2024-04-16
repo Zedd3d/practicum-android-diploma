@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ApiDivider" parent="Base.Theme.PracticumAndroidDiploma">
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:navigationBarColor">@color/WhiteUniversal_yp</item>
+    </style>
+</resources>

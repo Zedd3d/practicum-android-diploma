@@ -4,11 +4,13 @@
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/BlackUniversal_yp</item>
         <item name="colorSecondary">@color/WhiteUniversal_yp</item>
-        <item name="android:statusBarColor">?colorSecondary</item>
-        <item name="android:navigationBarColor">?colorSecondary</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/WhiteUniversal_yp</item>
     </style>
 
-    <style name="Theme.PracticumAndroidDiploma" parent="Base.Theme.PracticumAndroidDiploma" />
+    <style name="ApiDivider" parent="Base.Theme.PracticumAndroidDiploma"></style>
+
+    <style name="Theme.PracticumAndroidDiploma" parent="ApiDivider" />
 
     <style name="Theme.BottomNavigationView.ActiveIndicator" parent="Widget.MaterialComponents.BottomNavigationView">
         <item name="android:color">?colorSecondary</item>
