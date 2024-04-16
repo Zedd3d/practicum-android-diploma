@@ -42,8 +42,8 @@
         app:layout_constraintTop_toBottomOf="@+id/appbar" />
     <Button
         android:id="@+id/clear_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/big_size"
+        android:layout_height="@dimen/big_size"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
@@ -51,7 +51,7 @@
         app:layout_constraintEnd_toEndOf="@+id/search_edit_text"
         app:layout_constraintTop_toTopOf="@+id/search_edit_text"
         android:alpha="0"
-        android:enabled="false"/>
+        android:enabled="false" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/vacancies_rv"
@@ -131,12 +131,12 @@
 
         <TextView
             android:id="@+id/src_text"
+            style="@style/TitleTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textAlignment="center"
             android:text=""
-            android:textSize="22sp"
             android:textColor="@color/BlackDay_WhiteNight"
             tools:text="@string/no_vacancies"/>
     </LinearLayout>
