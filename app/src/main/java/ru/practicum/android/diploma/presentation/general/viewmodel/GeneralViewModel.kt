@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.domain.general.api.SearchVacanciesUseCase
 import ru.practicum.android.diploma.domain.general.models.ResponseState
-import ru.practicum.android.diploma.domain.impl.SearchVacanciesUseCase
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.sharedpreferences.api.FiltersInteractor
 import javax.inject.Inject
