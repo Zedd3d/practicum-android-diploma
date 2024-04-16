@@ -69,8 +69,8 @@ class IndustryFragment : Fragment() {
         viewModel.industriesState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is FiltersIndustriesState.Error -> {
-                    setPlaceholderImage(state)
                     binding.llPlaceholderTrouble.isVisible = true
+                    setPlaceholderImage(state)
                     binding.srcText.setText(R.string.no_internet)
                 }
 
