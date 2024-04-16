@@ -12,7 +12,7 @@
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TitleTextStyle"
+        style="@style/toolbarTitle"
         app:title="@string/favorite_head_name"/>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -53,6 +53,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:text="@string/favorite_empty"
+            android:textColor="@color/BlackDay_WhiteNight"
             android:textAlignment="center" />
 
     </LinearLayout>

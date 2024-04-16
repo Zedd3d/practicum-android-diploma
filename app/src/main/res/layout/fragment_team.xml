@@ -14,7 +14,7 @@
         android:id="@+id/tv_team"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TitleTextStyle"
+        style="@style/toolbarTitle"
         app:title="@string/team_head_name"/>
 
 
@@ -24,6 +24,7 @@
         android:layout_marginTop="30dp"
         android:layout_marginStart="16dp"
         android:text="@string/team_works"
+        android:textColor="@color/BlackDay_WhiteNight"
         style="@style/BoldTitleTextStyle" />
 
     <TextView
@@ -32,6 +33,7 @@
         android:layout_marginTop="26dp"
         android:layout_marginStart="16dp"
         android:text="@string/team_developer_1"
+        android:textColor="@color/BlackDay_WhiteNight"
         style="@style/LowTitleTextStyle" />
 
     <TextView
@@ -40,6 +42,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
         android:text="@string/team_developer_2"
+        android:textColor="@color/BlackDay_WhiteNight"
         style="@style/LowTitleTextStyle" />
 
     <TextView
@@ -48,6 +51,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
         android:text="@string/team_developer_3"
+        android:textColor="@color/BlackDay_WhiteNight"
         style="@style/LowTitleTextStyle" />
 
     <TextView
@@ -56,6 +60,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
         android:text="@string/team_developer_4"
+        android:textColor="@color/BlackDay_WhiteNight"
         style="@style/LowTitleTextStyle" />
 
 </LinearLayout>
