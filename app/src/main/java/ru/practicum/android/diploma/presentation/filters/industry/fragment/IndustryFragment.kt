@@ -10,12 +10,15 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentFilterIndustryBinding
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.filters.industry.state.FiltersIndustriesState
 import ru.practicum.android.diploma.presentation.filters.industry.viewmodel.IndustryViewModel
 import ru.practicum.android.diploma.presentation.filters.main.fragment.FiltersMainFragment
+import ru.practicum.android.diploma.presentation.filters.region.state.AreaViewState
 
 class IndustryFragment : Fragment() {
     private var _binding: FragmentFilterIndustryBinding? = null
@@ -67,15 +70,21 @@ class IndustryFragment : Fragment() {
         viewModel.industriesState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is FiltersIndustriesState.Error -> {
+                    setPlaceholderImage(state)
+                    binding.srcText.setText(R.string.no_internet)
                 }
 
-                is FiltersIndustriesState.Empty -> showEmpty()
+                is FiltersIndustriesState.Empty -> {
+                    showEmpty()
+                    setPlaceholderImage(state)
+                }
 
                 is FiltersIndustriesState.Selected -> binding.chooseIndustryButton.isVisible = true
 
                 is FiltersIndustriesState.Loading -> showLoading()
 
                 is FiltersIndustriesState.Success -> showContent(state)
+
             }
         }
     }
@@ -96,18 +105,47 @@ class IndustryFragment : Fragment() {
 
         binding.industryList.visibility = View.VISIBLE
         binding.progressBar.visibility = View.GONE
+        binding.llPlaceholderTrouble.visibility = View.GONE
     }
 
     private fun showEmpty() {
         binding.chooseIndustryButton.visibility = View.GONE
         binding.industryList.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
+        binding.llPlaceholderTrouble.visibility = View.VISIBLE
+        binding.srcText.setText(R.string.load_list_failure)
     }
 
     private fun showLoading() {
         binding.progressBar.visibility = View.VISIBLE
         binding.chooseIndustryButton.visibility = View.GONE
         binding.industryList.visibility = View.GONE
+        binding.llPlaceholderTrouble.visibility = View.GONE
+    }
+
+    private fun setPlaceholderImage(state: FiltersIndustriesState) {
+
+        val image = when (state) {
+            FiltersIndustriesState.Empty -> {
+                R.drawable.state_image_failure
+            }
+
+            FiltersIndustriesState.Error -> {
+                R.drawable.state_image_no_internet
+            }
+
+            else -> {
+                null
+            }
+        }
+
+        image?.let {
+            Glide.with(requireContext())
+                .load(image)
+                .fitCenter()
+                .into(binding.src)
+        }
+
     }
 
     companion object {

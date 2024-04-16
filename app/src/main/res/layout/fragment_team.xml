@@ -14,7 +14,7 @@
         android:id="@+id/tv_team"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TitleTextStyle"
+        style="@style/toolbarTitle"
         app:title="@string/team_head_name"/>
 
 
