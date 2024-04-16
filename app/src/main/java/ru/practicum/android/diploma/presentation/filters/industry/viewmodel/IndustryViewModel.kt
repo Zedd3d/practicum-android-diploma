@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.data.Constants.SERVER_ERROR
 import ru.practicum.android.diploma.data.Constants.SUCCESS_RESULT_CODE
 import ru.practicum.android.diploma.data.network.Resource
 import ru.practicum.android.diploma.domain.filters.industry.api.IndustryInteractor
@@ -53,6 +54,8 @@ class IndustryViewModel @Inject constructor(
             } else {
                 _industriesState.postValue(FiltersIndustriesState.Empty)
             }
+        } else if (industry.code == SERVER_ERROR) {
+            _industriesState.postValue(FiltersIndustriesState.Empty)
         } else {
             _industriesState.postValue(FiltersIndustriesState.Error)
         }
@@ -85,6 +88,7 @@ class IndustryViewModel @Inject constructor(
 
         return sortedSubIndustriesList.sortedBy { it.name }
     }
+
     fun filterIndustries(editText: String) {
         if (editText.isNotEmpty()) {
             val filteredList = currentIndustriesList.filter {
