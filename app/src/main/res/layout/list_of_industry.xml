@@ -31,7 +31,8 @@
         android:checked="false"
         android:layout_marginHorizontal="4dp"
         app:buttonTint="@color/Blue_yp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/linearLayoutCompat"
+        app:layout_constraintTop_toTopOf="@+id/linearLayoutCompat"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayoutCompat" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

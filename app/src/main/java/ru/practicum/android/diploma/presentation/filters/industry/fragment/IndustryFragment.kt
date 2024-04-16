@@ -54,6 +54,7 @@ class IndustryFragment : Fragment() {
             }
         }
 
+
         binding.toolbarText.setNavigationOnClickListener { findNavController().popBackStack() }
 
         binding.chooseIndustryButton.setOnClickListener {
