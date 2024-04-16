@@ -76,12 +76,14 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
 
     private fun setObservers() {
         viewModel.observeUi().observe(viewLifecycleOwner) { state ->
+            render(state)
+        }
+    }
 
-            if (state is ResponseState.UpdateHasFilters) {
-                checkFilters(state.isWithFilters)
-                return@observe
-            }
-
+    private fun render(state: ResponseState) {
+        if (state is ResponseState.UpdateHasFilters) {
+            checkFilters(state.isWithFilters)
+        } else {
             if (state is ResponseState.ContentVacanciesList) {
                 adapter.submitList(state.listVacancy)
 
@@ -97,29 +99,6 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 }
             }
             updateStatus(state)
-            binding.vacanciesProgress.isVisible = when (state) {
-                is ResponseState.Loading -> state.isPagination
-                else -> false
-            }
-
-            binding.foundCountText.text = when (state) {
-                is ResponseState.ContentVacanciesList -> {
-                    if (state.found > 0) {
-                        getString(R.string.found_count, state.found.toString()).plus(" ").plus(getNoun(state.found))
-                    } else {
-                        null
-                    }
-                }
-
-                else -> getString(R.string.no_vacancies_lil)
-            }
-
-            binding.vacanciesLoading.isVisible = when (state) {
-                is ResponseState.Loading -> !state.isPagination
-                else -> false
-            }
-            if (state is ResponseState.Loading) hideKeyBoard()
-
         }
     }
 
@@ -170,24 +149,41 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 binding.foundCountText.setText(R.string.no_vacancies_lil)
             }
 
-            ResponseState.ServerError -> {
-                binding.srcText.setText(R.string.server_error)
-            }
+            ResponseState.ServerError -> binding.srcText.setText(R.string.server_error)
 
-            ResponseState.NetworkError(false) -> {
-                binding.srcText.setText(R.string.no_internet)
-            }
+            ResponseState.NetworkError(false) -> binding.srcText.setText(R.string.no_internet)
 
             ResponseState.NetworkError(true) -> {
                 binding.src.isVisible = false
                 Toast.makeText(requireContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show()
             }
 
-            else -> {
-                binding.srcText.text = ""
-            }
+            else -> binding.srcText.text = ""
         }
         updatePicture(state)
+
+        binding.vacanciesProgress.isVisible = when (state) {
+            is ResponseState.Loading -> state.isPagination
+            else -> false
+        }
+
+        binding.foundCountText.text = when (state) {
+            is ResponseState.ContentVacanciesList -> {
+                if (state.found > 0) {
+                    getString(R.string.found_count, state.found.toString()).plus(" ").plus(getNoun(state.found))
+                } else {
+                    null
+                }
+            }
+
+            else -> getString(R.string.no_vacancies_lil)
+        }
+
+        binding.vacanciesLoading.isVisible = when (state) {
+            is ResponseState.Loading -> !state.isPagination
+            else -> false
+        }
+        if (state is ResponseState.Loading) hideKeyBoard()
     }
 
     private fun updatePreStatus(state: ResponseState) {
