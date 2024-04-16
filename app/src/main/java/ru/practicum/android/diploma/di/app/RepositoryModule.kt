@@ -9,6 +9,7 @@ import ru.practicum.android.diploma.data.favorites.impl.FavoritesRepositoryImpl
 import ru.practicum.android.diploma.data.filters.FiltersRepositoryImpl
 import ru.practicum.android.diploma.data.filters.SharedPreferencesRepositoryImpl
 import ru.practicum.android.diploma.data.general.VacanciesRepositoryImpl
+import ru.practicum.android.diploma.domain.api.VacanciesRepository
 import ru.practicum.android.diploma.domain.favorites.api.FavoritesInteractor
 import ru.practicum.android.diploma.domain.favorites.api.FavoritesRepository
 import ru.practicum.android.diploma.domain.favorites.impl.FavoritesInteractorImpl
@@ -18,7 +19,6 @@ import ru.practicum.android.diploma.domain.filters.industry.api.IndustryReposito
 import ru.practicum.android.diploma.domain.filters.industry.impl.IndustryInteractorImpl
 import ru.practicum.android.diploma.domain.filters.industry.impl.IndustryRepositoryImpl
 import ru.practicum.android.diploma.domain.filters.main.api.FiltersRepository
-import ru.practicum.android.diploma.domain.impl.VacanciesRepository
 import ru.practicum.android.diploma.domain.sharedpreferences.api.FiltersInteractor
 import ru.practicum.android.diploma.domain.sharedpreferences.api.SharedPreferencesRepository
 import ru.practicum.android.diploma.presentation.vacancy.EmailRepository

@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.presentation.vacancy
+package ru.practicum.android.diploma.presentation.vacancy.fragment
 
 import android.Manifest
 import android.content.ActivityNotFoundException
@@ -24,6 +24,7 @@ import ru.practicum.android.diploma.databinding.FragmentVacancyBinding
 import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.vacancy.models.VacancyViewState
+import ru.practicum.android.diploma.presentation.vacancy.viewmodel.VacancyViewModel
 import ru.practicum.android.diploma.util.SalaryUtil
 
 class VacancyFragment : Fragment(R.layout.fragment_vacancy) {

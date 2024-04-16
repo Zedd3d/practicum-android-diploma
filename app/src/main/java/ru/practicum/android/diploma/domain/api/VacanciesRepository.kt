@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.domain.impl
+package ru.practicum.android.diploma.domain.api
 
 import ru.practicum.android.diploma.domain.general.models.ResponseState
 
