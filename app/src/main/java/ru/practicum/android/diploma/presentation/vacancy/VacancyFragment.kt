@@ -36,10 +36,6 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
 
     private var _binding: FragmentVacancyBinding? = null
     private val binding get() = _binding!!
-    var name: String = "Имя"
-    private var phones: String = "+7 (985) 000-00-00"
-    private var email: String = "user@example.com"
-    private var comment: String = "Заполнить анкету по форме можно на нашем сайте"
     private var skillLength = 0
     private var skillsListLength = 0
     private var activityRequest = registerForActivityResult(
@@ -47,7 +43,6 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
     ) { isGranted ->
         if (isGranted) {
             val intent = Intent(Intent.ACTION_CALL)
-            intent.data = Uri.parse("tel:$phones")
             startActivity(intent)
         }
     }
@@ -126,25 +121,66 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
         binding.neededExperience.text = vacancy.experience ?: ""
         binding.companyCity.text = vacancy.area ?: ""
         binding.jobTime.text = vacancy.employment ?: ""
-        binding.contactPersonEmailData.text = email
-        binding.contactPersonData.text = name
-        binding.contactPersonEmailData.setOnClickListener {
-            val i = Intent(Intent.ACTION_SEND)
-            i.setType("message/rfc822")
-            i.putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
-            try {
-                startActivity(Intent.createChooser(i, getString(R.string.SendingMessage)))
-            } catch (ex: ActivityNotFoundException) {
-                println(ex)
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.mail_clients_not_installed),
-                    Toast.LENGTH_SHORT
-                ).show()
+        if(vacancy.contactsName == null) {
+            binding.contactPerson.visibility = View.GONE
+            binding.contactPersonData.visibility = View.GONE
+        } else {
+            binding.contactPerson.visibility = View.GONE
+            binding.contactPersonData.visibility = View.GONE
+            binding.contactPersonData.text = vacancy.contactsName
+        }
+        if (vacancy.contactsEmail.isNullOrEmpty()) {
+            binding.contactPersonEmail.visibility = View.GONE
+            binding.contactPersonEmailData.visibility = View.GONE
+        } else {
+            binding.contactPersonEmail.visibility = View.VISIBLE
+            binding.contactPersonEmailData.visibility = View.VISIBLE
+            binding.contactPersonEmailData.text = vacancy.contactsEmail
+            binding.contactPersonEmailData.setOnClickListener {
+                val i = Intent(Intent.ACTION_SEND)
+                i.setType("message/rfc822")
+                i.putExtra(Intent.EXTRA_EMAIL, arrayOf(vacancy.contactsEmail))
+                try {
+                    startActivity(Intent.createChooser(i, getString(R.string.SendingMessage)))
+                } catch (ex: ActivityNotFoundException) {
+                    println(ex)
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.mail_clients_not_installed),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
+        if (vacancy.contactsPhones.isNullOrEmpty()) {
+            binding.contactPersonPhoneData.visibility = View.GONE
+            binding.contactPersonPhone.visibility = View.GONE
+        } else {
+            binding.contactPersonPhoneData.visibility = View.VISIBLE
+            binding.contactPersonPhone.visibility = View.VISIBLE
+            binding.contactPersonPhoneData.text = vacancy.contactsPhones.toString()
+            binding.contactPersonPhoneData.setOnClickListener {
+                Intent(Intent.ACTION_DIAL).apply {
+                    data = Uri.parse("tel:${vacancy.contactsPhones}")
+                    activityRequest.launch(Manifest.permission.CALL_PHONE)
+                }
+            }
+        }
+        if (vacancy.comment == null) {
+            binding.contactCommentData.visibility = View.GONE
+            binding.contactComment.visibility = View.GONE
+        } else {
+            binding.contactComment.visibility = View.VISIBLE
+            binding.contactCommentData.visibility = View.VISIBLE
+            binding.contactCommentData.text = vacancy.comment
+        }
+        if(vacancy.contactsName == null && vacancy.contactsPhones.isNullOrEmpty()  && vacancy.contactsEmail == null) {
+            binding.contactInformation.visibility = View.GONE
+            binding.contactComment.visibility = View.GONE
+        }
 
-        with(binding) {
+        with(binding)
+        {
             if (vacancy.keySkills.isNullOrEmpty()) {
                 keySkillsRecyclerView.visibility = View.GONE
                 binding.keySkills.visibility = View.GONE
@@ -168,13 +204,6 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
                 }
                 keySkillsRecyclerView.text = skills
             }
-
-            binding.contactPersonPhoneData.text = phones
-            binding.contactPersonPhoneData.setOnClickListener {
-                activityRequest.launch(Manifest.permission.CALL_PHONE)
-            }
-            binding.contactCommentData.text = comment
-
             vacancy.employer?.let {
                 Glide.with(requireContext())
                     .load(vacancy.employer.logoUrls)

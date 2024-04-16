@@ -22,7 +22,7 @@ class VacancyViewModel @Inject constructor(
 
     fun observeUi(): LiveData<VacancyViewState> = state
 
-    var isFav: Boolean = false
+    private var isFav: Boolean = false
 
     init {
         loadData()

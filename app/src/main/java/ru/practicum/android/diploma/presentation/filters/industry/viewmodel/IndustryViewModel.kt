@@ -26,7 +26,7 @@ class IndustryViewModel @Inject constructor(
     private val _industriesState = MutableLiveData<FiltersIndustriesState>()
     val industriesState: LiveData<FiltersIndustriesState> = _industriesState
     private var currentIndustriesList = ArrayList<SubIndustry>()
-    var currentIndustry: SubIndustry? = null
+    private var currentIndustry: SubIndustry? = null
 
     init {
         filtersInteractor.getFilter(SharedFilterNames.INDUSTRY)?.let {
@@ -63,7 +63,7 @@ class IndustryViewModel @Inject constructor(
 
     private fun successStatusOnList(list: List<SubIndustry>): FiltersIndustriesState.Success {
         return FiltersIndustriesState.Success(data = list.map {
-            IndustriesAdapterItem(it, it.id == currentIndustry?.id ?: "")
+            IndustriesAdapterItem(it, it.id == (currentIndustry?.id ?: ""))
         }, currentIndustryId = currentIndustry?.id)
     }
 
