@@ -5,9 +5,14 @@
         <item name="colorPrimary">@color/WhiteUniversal_yp</item>
         <item name="colorSecondary">@color/BlackUniversal_yp</item>
         <item name="android:textColor">@color/WhiteUniversal_yp</item>
-        <item name="android:statusBarColor">?colorSecondary</item>
-        <item name="android:navigationBarColor">?colorSecondary</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">@color/BlackUniversal_yp</item>
+
     </style>
+
+    <style name="ApiDivider" parent="Base.Theme.PracticumAndroidDiploma"></style>
+
+    <style name="Theme.PracticumAndroidDiploma" parent="ApiDivider" />
 
     <style name="Theme.BottomNavigationView.ActiveIndicator" parent="Widget.MaterialComponents.BottomNavigationView">
         <item name="android:color">?colorSecondary</item>
