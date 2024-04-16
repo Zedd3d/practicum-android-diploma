@@ -23,6 +23,9 @@ class IndustriesAdapter(private val onClick: (IndustriesAdapterItem) -> Unit) :
     override fun onBindViewHolder(holder: IndustryViewHolder, position: Int) {
         val item = data[position]
         holder.bind(item)
+        holder.binding.root.setOnClickListener {
+            updateSelectedIndustry(position)
+        }
         holder.binding.radioButton.setOnClickListener {
             updateSelectedIndustry(position)
         }
