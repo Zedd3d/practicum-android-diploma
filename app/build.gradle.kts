@@ -4,8 +4,6 @@ plugins {
     id("ru.practicum.android.diploma.plugins.developproperties")
     id("kotlin-kapt")
     id("kotlin-parcelize")
-    id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -52,8 +50,6 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.lifecycle.viewmodel.savedstate)
     implementation(libs.lifecycle.viewmodel.compose)
-    implementation(libs.firebase.crashlytics)
-    implementation(libs.firebase.analytics)
     kapt(libs.lifecycle.compiler)
 
     // UI layer libraries
@@ -97,7 +93,4 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.core)
     implementation(libs.html)
-
-    implementation("com.google.firebase:firebase-crashlytics:18.6.4'")
-    implementation("com.google.firebase:firebase-analytics:21.6.2")
 }
