@@ -60,13 +60,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/found_count"
+        android:visibility="gone"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
         android:clipToPadding="false"
         android:paddingBottom="50dp"
         tools:listitem="@layout/vacancy_item"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toBottomOf="@id/search_edit_text"
+        tools:visibility="visible" />
 
     <ProgressBar
         android:id="@+id/vacancies_progress"

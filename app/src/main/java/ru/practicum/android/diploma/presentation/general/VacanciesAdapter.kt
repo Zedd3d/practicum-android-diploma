@@ -1,8 +1,11 @@
 package ru.practicum.android.diploma.presentation.general
 
+import android.content.Context
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -17,11 +20,18 @@ class VacanciesAdapter(
     private val onClick: (String) -> Unit
 ) : ListAdapter<Vacancy, VacanciesAdapter.ViewHolder>(DiffUtil()) {
 
+    companion object {
+        const val FIRST_ELEMENT_PADDING_TOP = 32f
+    }
+
     inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
         private val binding by viewBinding { VacancyItemBinding.bind(view) }
 
-        fun bind(vacancy: Vacancy) {
+        fun bind(vacancy: Vacancy, firstElement: Boolean) {
+            if (firstElement) {
+                binding.rootItem.updatePadding(top = dpToPx(FIRST_ELEMENT_PADDING_TOP, binding.root.context))
+            }
             binding.tvVacancyName.text = vacancy.name
             binding.salary.text = SalaryUtil.formatSalary(view.context, vacancy.salary)
             Glide.with(view.context)
@@ -41,8 +51,16 @@ class VacanciesAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = currentList[position]
-        holder.bind(item)
+        holder.bind(item, position == 0)
     }
+}
+
+fun dpToPx(dp: Float, context: Context): Int {
+    return TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        dp,
+        context.resources.displayMetrics
+    ).toInt()
 }
 
 class DiffUtil : DiffUtil.ItemCallback<Vacancy>() {
