@@ -122,7 +122,7 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
         binding.neededExperience.text = vacancy.experience ?: ""
         binding.companyCity.text = vacancy.area ?: ""
         binding.jobTime.text = vacancy.employment ?: ""
-        if(vacancy.contactsName == null) {
+        if (vacancy.contactsName == null) {
             binding.contactPerson.visibility = View.GONE
             binding.contactPersonData.visibility = View.GONE
         } else {
@@ -134,25 +134,65 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
             binding.contactPersonEmail.visibility = View.GONE
             binding.contactPersonEmailData.visibility = View.GONE
         } else {
-            binding.contactPersonEmail.visibility = View.VISIBLE
-            binding.contactPersonEmailData.visibility = View.VISIBLE
-            binding.contactPersonEmailData.text = vacancy.contactsEmail
-            binding.contactPersonEmailData.setOnClickListener {
-                val i = Intent(Intent.ACTION_SEND)
-                i.setType("message/rfc822")
-                i.putExtra(Intent.EXTRA_EMAIL, arrayOf(vacancy.contactsEmail))
-                try {
-                    startActivity(Intent.createChooser(i, getString(R.string.SendingMessage)))
-                } catch (ex: ActivityNotFoundException) {
-                    println(ex)
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.mail_clients_not_installed),
-                        Toast.LENGTH_SHORT
-                    ).show()
+            updateContacs(vacancy)
+        }
+        updateContactPhones(vacancy)
+        updateContactComment(vacancy)
+        updateColums(vacancy)
+    }
+
+    private fun getSkilsText(vacancy: VacancyDetail): String {
+        var skills = "• "
+        if (vacancy.keySkills.isNullOrEmpty()) return skills
+        skillsListLength = vacancy.keySkills.count()
+        vacancy.keySkills.forEach { skill ->
+            skillLength = skill.length
+            while (skillLength != 0) {
+                skill.forEach {
+                    skills += it
+                    skillLength--
                 }
+                skillsListLength--
+            }
+            if (skillsListLength != 0) {
+                skills += "\n• "
             }
         }
+        return skills
+    }
+
+    private fun updateColums(vacancy: VacancyDetail) {
+        with(binding) {
+            if (vacancy.keySkills.isNullOrEmpty()) {
+                keySkillsRecyclerView.visibility = View.GONE
+                binding.keySkills.visibility = View.GONE
+            } else {
+                keySkillsRecyclerView.visibility = View.VISIBLE
+                binding.keySkills.visibility = View.VISIBLE
+                keySkillsRecyclerView.text = getSkilsText(vacancy)
+            }
+            updatePlaceholder(vacancy)
+            vacancy.description?.let {
+                val markwon = Markwon.builder(requireContext())
+                    .usePlugin(HtmlPlugin.create())
+                    .build()
+                markwon.setMarkdown(binding.vacancyDescription, it)
+            }
+        }
+    }
+
+    private fun updatePlaceholder(vacancy: VacancyDetail) {
+        vacancy.employer?.let {
+            Glide.with(requireContext())
+                .load(vacancy.employer.logoUrls)
+                .placeholder(R.drawable.placeholder_company_icon)
+                .fitCenter()
+                .transform(RoundedCorners(RADIUS))
+                .into(binding.ivCompany)
+        }
+    }
+
+    private fun updateContactPhones(vacancy: VacancyDetail) {
         if (vacancy.contactsPhones.isNullOrEmpty()) {
             binding.contactPersonPhoneData.visibility = View.GONE
             binding.contactPersonPhone.visibility = View.GONE
@@ -167,6 +207,30 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
                 }
             }
         }
+    }
+
+    private fun updateContacs(vacancy: VacancyDetail) {
+        binding.contactPersonEmail.visibility = View.VISIBLE
+        binding.contactPersonEmailData.visibility = View.VISIBLE
+        binding.contactPersonEmailData.text = vacancy.contactsEmail
+        binding.contactPersonEmailData.setOnClickListener {
+            val i = Intent(Intent.ACTION_SEND)
+            i.setType("message/rfc822")
+            i.putExtra(Intent.EXTRA_EMAIL, arrayOf(vacancy.contactsEmail))
+            try {
+                startActivity(Intent.createChooser(i, getString(R.string.SendingMessage)))
+            } catch (ex: ActivityNotFoundException) {
+                println(ex)
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.mail_clients_not_installed),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    private fun updateContactComment(vacancy: VacancyDetail) {
         if (vacancy.comment == null) {
             binding.contactCommentData.visibility = View.GONE
             binding.contactComment.visibility = View.GONE
@@ -175,51 +239,9 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
             binding.contactCommentData.visibility = View.VISIBLE
             binding.contactCommentData.text = vacancy.comment
         }
-        if(vacancy.contactsName == null && vacancy.contactsPhones.isNullOrEmpty()  && vacancy.contactsEmail == null) {
+        if (vacancy.contactsName == null && vacancy.contactsPhones.isNullOrEmpty() && vacancy.contactsEmail == null) {
             binding.contactInformation.visibility = View.GONE
             binding.contactComment.visibility = View.GONE
-        }
-
-        with(binding)
-        {
-            if (vacancy.keySkills.isNullOrEmpty()) {
-                keySkillsRecyclerView.visibility = View.GONE
-                binding.keySkills.visibility = View.GONE
-            } else {
-                keySkillsRecyclerView.visibility = View.VISIBLE
-                binding.keySkills.visibility = View.VISIBLE
-                var skills = "• "
-                skillsListLength = vacancy.keySkills.count()
-                vacancy.keySkills.forEach { skill ->
-                    skillLength = skill.length
-                    while (skillLength != 0) {
-                        skill.forEach {
-                            skills += it
-                            skillLength--
-                        }
-                        skillsListLength--
-                    }
-                    if (skillsListLength != 0) {
-                        skills += "\n• "
-                    }
-                }
-                keySkillsRecyclerView.text = skills
-            }
-            vacancy.employer?.let {
-                Glide.with(requireContext())
-                    .load(vacancy.employer.logoUrls)
-                    .placeholder(R.drawable.placeholder_company_icon)
-                    .fitCenter()
-                    .transform(RoundedCorners(RADIUS))
-                    .into(binding.ivCompany)
-            }
-
-            vacancy.description?.let {
-                val markwon = Markwon.builder(requireContext())
-                    .usePlugin(HtmlPlugin.create())
-                    .build()
-                markwon.setMarkdown(binding.vacancyDescription, it)
-            }
         }
     }
 }
