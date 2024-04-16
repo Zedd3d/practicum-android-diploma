@@ -65,11 +65,13 @@
 
                 <TextView
                     android:id="@+id/job_name"
-                    style="@style/BoldTitleTextStyle"
+                    android:fontFamily="@font/ys_display_bold"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
+                    android:paddingEnd="16dp"
+                    android:textSize="24sp"
+                    android:gravity="start|center_horizontal"
                     android:textColor="?colorPrimary"
                     app:layout_constraintStart_toStartOf="@id/guidelineVertical"
                     app:layout_constraintTop_toTopOf="parent"
@@ -193,7 +195,7 @@
                     style="@style/TitleTextStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="8dp"
                     android:textColor="?colorPrimary"
                     android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="@id/guidelineVertical2"
@@ -383,3 +385,4 @@
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
