@@ -141,6 +141,26 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
         updateColums(vacancy)
     }
 
+    private fun getSkilsText(vacancy: VacancyDetail): String {
+        var skills = "• "
+        if (vacancy.keySkills.isNullOrEmpty()) return skills
+        skillsListLength = vacancy.keySkills.count()
+        vacancy.keySkills.forEach { skill ->
+            skillLength = skill.length
+            while (skillLength != 0) {
+                skill.forEach {
+                    skills += it
+                    skillLength--
+                }
+                skillsListLength--
+            }
+            if (skillsListLength != 0) {
+                skills += "\n• "
+            }
+        }
+        return skills
+    }
+
     private fun updateColums(vacancy: VacancyDetail) {
         with(binding) {
             if (vacancy.keySkills.isNullOrEmpty()) {
@@ -149,22 +169,7 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
             } else {
                 keySkillsRecyclerView.visibility = View.VISIBLE
                 binding.keySkills.visibility = View.VISIBLE
-                var skills = "• "
-                skillsListLength = vacancy.keySkills.count()
-                vacancy.keySkills.forEach { skill ->
-                    skillLength = skill.length
-                    while (skillLength != 0) {
-                        skill.forEach {
-                            skills += it
-                            skillLength--
-                        }
-                        skillsListLength--
-                    }
-                    if (skillsListLength != 0) {
-                        skills += "\n• "
-                    }
-                }
-                keySkillsRecyclerView.text = skills
+                keySkillsRecyclerView.text = getSkilsText(vacancy)
             }
             updatePlaceholder(vacancy)
             vacancy.description?.let {
