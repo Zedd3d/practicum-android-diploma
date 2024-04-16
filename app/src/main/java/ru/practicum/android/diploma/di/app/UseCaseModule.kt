@@ -2,10 +2,10 @@ package ru.practicum.android.diploma.di.app
 
 import dagger.Module
 import dagger.Provides
-import ru.practicum.android.diploma.domain.impl.SearchVacanciesByIdUseCase
-import ru.practicum.android.diploma.domain.impl.SearchVacanciesByIdUseCaseImpl
-import ru.practicum.android.diploma.domain.impl.SearchVacanciesUseCase
-import ru.practicum.android.diploma.domain.impl.SearchVacanciesUseCaseImpl
+import ru.practicum.android.diploma.domain.general.api.SearchVacanciesByIdUseCase
+import ru.practicum.android.diploma.domain.general.api.SearchVacanciesUseCase
+import ru.practicum.android.diploma.domain.general.impl.SearchVacanciesByIdUseCaseImpl
+import ru.practicum.android.diploma.domain.general.impl.SearchVacanciesUseCaseImpl
 
 @Module
 object UseCaseModule {

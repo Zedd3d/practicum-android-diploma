@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.presentation.vacancy
+package ru.practicum.android.diploma.presentation.vacancy.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,8 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.favorites.api.FavoritesInteractor
+import ru.practicum.android.diploma.domain.general.api.SearchVacanciesByIdUseCase
 import ru.practicum.android.diploma.domain.general.models.ResponseState
-import ru.practicum.android.diploma.domain.impl.SearchVacanciesByIdUseCase
+import ru.practicum.android.diploma.presentation.vacancy.EmailRepository
 import ru.practicum.android.diploma.presentation.vacancy.models.VacancyViewState
 import java.io.IOException
 import javax.inject.Inject

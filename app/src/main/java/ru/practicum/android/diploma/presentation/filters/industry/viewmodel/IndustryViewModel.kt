@@ -90,6 +90,8 @@ class IndustryViewModel @Inject constructor(
     }
 
     fun filterIndustries(editText: String) {
+        if (_industriesState.value !is FiltersIndustriesState.Success) return
+
         if (editText.isNotEmpty()) {
             val filteredList = currentIndustriesList.filter {
                 it.name.contains(editText, ignoreCase = true)

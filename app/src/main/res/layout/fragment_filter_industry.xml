@@ -106,6 +106,7 @@
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -113,9 +114,9 @@
 
         <ImageView
             android:id="@+id/src"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:scaleType="centerInside"
             android:src="@drawable/state_image_no_internet" />
 
         <TextView
@@ -123,7 +124,6 @@
             style="@style/TitleTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:text="@string/no_internet"
             android:textAlignment="center"
             android:textColor="@color/BlackDay_WhiteNight" />

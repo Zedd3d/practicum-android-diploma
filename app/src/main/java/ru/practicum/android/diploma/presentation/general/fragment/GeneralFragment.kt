@@ -91,6 +91,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             } else {
                 val needClearList = when (state) {
                     is ResponseState.Loading -> !state.isPagination
+                    is ResponseState.NetworkError -> !state.isPagination
                     else -> true
                 }
                 if (needClearList) {
@@ -200,28 +201,24 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
 
     private fun updatePicture(status: ResponseState) {
         val image = when (status) {
-            ResponseState.Empty -> {
+            is ResponseState.Empty -> {
                 R.drawable.state_image_nothing_found
             }
 
-            ResponseState.ServerError -> {
+            is ResponseState.ServerError -> {
                 R.drawable.state_image_server_error_search
             }
 
-            ResponseState.NetworkError(false) -> {
+            is ResponseState.NetworkError -> {
                 R.drawable.state_image_no_internet
             }
 
-            ResponseState.Start -> {
-                R.drawable.state_image_start_search
-            }
-
             else -> {
-                null
+                R.drawable.state_image_start_search
             }
         }
 
-        image?.let {
+        image.let {
             Glide.with(requireContext())
                 .load(image)
                 .into(binding.src)
@@ -233,7 +230,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             true -> R.drawable.ic_filter_on
             else -> R.drawable.ic_filter
         }
-        image?.let {
+        image.let {
             Glide.with(requireContext())
                 .load(image)
                 .into(binding.filterImageView)

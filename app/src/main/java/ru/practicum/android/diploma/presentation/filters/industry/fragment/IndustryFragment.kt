@@ -41,20 +41,16 @@ class IndustryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.industryList.adapter = this.adapter
+        binding.clearButton.setOnClickListener { binding.choosingIndustryEditText.text?.clear() }
         binding.choosingIndustryEditText.doOnTextChanged { text, _, _, _ ->
             viewModel.filterIndustries(text.toString())
             if (text.isNullOrBlank()) {
                 binding.clearButton.visibility = View.GONE
                 binding.searchDrawable.visibility = View.VISIBLE
-                if (adapter.checkedRadioButtonId != -1) {
-                    binding.chooseIndustryButton.visibility = View.VISIBLE
-                }
+                if (adapter.checkedRadioButtonId != -1) binding.chooseIndustryButton.visibility = View.VISIBLE
             } else {
                 binding.clearButton.visibility = View.VISIBLE
                 binding.searchDrawable.visibility = View.GONE
-                binding.clearButton.setOnClickListener {
-                    binding.choosingIndustryEditText.text?.clear()
-                }
             }
         }
 
@@ -70,8 +66,8 @@ class IndustryFragment : Fragment() {
         viewModel.industriesState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is FiltersIndustriesState.Error -> {
-                    setPlaceholderImage(state)
                     binding.llPlaceholderTrouble.isVisible = true
+                    setPlaceholderImage(state)
                     binding.srcText.setText(R.string.no_internet)
                 }
 
@@ -85,7 +81,6 @@ class IndustryFragment : Fragment() {
                 is FiltersIndustriesState.Loading -> showLoading()
 
                 is FiltersIndustriesState.Success -> showContent(state)
-
             }
         }
     }
@@ -126,7 +121,6 @@ class IndustryFragment : Fragment() {
 
     private fun setPlaceholderImage(state: FiltersIndustriesState) {
         val image = when (state) {
-
             FiltersIndustriesState.Error -> {
                 R.drawable.state_image_no_internet
             }

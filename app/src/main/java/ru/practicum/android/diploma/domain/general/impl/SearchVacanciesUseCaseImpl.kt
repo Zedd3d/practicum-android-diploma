@@ -1,7 +1,9 @@
-package ru.practicum.android.diploma.domain.impl
+package ru.practicum.android.diploma.domain.general.impl
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import ru.practicum.android.diploma.domain.api.VacanciesRepository
+import ru.practicum.android.diploma.domain.general.api.SearchVacanciesUseCase
 import ru.practicum.android.diploma.domain.general.models.ResponseState
 import javax.inject.Inject
 
