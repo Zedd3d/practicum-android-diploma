@@ -8,7 +8,7 @@ import dagger.Provides
 import ru.practicum.android.diploma.data.favorites.impl.FavoritesRepositoryImpl
 import ru.practicum.android.diploma.data.filters.FiltersRepositoryImpl
 import ru.practicum.android.diploma.data.filters.SharedPreferencesRepositoryImpl
-import ru.practicum.android.diploma.data.general.impl.VacanciesRepositoryImpl
+import ru.practicum.android.diploma.data.general.VacanciesRepositoryImpl
 import ru.practicum.android.diploma.domain.favorites.api.FavoritesInteractor
 import ru.practicum.android.diploma.domain.favorites.api.FavoritesRepository
 import ru.practicum.android.diploma.domain.favorites.impl.FavoritesInteractorImpl

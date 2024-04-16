@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.data.general.impl
+package ru.practicum.android.diploma.data.general
 
 import ru.practicum.android.diploma.data.asDomain
 import ru.practicum.android.diploma.data.dto.VacanciesResponse
