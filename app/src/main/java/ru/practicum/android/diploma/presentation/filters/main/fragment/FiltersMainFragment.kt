@@ -119,9 +119,7 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
         binding.btnCancel.setOnClickListener { viewModel.clearAllFilters() }
 
         binding.llWorkPlace.root.setOnClickListener {
-            findNavController().navigate(
-                R.id.action_filtersMainFragment_to_filtersWorkPlaceFragment
-            )
+            findNavController().navigate(R.id.action_filtersMainFragment_to_filtersWorkPlaceFragment)
         }
     }
 
