@@ -81,6 +81,7 @@
                 android:singleLine="true"
                 android:textColor="@color/BlackUniversal_yp"
                 android:textColorHint="@color/GrayDay_WhiteNight"
+                android:focusable="true"
                 tools:text="123"
                 android:textCursorDrawable="@drawable/cursor_edit_text"
                 android:hint="@string/input_expected_salary" />

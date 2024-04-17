@@ -86,6 +86,11 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
                 onChangeSalary(charSequence.toString())
             }
         )
+
+        binding.tietSalary.setOnFocusChangeListener { v, hasFocus ->
+            onChangeSalary(binding.tietSalary.text.toString())
+        }
+
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 onBackPressed()
@@ -125,7 +130,8 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
     }
 
     private fun onChangeSalary(salaryText: String) {
-        binding.tvSalaryHint.isEnabled = salaryText.isNotBlank()
+        binding.tvSalaryHint.isEnabled = binding.tietSalary.hasFocus()
+        binding.tvSalaryHint.isSelected = salaryText.isNotEmpty()
         binding.ibClear.isVisible = salaryText.isNotBlank()
     }
 
