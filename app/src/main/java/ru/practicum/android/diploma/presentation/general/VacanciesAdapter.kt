@@ -17,6 +17,7 @@ import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.util.SalaryUtil
 
 class VacanciesAdapter(
+    private val needPadding: Boolean = false,
     private val onClick: (String) -> Unit
 ) : ListAdapter<Vacancy, VacanciesAdapter.ViewHolder>(DiffUtil()) {
 
@@ -29,7 +30,7 @@ class VacanciesAdapter(
         private val binding by viewBinding { VacancyItemBinding.bind(view) }
 
         fun bind(vacancy: Vacancy, firstElement: Boolean) {
-            if (firstElement) {
+            if (needPadding && firstElement) {
                 binding.rootItem.updatePadding(top = dpToPx(FIRST_ELEMENT_PADDING_TOP, binding.root.context))
             }
             binding.tvVacancyName.text = vacancy.name
