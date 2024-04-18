@@ -27,7 +27,7 @@ class GeneralViewModel @Inject constructor(
 
     private var isNextPageLoading = false
 
-    private var filtersMap = emptyMap<String, String>()
+    //private var filtersMap = emptyMap<String, String>()
 
     private var query: String? = null
         set(value) {
@@ -50,9 +50,9 @@ class GeneralViewModel @Inject constructor(
 
     private fun makeSearchRequest(query: String, page: Int, isPagination: Boolean) {
         state.postValue(ResponseState.Loading(isPagination))
-        filtersMap = filtersInteractor.getAllFilters()
+        //filtersMap = filtersInteractor.getAllFilters()
         viewModelScope.launch {
-            when (val response = searchVacanciesUseCase(query, page, filtersMap)) {
+            when (val response = searchVacanciesUseCase(query, page, filtersInteractor.getAllFilters())) {
                 is ResponseState.ContentVacanciesList -> {
                     maxPages = response.pages
                     currentListVacancies = if (isPagination) {
@@ -77,7 +77,7 @@ class GeneralViewModel @Inject constructor(
                     state.postValue(response)
                 }
             }
-            stateFilters.postValue(filtersMap.isNotEmpty())
+            stateFilters.postValue(filtersInteractor.getAllFilters().isNotEmpty())
             isNextPageLoading = false
         }
     }
@@ -108,8 +108,8 @@ class GeneralViewModel @Inject constructor(
     }
 
     fun updateHasFilters() {
-        filtersMap = filtersInteractor.getAllFilters()
-        stateFilters.postValue(filtersMap.isNotEmpty())
+        //filtersMap = filtersInteractor.getAllFilters()
+        stateFilters.postValue(filtersInteractor.getAllFilters().isNotEmpty())
     }
 
     companion object {
