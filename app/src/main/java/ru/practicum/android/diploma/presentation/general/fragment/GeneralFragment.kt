@@ -36,6 +36,7 @@ import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.general.VacanciesAdapter
 import ru.practicum.android.diploma.presentation.general.viewmodel.GeneralViewModel
 import ru.practicum.android.diploma.util.UtilFunction
+import ru.practicum.android.diploma.util.debounceFun
 import ru.practicum.android.diploma.util.onTextChangeDebounce
 import ru.practicum.android.diploma.util.visibleOrGone
 
@@ -50,6 +51,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         }
     }
 
+
     companion object {
         const val ON_FILTER_CHANGED = "on_filter_changed"
     }
@@ -58,9 +60,12 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     private val binding get() = _binding!!
 
     private val adapter by lazy {
-        VacanciesAdapter(true) {
+        VacanciesAdapter(true, {
             val params = bundleOf("id" to it)
             findNavController().navigate(R.id.action_generalFragment_to_vacancyFragment, params)
+        }
+        ) { id, position ->
+            viewModel.switchFavorite(id, position)
         }
     }
 
@@ -83,11 +88,14 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     }
 
     private fun setHelpers() {
-
         val touchHelper = ItemTouchHelper(
             object : ItemTouchHelper.Callback() {
                 private var prevPos = 0f
-                private var nowClosed = false
+                private var currentHolder: VacanciesAdapter.ViewHolder? = null
+                private val debaunceCloseItems =
+                    debounceFun<Boolean>(300L, lifecycleScope, true) {
+                        checkAndClose(it)
+                    }
 
                 override fun getMovementFlags(
                     recyclerView: RecyclerView,
@@ -108,7 +116,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                     actionState: Int,
                     isCurrentlyActive: Boolean
                 ) {
-                    val constParam = UtilFunction.dpToPx(10f, requireContext()).toFloat()
+                    val constParam = UtilFunction.dpToPx(20f, requireContext()).toFloat()
                     val res = if (dX >= constParam) {
                         constParam
                     } else {
@@ -118,20 +126,19 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
 
                     if (isCurrentlyActive) prevPos = minOf(dX, res)
 
-                    if (dX < prevPos && isCurrentlyActive == false && nowClosed == false) {
-                        nowClosed = true
-                        val ivLike = viewHolder.itemView.findViewById<ImageView>(R.id.ivLike)
-                        val anim = ResizeAnimation(ivLike, UtilFunction.dpToPx(0f, requireContext()))
-                        anim.setAnimationListener(object : Animation.AnimationListener {
-                            override fun onAnimationStart(animation: Animation?) = Unit
-                            override fun onAnimationEnd(animation: Animation?) {
-                                nowClosed = false
-                            }
+                    if (dX < prevPos
+                        && isCurrentlyActive == false
+                        && viewHolder == currentHolder
+                    ) {
+                        closeHolder(viewHolder as VacanciesAdapter.ViewHolder)
+                    }
 
-                            override fun onAnimationRepeat(animation: Animation?) = Unit
-                        })
-                        ivLike.clearAnimation()
-                        ivLike.startAnimation(anim)
+                    if (dX > prevPos
+                        && isCurrentlyActive == false
+                        && currentHolder != viewHolder
+                        && currentHolder?.isOpen ?: false
+                    ) {
+                        closeHolder(viewHolder as VacanciesAdapter.ViewHolder)
                     }
                 }
 
@@ -146,14 +153,74 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     when (direction) {
                         ItemTouchHelper.END -> {
-                            if (nowClosed == false) {
-                                val ivLike = viewHolder.itemView.findViewById<ImageView>(R.id.ivLike)
-                                val anim = ResizeAnimation(ivLike, UtilFunction.dpToPx(50f, requireContext()))
-                                ivLike.clearAnimation()
-                                ivLike.startAnimation(anim)
+
+                            if (!(currentHolder == viewHolder) && currentHolder?.isHolderOpen() ?: false) {
+                                currentHolder?.let { closeHolder(it, true) }
                             }
+
+                            currentHolder = (viewHolder as VacanciesAdapter.ViewHolder)
+                            val ivLikeBig = viewHolder.itemView.findViewById<ImageView>(R.id.ivLike)
+                            val ivLikeSmall = viewHolder.itemView.findViewById<ImageView>(R.id.ivAddToFav)
+                            val anim = ResizeAnimationWithAlpha(
+                                ivLikeBig,
+                                ivLikeSmall,
+                                UtilFunction.dpToPx(50f, requireContext()),
+                                0f
+                            )
+                            anim.setAnimationListener(object : Animation.AnimationListener {
+                                override fun onAnimationStart(animation: Animation?) = Unit
+                                override fun onAnimationEnd(animation: Animation?) {
+                                    //nowClosed = false
+                                    debaunceCloseItems(true)
+                                }
+
+                                override fun onAnimationRepeat(animation: Animation?) = Unit
+                            })
+                            ivLikeBig.clearAnimation()
+                            ivLikeBig.startAnimation(anim)
                         }
                     }
+                }
+
+                private fun checkAndClose(needUpdate: Boolean = false) {
+                    if (_binding == null) return
+                    for (i in 0 until binding.vacanciesRv.getChildCount()) {
+                        val vh = binding.vacanciesRv.getChildViewHolder(binding.vacanciesRv.getChildAt(i))
+                        if (currentHolder != vh
+                            && (vh as VacanciesAdapter.ViewHolder).isHolderOpen()
+                        ) {
+                            closeHolder(vh, needUpdate)
+                        }
+                    }
+                }
+
+                private fun closeHolder(vh: VacanciesAdapter.ViewHolder, needUpdate: Boolean = false) {
+                    // nowClosed = true
+                    if (!vh.isHolderOpen()) return
+                    vh.isOpen = false
+
+                    val ivLike = vh.itemView.findViewById<ImageView>(R.id.ivLike)
+                    val ivLikeSmall = vh.itemView.findViewById<ImageView>(R.id.ivAddToFav)
+                    val anim =
+                        ResizeAnimationWithAlpha(ivLike, ivLikeSmall, UtilFunction.dpToPx(0f, requireContext()), 1f)
+                    //ivLike.clearAnimation()
+                    anim.setAnimationListener(object : Animation(), Animation.AnimationListener {
+                        override fun onAnimationStart(animation: Animation?) = Unit
+                        override fun onAnimationEnd(animation: Animation?) {
+                            // nowClosed = false
+
+                            if (needUpdate) adapter.notifyItemChanged(vh.layoutPosition)
+                        }
+
+                        override fun onAnimationRepeat(animation: Animation?) = Unit
+
+                        override fun cancel() {
+                            super.cancel()
+                            //nowClosed = false
+                            adapter.notifyItemChanged(vh.layoutPosition)
+                        }
+                    })
+                    ivLike.startAnimation(anim)
                 }
             })
 
@@ -161,19 +228,30 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     }
 
 
-    class ResizeAnimation(var view: View, val targetWidth: Int) : Animation() {
-        val startWidth: Int
+    class ResizeAnimationWithAlpha(
+        private val viewSize: View,
+        private val viewAlpha: View,
+        private val targetWidth: Int,
+        private val targetAlpha: Float
+    ) : Animation() {
+
+        val startSize: Int
+        val startAlpha: Float
 
         init {
             super.setDuration(200L)
-            startWidth = view.width
+            //super.setRepeatCount(Animation.);
+            startSize = viewSize.width
+            startAlpha = viewAlpha.alpha
         }
 
         override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
-            val newWidth = (startWidth + (targetWidth - startWidth) * interpolatedTime).toInt()
-            view.layoutParams.width = newWidth
-            view.layoutParams.height = newWidth
-            view.requestLayout()
+            val newSize = (startSize + (targetWidth - startSize) * interpolatedTime).toInt()
+            viewSize.layoutParams.width = newSize
+            viewSize.layoutParams.height = newSize
+            viewSize.requestLayout()
+
+            viewAlpha.alpha = (startAlpha + (targetAlpha - startAlpha) * interpolatedTime)
         }
 
         override fun initialize(width: Int, height: Int, parentWidth: Int, parentHeight: Int) {
@@ -184,7 +262,6 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             return true
         }
     }
-
 
     private fun setObservers() {
         viewModel.observeUi().observe(viewLifecycleOwner) { state ->
