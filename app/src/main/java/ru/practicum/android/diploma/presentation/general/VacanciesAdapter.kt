@@ -3,6 +3,7 @@ package ru.practicum.android.diploma.presentation.general
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -17,7 +18,8 @@ import ru.practicum.android.diploma.util.UtilFunction
 
 class VacanciesAdapter(
     private val needPadding: Boolean = false,
-    private val onClick: (String) -> Unit
+    private val onClick: (String) -> Unit,
+    private val onClickFavorite: ((String, Int) -> Unit?)?
 ) : ListAdapter<Vacancy, VacanciesAdapter.ViewHolder>(DiffUtil()) {
 
     companion object {
@@ -28,6 +30,7 @@ class VacanciesAdapter(
 
         private val binding by viewBinding { VacancyItemBinding.bind(view) }
 
+        var isOpen = false
         fun bind(vacancy: Vacancy, firstElement: Boolean) {
             if (needPadding && firstElement) {
                 binding.rootItem.updatePadding(
@@ -45,6 +48,7 @@ class VacanciesAdapter(
                 .into(binding.ivCompany)
             binding.department.text = vacancy.area
             binding.root.setOnClickListener { onClick.invoke(vacancy.id) }
+
         }
 
     }
@@ -56,6 +60,8 @@ class VacanciesAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = currentList[position]
+        val v = holder.itemView.findViewById<ImageView>(R.id.ivLike)
+        v.setOnClickListener { onClickFavorite?.invoke(item.id, position) }
         holder.bind(item, position == 0)
     }
 }

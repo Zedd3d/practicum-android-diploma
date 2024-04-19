@@ -45,9 +45,9 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     private val binding get() = _binding!!
 
     private val adapter by lazy {
-        VacanciesAdapter() {
+        VacanciesAdapter(false, {
             viewModel.showDetails(it)
-        }
+        }, null)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

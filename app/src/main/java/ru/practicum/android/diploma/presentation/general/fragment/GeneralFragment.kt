@@ -58,9 +58,12 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     private val binding get() = _binding!!
 
     private val adapter by lazy {
-        VacanciesAdapter(true) {
+        VacanciesAdapter(true, {
             val params = bundleOf("id" to it)
             findNavController().navigate(R.id.action_generalFragment_to_vacancyFragment, params)
+        }
+        ) { id, position ->
+            viewModel.switchFavorite(id, position)
         }
     }
 
@@ -83,11 +86,11 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     }
 
     private fun setHelpers() {
-
         val touchHelper = ItemTouchHelper(
             object : ItemTouchHelper.Callback() {
                 private var prevPos = 0f
                 private var nowClosed = false
+                private var currentHolder: VacanciesAdapter.ViewHolder? = null
 
                 override fun getMovementFlags(
                     recyclerView: RecyclerView,
@@ -119,19 +122,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                     if (isCurrentlyActive) prevPos = minOf(dX, res)
 
                     if (dX < prevPos && isCurrentlyActive == false && nowClosed == false) {
-                        nowClosed = true
-                        val ivLike = viewHolder.itemView.findViewById<ImageView>(R.id.ivLike)
-                        val anim = ResizeAnimation(ivLike, UtilFunction.dpToPx(0f, requireContext()))
-                        anim.setAnimationListener(object : Animation.AnimationListener {
-                            override fun onAnimationStart(animation: Animation?) = Unit
-                            override fun onAnimationEnd(animation: Animation?) {
-                                nowClosed = false
-                            }
-
-                            override fun onAnimationRepeat(animation: Animation?) = Unit
-                        })
-                        ivLike.clearAnimation()
-                        ivLike.startAnimation(anim)
+                        closeHolder(viewHolder as VacanciesAdapter.ViewHolder)
                     }
                 }
 
@@ -147,13 +138,45 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                     when (direction) {
                         ItemTouchHelper.END -> {
                             if (nowClosed == false) {
+                                if (!(currentHolder == viewHolder)) currentHolder?.let { closeHolder(it, true) }
+
+                                currentHolder = (viewHolder as VacanciesAdapter.ViewHolder)
                                 val ivLike = viewHolder.itemView.findViewById<ImageView>(R.id.ivLike)
                                 val anim = ResizeAnimation(ivLike, UtilFunction.dpToPx(50f, requireContext()))
+                                anim.setAnimationListener(object : Animation.AnimationListener {
+                                    override fun onAnimationStart(animation: Animation?) = Unit
+                                    override fun onAnimationEnd(animation: Animation?) {
+                                        nowClosed = false
+                                        currentHolder?.isOpen = true
+                                    }
+
+                                    override fun onAnimationRepeat(animation: Animation?) = Unit
+                                })
                                 ivLike.clearAnimation()
                                 ivLike.startAnimation(anim)
                             }
                         }
                     }
+                }
+
+                private fun closeHolder(vh: VacanciesAdapter.ViewHolder, needUpdate: Boolean = false) {
+                    nowClosed = true
+                    if (!vh.isOpen) return
+
+                    val ivLike = vh.itemView.findViewById<ImageView>(R.id.ivLike)
+                    val anim = ResizeAnimation(ivLike, UtilFunction.dpToPx(0f, requireContext()))
+                    anim.setAnimationListener(object : Animation.AnimationListener {
+                        override fun onAnimationStart(animation: Animation?) = Unit
+                        override fun onAnimationEnd(animation: Animation?) {
+                            nowClosed = false
+                            vh.isOpen = false
+                            if (needUpdate) adapter.notifyItemChanged(vh.adapterPosition)
+                        }
+
+                        override fun onAnimationRepeat(animation: Animation?) = Unit
+                    })
+                    ivLike.clearAnimation()
+                    ivLike.startAnimation(anim)
                 }
             })
 
