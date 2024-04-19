@@ -31,31 +31,31 @@ class VacancyViewModel @Inject constructor(
 
     fun loadData() {
         viewModelScope.launch {
-            loadDataAsync()
+            state.postValue(VacancyViewState.Loading)
+            val isFavorite = isFavorite(vacancyId)
+            try {
+                loadDataAsync(isFavorite)
+            } catch (e: IOException) {
+                println(e)
+                state.postValue(VacancyViewState.Error())
+            }
         }
     }
 
-    private suspend fun loadDataAsync() {
-        state.postValue(VacancyViewState.Loading)
-        val isFavorite = isFavorite(vacancyId)
-        try {
-            val response = searchVacanciesByIdUseCase(vacancyId)
-            when (response) {
-                is ResponseState.ContentVacancyDetail -> {
-                    if (isFavorite) favoritesInteractor.insertDbVacanciToFavorite(response.vacancyDetail)
-                    state.postValue(VacancyViewState.Content(response.vacancyDetail, isFavorite))
-                }
-
-                else -> if (isFavorite && response is ResponseState.NetworkError && response.needClearFavorites) {
-                    state.postValue(VacancyViewState.Error(true))
-                    deleteFavVac()
-                } else {
-                    if (isFavorite) loadFromFavorites()
-                }
+    suspend fun loadDataAsync(isFavorite: Boolean) {
+        val response = searchVacanciesByIdUseCase(vacancyId)
+        when (response) {
+            is ResponseState.ContentVacancyDetail -> {
+                if (isFavorite) favoritesInteractor.insertDbVacanciToFavorite(response.vacancyDetail)
+                state.postValue(VacancyViewState.Content(response.vacancyDetail, isFavorite))
             }
-        } catch (e: IOException) {
-            println(e)
-            state.postValue(VacancyViewState.Error())
+
+            else -> if (isFavorite && response is ResponseState.NetworkError && response.needClearFavorites) {
+                state.postValue(VacancyViewState.Error(true))
+                deleteFavVac()
+            } else {
+                if (isFavorite) loadFromFavorites()
+            }
         }
     }
 
