@@ -23,6 +23,7 @@ class VacanciesAdapter(
 
     companion object {
         const val FIRST_ELEMENT_PADDING_TOP = 32f
+        const val ELEMENT_PADDING_TOP = 9f
     }
 
     inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
@@ -30,8 +31,19 @@ class VacanciesAdapter(
         private val binding by viewBinding { VacancyItemBinding.bind(view) }
 
         fun bind(vacancy: Vacancy, firstElement: Boolean) {
-            if (needPadding && firstElement) {
-                binding.rootItem.updatePadding(top = dpToPx(FIRST_ELEMENT_PADDING_TOP, binding.root.context))
+            val padding = if (needPadding && firstElement) {
+                FIRST_ELEMENT_PADDING_TOP
+            } else {
+                ELEMENT_PADDING_TOP
+            }
+
+            if (!(binding.rootItem.paddingTop.toFloat() == padding)) {
+                binding.rootItem.updatePadding(
+                    top = dpToPx(
+                        padding,
+                        binding.root.context
+                    )
+                )
             }
             binding.tvVacancyName.text = vacancy.name
             binding.salary.text = SalaryUtil.formatSalary(view.context, vacancy.salary)
@@ -42,7 +54,6 @@ class VacanciesAdapter(
             binding.department.text = vacancy.area
             binding.root.setOnClickListener { onClick.invoke(vacancy.id) }
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

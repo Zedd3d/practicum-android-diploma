@@ -31,27 +31,31 @@ class VacancyViewModel @Inject constructor(
 
     fun loadData() {
         viewModelScope.launch {
-            state.postValue(VacancyViewState.Loading)
-            val isFavorite = isFavorite(vacancyId)
-            try {
-                val response = searchVacanciesByIdUseCase(vacancyId)
-                when (response) {
-                    is ResponseState.ContentVacancyDetail -> {
-                        if (isFavorite) favoritesInteractor.insertDbVacanciToFavorite(response.vacancyDetail)
-                        state.postValue(VacancyViewState.Content(response.vacancyDetail, isFavorite))
-                    }
+            loadDataAsync()
+        }
+    }
 
-                    else -> if (isFavorite && response is ResponseState.NetworkError && response.needClearFavorites) {
-                        state.postValue(VacancyViewState.Error(true))
-                        deleteFavVac()
-                    } else {
-                        if (isFavorite) loadFromFavorites()
-                    }
+    private suspend fun loadDataAsync() {
+        state.postValue(VacancyViewState.Loading)
+        val isFavorite = isFavorite(vacancyId)
+        try {
+            val response = searchVacanciesByIdUseCase(vacancyId)
+            when (response) {
+                is ResponseState.ContentVacancyDetail -> {
+                    if (isFavorite) favoritesInteractor.insertDbVacanciToFavorite(response.vacancyDetail)
+                    state.postValue(VacancyViewState.Content(response.vacancyDetail, isFavorite))
                 }
-            } catch (e: IOException) {
-                println(e)
-                state.postValue(VacancyViewState.Error())
+
+                else -> if (isFavorite && response is ResponseState.NetworkError && response.needClearFavorites) {
+                    state.postValue(VacancyViewState.Error(true))
+                    deleteFavVac()
+                } else {
+                    if (isFavorite) loadFromFavorites()
+                }
             }
+        } catch (e: IOException) {
+            println(e)
+            state.postValue(VacancyViewState.Error())
         }
     }
 
