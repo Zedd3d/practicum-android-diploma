@@ -1,13 +1,17 @@
 package ru.practicum.android.diploma.presentation.general.fragment
 
 import android.content.Context
+import android.graphics.Canvas
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.Transformation
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -16,6 +20,7 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -30,8 +35,10 @@ import ru.practicum.android.diploma.domain.general.models.ResponseState
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.general.VacanciesAdapter
 import ru.practicum.android.diploma.presentation.general.viewmodel.GeneralViewModel
+import ru.practicum.android.diploma.util.UtilFunction
 import ru.practicum.android.diploma.util.onTextChangeDebounce
 import ru.practicum.android.diploma.util.visibleOrGone
+
 
 private const val DEBOUNCE: Long = 2000
 
@@ -72,7 +79,112 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             viewModel.searchOnFilterChanged()
         }
 
+        setHelpers()
     }
+
+    private fun setHelpers() {
+
+        val touchHelper = ItemTouchHelper(
+            object : ItemTouchHelper.Callback() {
+                private var prevPos = 0f
+                private var nowClosed = false
+
+                override fun getMovementFlags(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder
+                ): Int {
+                    return makeMovementFlags(
+                        0,
+                        ItemTouchHelper.END //or ItemTouchHelper.START
+                    )
+                }
+
+                override fun onChildDraw(
+                    c: Canvas,
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    dX: Float,
+                    dY: Float,
+                    actionState: Int,
+                    isCurrentlyActive: Boolean
+                ) {
+                    val constParam = UtilFunction.dpToPx(10f, requireContext()).toFloat()
+                    val res = if (dX >= constParam) {
+                        constParam
+                    } else {
+                        dX
+                    }
+                    super.onChildDraw(c, recyclerView, viewHolder, res, dY, actionState, isCurrentlyActive)
+
+                    if (isCurrentlyActive) prevPos = minOf(dX, res)
+
+                    if (dX < prevPos && isCurrentlyActive == false && nowClosed == false) {
+                        nowClosed = true
+                        val ivLike = viewHolder.itemView.findViewById<ImageView>(R.id.ivLike)
+                        val anim = ResizeAnimation(ivLike, UtilFunction.dpToPx(0f, requireContext()))
+                        anim.setAnimationListener(object : Animation.AnimationListener {
+                            override fun onAnimationStart(animation: Animation?) = Unit
+                            override fun onAnimationEnd(animation: Animation?) {
+                                nowClosed = false
+                            }
+
+                            override fun onAnimationRepeat(animation: Animation?) = Unit
+                        })
+                        ivLike.clearAnimation()
+                        ivLike.startAnimation(anim)
+                    }
+                }
+
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    return false
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    when (direction) {
+                        ItemTouchHelper.END -> {
+                            if (nowClosed == false) {
+                                val ivLike = viewHolder.itemView.findViewById<ImageView>(R.id.ivLike)
+                                val anim = ResizeAnimation(ivLike, UtilFunction.dpToPx(50f, requireContext()))
+                                ivLike.clearAnimation()
+                                ivLike.startAnimation(anim)
+                            }
+                        }
+                    }
+                }
+            })
+
+        touchHelper.attachToRecyclerView(binding.vacanciesRv)
+    }
+
+
+    class ResizeAnimation(var view: View, val targetWidth: Int) : Animation() {
+        val startWidth: Int
+
+        init {
+            super.setDuration(200L)
+            startWidth = view.width
+        }
+
+        override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+            val newWidth = (startWidth + (targetWidth - startWidth) * interpolatedTime).toInt()
+            view.layoutParams.width = newWidth
+            view.layoutParams.height = newWidth
+            view.requestLayout()
+        }
+
+        override fun initialize(width: Int, height: Int, parentWidth: Int, parentHeight: Int) {
+            super.initialize(width, height, parentWidth, parentHeight)
+        }
+
+        override fun willChangeBounds(): Boolean {
+            return true
+        }
+    }
+
 
     private fun setObservers() {
         viewModel.observeUi().observe(viewLifecycleOwner) { state ->

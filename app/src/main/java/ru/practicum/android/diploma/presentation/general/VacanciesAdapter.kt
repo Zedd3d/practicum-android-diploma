@@ -1,7 +1,5 @@
 package ru.practicum.android.diploma.presentation.general
 
-import android.content.Context
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +13,7 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.VacancyItemBinding
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.util.SalaryUtil
+import ru.practicum.android.diploma.util.UtilFunction
 
 class VacanciesAdapter(
     private val needPadding: Boolean = false,
@@ -31,7 +30,12 @@ class VacanciesAdapter(
 
         fun bind(vacancy: Vacancy, firstElement: Boolean) {
             if (needPadding && firstElement) {
-                binding.rootItem.updatePadding(top = dpToPx(FIRST_ELEMENT_PADDING_TOP, binding.root.context))
+                binding.rootItem.updatePadding(
+                    top = UtilFunction.dpToPx(
+                        FIRST_ELEMENT_PADDING_TOP,
+                        binding.root.context
+                    )
+                )
             }
             binding.tvVacancyName.text = vacancy.name
             binding.salary.text = SalaryUtil.formatSalary(view.context, vacancy.salary)
@@ -56,13 +60,6 @@ class VacanciesAdapter(
     }
 }
 
-fun dpToPx(dp: Float, context: Context): Int {
-    return TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,
-        dp,
-        context.resources.displayMetrics
-    ).toInt()
-}
 
 class DiffUtil : DiffUtil.ItemCallback<Vacancy>() {
     override fun areItemsTheSame(oldItem: Vacancy, newItem: Vacancy): Boolean {
