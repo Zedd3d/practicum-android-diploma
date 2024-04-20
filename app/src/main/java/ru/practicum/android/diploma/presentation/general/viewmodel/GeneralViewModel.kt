@@ -55,6 +55,13 @@ class GeneralViewModel @Inject constructor(
         makeSearchRequest(query, page, false)
     }
 
+    private suspend fun fillFavorites(list: List<Vacancy>): List<Vacancy> {
+        list.forEach {
+            it.isFavorite = favoritesInteractor.isFavorite(it.id)
+        }
+        return list
+    }
+
     private fun makeSearchRequest(query: String, page: Int, isPagination: Boolean) {
         state.postValue(ResponseState.Loading(isPagination))
         filtersMap = filtersInteractor.getAllFilters()
@@ -63,9 +70,9 @@ class GeneralViewModel @Inject constructor(
                 is ResponseState.ContentVacanciesList -> {
                     maxPages = response.pages
                     currentListVacancies = if (isPagination) {
-                        currentListVacancies + response.listVacancy
+                        currentListVacancies + fillFavorites(response.listVacancy)
                     } else {
-                        response.listVacancy
+                        fillFavorites(response.listVacancy)
                     }
 
                     state.postValue(
@@ -123,15 +130,21 @@ class GeneralViewModel @Inject constructor(
         viewModelScope.launch {
             favoriteState.postValue(FavoriteState.Loading)
             val isFavorite = favoritesInteractor.isFavorite(id)
+            val currentValue = state.value
+            if (currentValue is ResponseState.ContentVacanciesList) {
+                currentValue.listVacancy.get(position).isFavorite = isFavorite
+            }
+
+
             if (isFavorite) {
                 favoritesInteractor.deleteDbVacanciFromFavorite(id)
-                favoriteState.postValue(FavoriteState.Content(position, false))
+                favoriteState.postValue(FavoriteState.Content(position, false, id))
             } else {
                 val vacanciesDetailResponse = searchVacanciesByIdUseCase(id)
                 when (vacanciesDetailResponse) {
                     is ResponseState.ContentVacancyDetail -> {
                         favoritesInteractor.insertDbVacanciToFavorite(vacanciesDetailResponse.vacancyDetail)
-                        favoriteState.postValue(FavoriteState.Content(position, true))
+                        favoriteState.postValue(FavoriteState.Content(position, true, id))
                     }
 
                     else -> favoriteState.postValue(FavoriteState.Error)
@@ -148,7 +161,8 @@ class GeneralViewModel @Inject constructor(
 sealed interface FavoriteState {
     class Content(
         val position: Int,
-        val isFavorite: Boolean
+        val isFavorite: Boolean,
+        val id: String
     ) : FavoriteState
 
     data object Error : FavoriteState

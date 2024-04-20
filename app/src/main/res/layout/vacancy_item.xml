@@ -9,21 +9,35 @@
     android:paddingTop="9dp"
     android:paddingBottom="9dp">
 
+
     <ImageView
         android:id="@+id/ivLike"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:paddingEnd="20dp"
         android:scaleType="center"
-
         android:src="@drawable/favorite_vacancy_drawable_empty"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/ivAddToFav"
         app:layout_constraintEnd_toEndOf="@id/card"
         app:layout_constraintEnd_toStartOf="@+id/card"
         app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@id/progressLike"
+        app:layout_constraintTop_toTopOf="@id/card" />
+
+    <ProgressBar
+        android:id="@+id/progressLike"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:indeterminateTint="@color/Blue_yp"
+        android:paddingEnd="20dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@id/ivAddToFav"
+        app:layout_constraintEnd_toStartOf="@id/ivLike"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/card" />
+
 
     <ImageView
         android:id="@+id/ivAddToFav"
