@@ -51,7 +51,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     private val binding get() = _binding!!
 
     private val adapter by lazy {
-        VacanciesAdapter() {
+        VacanciesAdapter(true) {
             val params = bundleOf("id" to it)
             findNavController().navigate(R.id.action_generalFragment_to_vacancyFragment, params)
         }
