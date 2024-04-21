@@ -20,7 +20,8 @@ import ru.practicum.android.diploma.util.UtilFunction
 
 class VacanciesAdapter(
     private val needPadding: Boolean = false,
-    private val onClick: (String) -> Unit
+    private val onClick: (String) -> Unit,
+    private val openHolder: ((ViewHolder) -> Unit)?
 ) : ListAdapter<Vacancy, VacanciesAdapter.ViewHolder>(DiffUtil()) {
 
     companion object {
@@ -65,6 +66,10 @@ class VacanciesAdapter(
 
             binding.root.setOnClickListener {
                 onClick.invoke(vacancy.id)
+            }
+
+            binding.ivAddToFav.setOnClickListener {
+                openHolder?.let { it1 -> it1(this) }
             }
 
             if (binding.ivLike.layoutParams.width > 0) {

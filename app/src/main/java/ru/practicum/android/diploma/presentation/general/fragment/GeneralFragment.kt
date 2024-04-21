@@ -29,9 +29,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentGeneralBinding
@@ -76,7 +78,13 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         VacanciesAdapter(true, {
             val params = bundleOf("id" to it)
             findNavController().navigate(R.id.action_generalFragment_to_vacancyFragment, params)
-        })
+        }) {
+            lifecycleScope.launch {
+                openViewHolder(it)
+                delay(200L)
+                closeHolder(it)
+            }
+        }
     }
 
     private val debaunceCloseItems =
@@ -212,42 +220,42 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     when (direction) {
                         ItemTouchHelper.END -> {
-                            if ((viewHolder as VacanciesAdapter.ViewHolder).isHolderOpen()) return
-
-                            if (!(currentHolder == viewHolder) && currentHolder?.isHolderOpen() == true) {
-                                currentHolder?.let { closeHolder(it, true) }
-                            }
-
-                            currentHolder = viewHolder
-
-                            val ivLikeBig = viewHolder.itemView.findViewById<ImageView>(R.id.ivLike)
-                            val ivLikeSmall = viewHolder.itemView.findViewById<ImageView>(R.id.ivAddToFav)
-                            val anim = ResizeAnimationWithAlpha(
-                                ivLikeBig,
-                                ivLikeSmall,
-                                UtilFunction.dpToPx(SIZE_VISIBLE_LIKE_ICO, requireContext()),
-                                0f
-                            )
-                            anim.setAnimationListener(object : Animation.AnimationListener {
-                                override fun onAnimationStart(animation: Animation?) = Unit
-                                override fun onAnimationEnd(animation: Animation?) {
-                                    //nowClosed = false
-
-                                    debaunceCloseItems(true)
-                                }
-
-                                override fun onAnimationRepeat(animation: Animation?) = Unit
-                            })
-                            ivLikeBig.clearAnimation()
-                            ivLikeBig.startAnimation(anim)
+                            openViewHolder(viewHolder as VacanciesAdapter.ViewHolder)
                         }
                     }
                 }
-
-
             })
 
         touchHelper.attachToRecyclerView(binding.vacanciesRv)
+    }
+
+    private fun openViewHolder(viewHolder: VacanciesAdapter.ViewHolder) {
+        if (viewHolder.isHolderOpen()) return
+
+        if (!(currentHolder == viewHolder) && currentHolder?.isHolderOpen() == true) {
+            currentHolder?.let { closeHolder(it, true) }
+        }
+
+        currentHolder = viewHolder
+
+        val ivLikeBig = viewHolder.itemView.findViewById<ImageView>(R.id.ivLike)
+        val ivLikeSmall = viewHolder.itemView.findViewById<ImageView>(R.id.ivAddToFav)
+        val anim = ResizeAnimationWithAlpha(
+            ivLikeBig,
+            ivLikeSmall,
+            UtilFunction.dpToPx(SIZE_VISIBLE_LIKE_ICO, requireContext()),
+            0f
+        )
+        anim.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) = Unit
+            override fun onAnimationEnd(animation: Animation?) {
+                debaunceCloseItems(true)
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) = Unit
+        })
+        ivLikeBig.clearAnimation()
+        ivLikeBig.startAnimation(anim)
     }
 
     private fun setObservers() {
@@ -314,7 +322,6 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         currentHolder?.let {
             val ivLike = it.itemView.findViewById<ImageView>(R.id.ivLike)
             val progressLike = it.itemView.findViewById<ProgressBar>(R.id.progressLike)
-            val ivLikeSmall = it.itemView.findViewById<ImageView>(R.id.ivAddToFav)
             val image = when (favState) {
                 is FavoriteState.Content -> {
                     currentHolder?.isOpen = false
@@ -325,12 +332,10 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                         vacancy.isFavorite = favState.isFavorite
                         when (favState.isFavorite) {
                             true -> {
-                                ivLikeSmall.alpha = 1f
                                 R.drawable.favorite_vacancy_drawable_fill
                             }
 
                             false -> {
-                                ivLikeSmall.alpha = 0f
                                 R.drawable.favorite_vacancy_drawable_empty
                             }
                         }
