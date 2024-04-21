@@ -85,6 +85,10 @@ class VacanciesAdapter(
                     .into(binding.ivLike)
             }
 
+            updateFavIco(vacancy)
+        }
+
+        fun updateFavIco(vacancy: Vacancy) {
             if (vacancy.isFavorite) {
                 binding.ivAddToFav.alpha = 1F
             } else {

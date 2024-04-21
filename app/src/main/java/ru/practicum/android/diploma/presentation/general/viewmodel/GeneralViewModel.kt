@@ -120,8 +120,15 @@ class GeneralViewModel @Inject constructor(
         }
     }
 
-    fun updateHasFilters() {
+    fun updateData() {
         stateFilters.postValue(filtersInteractor.getAllFilters().isNotEmpty())
+        val currentValue = state.value
+        viewModelScope.launch {
+            if (currentValue is ResponseState.ContentVacanciesList) {
+                val newValue = currentValue.copy(listVacancy = fillFavorites(currentValue.listVacancy))
+                state.postValue(newValue)
+            }
+        }
     }
 
     fun switchFavorite(id: String, position: Int) {
@@ -132,7 +139,6 @@ class GeneralViewModel @Inject constructor(
             if (currentValue is ResponseState.ContentVacanciesList) {
                 currentValue.listVacancy.get(position).isFavorite = isFavorite
             }
-
 
             if (isFavorite) {
                 favoritesInteractor.deleteDbVacanciFromFavorite(id)
