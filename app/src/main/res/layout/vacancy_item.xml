@@ -25,11 +25,11 @@
             android:layout_height="match_parent"
             app:strokeWidth="1dp"
             android:padding="1dp"
-            app:strokeColor="@color/black"
+            android:background="@color/WhiteUniversal_yp"
             android:scaleType="centerInside"
             android:src="@drawable/placeholder_company_icon"
             app:shapeAppearanceOverlay="@style/rounded_12"
-            android:background="@color/white"/>
+            app:strokeColor="@color/LightGray_yp" />
     </com.google.android.material.card.MaterialCardView>
 
     <TextView
