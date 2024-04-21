@@ -28,10 +28,9 @@ class GeneralViewModel @Inject constructor(
 
     private val favoriteState = MutableLiveData<FavoriteState>()
 
-    private var currentListVacancies = emptyList<Vacancy>()
+    private var currentListVacancies = mutableListOf<Vacancy>()
 
     private var isNextPageLoading = false
-
 
     fun observeUi(): LiveData<ResponseState> = state
     fun observeFilters(): LiveData<Boolean> = stateFilters
