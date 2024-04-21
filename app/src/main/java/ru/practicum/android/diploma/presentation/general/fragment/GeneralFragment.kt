@@ -103,6 +103,52 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         setHelpers()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setListeners() {
+        binding.searchEditText.onTextChangeDebounce().debounce(DEBOUNCE)
+            .onEach {
+                val query = it?.toString().orEmpty()
+                currentHolder = null
+                viewModel.search(query)
+            }.launchIn(lifecycleScope)
+
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                setupIcon(p0.toString())
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+        })
+
+        binding.clearButton.setOnClickListener {
+            binding.searchEditText.text = null
+        }
+
+        binding.vacanciesRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0) {
+                    val pos = (binding.vacanciesRv.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                    val itemsCount = adapter.itemCount
+                    if (pos >= itemsCount - 1) {
+                        viewModel.onLastItemReached()
+                    }
+                }
+            }
+        })
+        binding.filterImageView.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_generalFragment_to_filtersMainFragment
+            )
+        }
+
+        binding.vacanciesRv.setOnTouchListener { v, event ->
+            onTouch(v, event)
+            false
+        }
+    }
+
     private fun setHelpers() {
         touchHelper = ItemTouchHelper(
             object : ItemTouchHelper.Callback() {
@@ -150,7 +196,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                         && abs(dX - prevPos) >= 5
                         && isCurrentlyActive == false
                         && currentHolder != viewHolder
-                        && currentHolder?.isOpen ?: false
+                        && currentHolder?.isOpen == true
                     ) {
                         closeHolder(viewHolder as VacanciesAdapter.ViewHolder)
                     }
@@ -169,11 +215,11 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                         ItemTouchHelper.END -> {
                             if ((viewHolder as VacanciesAdapter.ViewHolder).isHolderOpen()) return
 
-                            if (!(currentHolder == viewHolder) && currentHolder?.isHolderOpen() ?: false) {
+                            if (!(currentHolder == viewHolder) && currentHolder?.isHolderOpen() == true) {
                                 currentHolder?.let { closeHolder(it, true) }
                             }
 
-                            currentHolder = (viewHolder as VacanciesAdapter.ViewHolder)
+                            currentHolder = viewHolder
 
                             val ivLikeBig = viewHolder.itemView.findViewById<ImageView>(R.id.ivLike)
                             val ivLikeSmall = viewHolder.itemView.findViewById<ImageView>(R.id.ivAddToFav)
@@ -206,9 +252,22 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
 
     }
 
+    private fun setObservers() {
+        viewModel.observeUi().observe(viewLifecycleOwner) { state ->
+            render(state)
+        }
+        viewModel.observeFilters().observe(viewLifecycleOwner) { isWithFilters ->
+            checkFilters(isWithFilters)
+        }
+
+        viewModel.observeIsFavorite().observe(viewLifecycleOwner) { favState ->
+            renderFavState(favState)
+        }
+    }
+
     private fun checkAndClose(needUpdate: Boolean = false) {
         if (_binding == null) return
-        for (i in 0 until binding.vacanciesRv.getChildCount()) {
+        for (i in 0 until binding.vacanciesRv.childCount) {
             val vh = binding.vacanciesRv.getChildViewHolder(binding.vacanciesRv.getChildAt(i))
             if (currentHolder != vh
                 && (vh as VacanciesAdapter.ViewHolder).isHolderOpen()
@@ -244,37 +303,14 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             viewAlpha.alpha = (startAlpha + (targetAlpha - startAlpha) * interpolatedTime)
         }
 
-        override fun initialize(width: Int, height: Int, parentWidth: Int, parentHeight: Int) {
-            super.initialize(width, height, parentWidth, parentHeight)
-        }
-
         override fun willChangeBounds(): Boolean {
             return true
         }
     }
 
-    private fun setObservers() {
-        viewModel.observeUi().observe(viewLifecycleOwner) { state ->
-            render(state)
-        }
-        viewModel.observeFilters().observe(viewLifecycleOwner) { isWithFilters ->
-            checkFilters(isWithFilters)
-        }
-
-        viewModel.observeIsFavorite().observe(viewLifecycleOwner) { favState ->
-            renderFavState(favState)
-        }
-    }
-
-
     private fun renderFavState(favState: FavoriteState) {
-        if (favState is FavoriteState.Content) {
-
-        }
-
         setupIconCurrentHolder(favState)
     }
-
 
     private fun setupIconCurrentHolder(favState: FavoriteState) {
         currentHolder?.let {
@@ -344,52 +380,6 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             }
         }
         updateStatus(state)
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setListeners() {
-        binding.searchEditText.onTextChangeDebounce().debounce(DEBOUNCE)
-            .onEach {
-                val query = it?.toString().orEmpty()
-                currentHolder = null
-                viewModel.search(query)
-            }.launchIn(lifecycleScope)
-
-        binding.searchEditText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-                setupIcon(p0.toString())
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
-        })
-
-        binding.clearButton.setOnClickListener {
-            binding.searchEditText.text = null
-        }
-
-        binding.vacanciesRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0) {
-                    val pos = (binding.vacanciesRv.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-                    val itemsCount = adapter.itemCount
-                    if (pos >= itemsCount - 1) {
-                        viewModel.onLastItemReached()
-                    }
-                }
-            }
-        })
-        binding.filterImageView.setOnClickListener {
-            findNavController().navigate(
-                R.id.action_generalFragment_to_filtersMainFragment
-            )
-        }
-
-        binding.vacanciesRv.setOnTouchListener { v, event ->
-            onTouch(v, event)
-            false
-        }
     }
 
     fun setCoords(x: Float, y: Float) {

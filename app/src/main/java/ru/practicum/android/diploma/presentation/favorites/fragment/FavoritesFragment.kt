@@ -1,6 +1,8 @@
 package ru.practicum.android.diploma.presentation.favorites.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,7 +52,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
         })
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentFavoritesBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -74,6 +76,19 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
                 val query = it?.toString().orEmpty()
                 viewModel.search(query)
             }.launchIn(lifecycleScope)
+
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                setupIcon(p0.toString())
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+        })
+
+        binding.clearButton.setOnClickListener {
+            binding.searchEditText.text = null
+        }
     }
 
     private fun showDetails(vacancyId: String) {
@@ -81,6 +96,16 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
             R.id.action_favoritesFragment_to_vacancyFragment,
             createArgs(vacancyId)
         )
+    }
+
+    private fun setupIcon(it: String) {
+        if (it.isNotBlank()) {
+            binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_clear, 0)
+            binding.clearButton.isEnabled = true
+        } else {
+            binding.searchEditText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_search, 0)
+            binding.clearButton.isEnabled = false
+        }
     }
 
     private fun showListState(state: FavoritesState) {
@@ -133,7 +158,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
             }
         }
 
-        image?.let {
+        image.let {
             Glide.with(requireContext())
                 .load(image)
                 .into(binding.ivFavorite)
