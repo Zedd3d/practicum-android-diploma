@@ -53,7 +53,6 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
 
     private var coordX = 0f
     private var coordY = 0f
-    private var differenceCoordY = 0f
 
     lateinit var touchHelper: ItemTouchHelper
 
@@ -249,7 +248,6 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             })
 
         touchHelper.attachToRecyclerView(binding.vacanciesRv)
-
     }
 
     private fun setObservers() {
@@ -368,6 +366,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     private fun render(state: ResponseState) {
         if (state is ResponseState.ContentVacanciesList) {
             adapter.submitList(state.listVacancy)
+            updateFavIco()
         } else {
             val needClearList = when (state) {
                 is ResponseState.Loading -> !state.isPagination
@@ -380,6 +379,15 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             }
         }
         updateStatus(state)
+    }
+
+    private fun updateFavIco() {
+        if (_binding == null) return
+        for (i in 0 until binding.vacanciesRv.childCount) {
+            val vh =
+                binding.vacanciesRv.getChildViewHolder(binding.vacanciesRv.getChildAt(i)) as VacanciesAdapter.ViewHolder
+            vh.updateFavIco(vacancy = adapter.currentList.get(vh.adapterPosition))
+        }
     }
 
     fun setCoords(x: Float, y: Float) {
@@ -427,7 +435,10 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             override fun onAnimationEnd(animation: Animation?) {
                 // nowClosed = false
 
-                if (needUpdate) adapter.notifyItemChanged(vh.layoutPosition)
+                if (needUpdate) {
+                    adapter.notifyItemChanged(vh.layoutPosition)
+                    vh.updateFavIco(vacancy = adapter.currentList.get(vh.adapterPosition))
+                }
             }
 
             override fun onAnimationRepeat(animation: Animation?) = Unit
@@ -436,6 +447,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 super.cancel()
                 //nowClosed = false
                 adapter.notifyItemChanged(vh.layoutPosition)
+                vh.updateFavIco(vacancy = adapter.currentList.get(vh.adapterPosition))
             }
         })
         ivLike.startAnimation(anim)
@@ -581,7 +593,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
     override fun onResume() {
         super.onResume()
         currentHolder = null
-        viewModel.updateHasFilters()
+        viewModel.updateData()
         activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = true
     }
 }

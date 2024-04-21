@@ -1,5 +1,6 @@
 package ru.practicum.android.diploma.presentation.favorites.fragment
 
+import android.graphics.Canvas
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,7 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.flow.debounce
@@ -26,9 +29,14 @@ import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.favorites.state.FavoritesState
 import ru.practicum.android.diploma.presentation.favorites.viewmodel.FavoritesViewModel
 import ru.practicum.android.diploma.presentation.general.VacanciesAdapter
+import ru.practicum.android.diploma.util.UtilFunction
 import ru.practicum.android.diploma.util.onTextChangeDebounce
 
 class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
+
+    lateinit var touchHelper: ItemTouchHelper
+
+    var currentHolder: VacanciesAdapter.ViewHolder? = null
 
     companion object {
         const val VACANCY_DATA = "id"
@@ -89,6 +97,65 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
         binding.clearButton.setOnClickListener {
             binding.searchEditText.text = null
         }
+
+        setHelpers()
+    }
+
+    private fun setHelpers() {
+        touchHelper = ItemTouchHelper(
+            object : ItemTouchHelper.Callback() {
+                private var prevPos = 0f
+
+                override fun getMovementFlags(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder
+                ): Int {
+                    return makeMovementFlags(
+                        0,
+                        ItemTouchHelper.START //or ItemTouchHelper.START
+                    )
+                }
+
+                override fun onChildDraw(
+                    c: Canvas,
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    dX: Float,
+                    dY: Float,
+                    actionState: Int,
+                    isCurrentlyActive: Boolean
+                ) {
+                    val constParam = UtilFunction.dpToPx(20f, requireContext()).toFloat()
+                    val res = if (dX >= constParam) {
+                        constParam
+                    } else {
+                        dX
+                    }
+                    super.onChildDraw(c, recyclerView, viewHolder, res, dY, actionState, isCurrentlyActive)
+
+                    if (isCurrentlyActive) prevPos = minOf(dX, res)
+
+                }
+
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    return false
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    when (direction) {
+                        ItemTouchHelper.START -> {
+                            val vacancy = adapter.currentList.get(viewHolder.adapterPosition)
+                            viewModel.deleteFromFavorite(vacancy)
+                        }
+                    }
+                }
+            })
+
+        touchHelper.attachToRecyclerView(binding.rvFavorite)
     }
 
     private fun showDetails(vacancyId: String) {
