@@ -12,14 +12,14 @@
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TitleTextStyle"
+        style="@style/toolbarTitle"
         app:title="@string/favorite_head_name"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFavorite"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/dimen_16dp"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="80dp"
         tools:listitem="@layout/vacancy_item" />
@@ -53,6 +53,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:text="@string/favorite_empty"
+            android:textColor="@color/BlackDay_WhiteNight"
             android:textAlignment="center" />
 
     </LinearLayout>

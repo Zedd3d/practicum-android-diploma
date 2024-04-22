@@ -7,4 +7,8 @@
         <item name="android:drawableTint">@color/BlackUniversal_yp</item>
     </style>
 
+    <style name="FavoriteButtonStyle">
+        <item name="android:src">@drawable/favorite_vacancy_drawable_empty</item>
+    </style>
+
 </resources>

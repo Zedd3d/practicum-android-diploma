@@ -5,20 +5,25 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.domain.general.api.SearchVacanciesUseCase
 import ru.practicum.android.diploma.domain.general.models.ResponseState
-import ru.practicum.android.diploma.domain.impl.SearchVacanciesUseCase
 import ru.practicum.android.diploma.domain.models.Vacancy
+import ru.practicum.android.diploma.domain.sharedpreferences.api.FiltersInteractor
 import javax.inject.Inject
 
 class GeneralViewModel @Inject constructor(
     private val searchVacanciesUseCase: SearchVacanciesUseCase,
+    private val filtersInteractor: FiltersInteractor
 ) : ViewModel() {
 
     private val state = MutableLiveData<ResponseState>()
 
+    private val stateFilters = MutableLiveData<Boolean>()
+
     private var currentListVacancies = emptyList<Vacancy>()
 
     fun observeUi(): LiveData<ResponseState> = state
+    fun observeFilters(): LiveData<Boolean> = stateFilters
 
     private var isNextPageLoading = false
 
@@ -44,8 +49,8 @@ class GeneralViewModel @Inject constructor(
     private fun makeSearchRequest(query: String, page: Int, isPagination: Boolean) {
         state.postValue(ResponseState.Loading(isPagination))
         viewModelScope.launch {
-            val response = searchVacanciesUseCase(query, page)
-            when (response) {
+            val filtersMap = filtersInteractor.getAllFilters()
+            when (val response = searchVacanciesUseCase(query, page, filtersMap)) {
                 is ResponseState.ContentVacanciesList -> {
                     maxPages = response.pages
                     currentListVacancies = if (isPagination) {
@@ -63,11 +68,14 @@ class GeneralViewModel @Inject constructor(
                     )
                 }
 
+                is ResponseState.NetworkError -> state.postValue(ResponseState.NetworkError(isPagination))
+
                 is ResponseState.Loading -> state.postValue(ResponseState.Loading(isPagination))
                 else -> {
                     state.postValue(response)
                 }
             }
+            stateFilters.postValue(filtersMap.isNotEmpty())
             isNextPageLoading = false
         }
     }
@@ -89,15 +97,19 @@ class GeneralViewModel @Inject constructor(
         query?.let { searchPagination(it, page) }
     }
 
+    fun searchOnFilterChanged() {
+        if (!this.query.isNullOrEmpty()) {
+            val query = this.query
+            this.query = null
+            query?.let { search(it) }
+        }
+    }
+
+    fun updateHasFilters() {
+        stateFilters.postValue(filtersInteractor.getAllFilters().isNotEmpty())
+    }
+
     companion object {
         const val PAG_COUNT: Int = 20
     }
 }
-
-data class ViewState(
-    val vacancies: List<Vacancy> = emptyList(),
-    val status: ResponseState = ResponseState.Start,
-    val found: Int = 0,
-    val isLoading: Boolean = false,
-    val vacanciesProgress: Boolean = false
-)

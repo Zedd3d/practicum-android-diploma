@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.practicum.android.diploma.R
-import ru.practicum.android.diploma.domain.filters.models.FilterValue
+import ru.practicum.android.diploma.domain.models.Area
 
 class FiltersAreaAdapter(
-    private val listFilterValues: List<FilterValue>,
-    private val clickListener: (filterValue: FilterValue) -> Unit
+    private var listAreas: List<Area>,
+    private val clickListener: (filterValue: Area) -> Unit
 ) : RecyclerView.Adapter<FiltersAreaViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FiltersAreaViewHolder {
@@ -18,14 +18,19 @@ class FiltersAreaAdapter(
     }
 
     override fun getItemCount(): Int {
-        return listFilterValues.size
+        return listAreas.size
+    }
+
+    fun setNewList(list: List<Area>) {
+        listAreas = list
+        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: FiltersAreaViewHolder, position: Int) {
         holder.itemView.setOnClickListener {
-            clickListener.invoke(listFilterValues[position])
+            clickListener.invoke(listAreas[position])
         }
-        val item = listFilterValues[position]
+        val item = listAreas[position]
         holder.bind(item)
     }
 }

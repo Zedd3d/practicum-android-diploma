@@ -20,8 +20,9 @@
         android:id="@+id/llCountry"
         layout="@layout/filter_categoty_element"
         android:layout_width="0dp"
-        android:layout_height="@dimen/filter_element_height"
-        android:layout_marginTop="16dp"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/filter_element_height"
+        android:layout_marginTop="@dimen/dimen_16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
@@ -30,7 +31,8 @@
         android:id="@+id/llRegion"
         layout="@layout/filter_categoty_element"
         android:layout_width="0dp"
-        android:layout_height="@dimen/filter_element_height"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/filter_element_height"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/llCountry" />
@@ -42,6 +44,7 @@
         android:layout_height="59dp"
         android:layout_weight="0"
         android:text="@string/select"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/guideline" />
 
     <androidx.constraintlayout.widget.Guideline

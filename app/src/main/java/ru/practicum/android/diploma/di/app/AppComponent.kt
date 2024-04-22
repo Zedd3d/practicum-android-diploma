@@ -6,6 +6,7 @@ import dagger.Component
 import ru.practicum.android.diploma.di.favorites.FavoritesComponent
 import ru.practicum.android.diploma.di.filters.CountryComponent
 import ru.practicum.android.diploma.di.filters.FiltersMainComponent
+import ru.practicum.android.diploma.di.filters.IndustryComponent
 import ru.practicum.android.diploma.di.filters.RegionComponent
 import ru.practicum.android.diploma.di.filters.WorkPlaceComponent
 import ru.practicum.android.diploma.di.general.GeneralComponent
@@ -17,7 +18,6 @@ import javax.inject.Singleton
     modules = [
         RepositoryModule::class,
         NetworkModule::class,
-        SharedPreferencesModule::class,
         DataBaseModule::class,
         UseCaseModule::class
     ]
@@ -25,6 +25,8 @@ import javax.inject.Singleton
 interface AppComponent {
 
     fun generalComponent(): GeneralComponent
+
+    fun industryComponent(): IndustryComponent
 
     fun vacancyComponent(): VacancyComponent.VacancyComponentFactory
 
@@ -34,7 +36,8 @@ interface AppComponent {
 
     fun countryComponent(): CountryComponent
 
-    fun regionComponent(): RegionComponent
+    fun regionComponent(): RegionComponent.RegionComponentFactory
+
     fun filtersMainComponent(): FiltersMainComponent
 
     @Component.Factory

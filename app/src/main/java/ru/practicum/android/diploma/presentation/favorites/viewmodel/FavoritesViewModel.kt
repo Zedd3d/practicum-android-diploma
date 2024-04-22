@@ -39,7 +39,6 @@ class FavoritesViewModel @Inject constructor(
     fun loadFavorites() {
         state.postValue(FavoritesState.Loading)
         viewModelScope.launch {
-            @Suppress("SwallowedException")
             try {
                 favoritesInteractor
                     .favoritesVacancies()
@@ -51,6 +50,7 @@ class FavoritesViewModel @Inject constructor(
                         }
                     }
             } catch (e: IOException) {
+                println(e)
                 state.postValue(FavoritesState.Error)
             }
         }

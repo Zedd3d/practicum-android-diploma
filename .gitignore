@@ -11,6 +11,7 @@
 /.idea/compiler.xml
 /.idea/misc.xml
 /.idea/deploymentTargetDropDown.xml
+/.idea/appInsightsSettings.xml
 
 # Gradle files
 .gradle/
@@ -48,3 +49,5 @@ google-services.json
 # OS specific
 .DS_Store
 *.log
+/logs.txt
+

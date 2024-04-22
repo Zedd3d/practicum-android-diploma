@@ -8,9 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -41,17 +43,21 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         }
     }
 
+    companion object {
+        const val ON_FILTER_CHANGED = "on_filter_changed"
+    }
+
     private var _binding: FragmentGeneralBinding? = null
     private val binding get() = _binding!!
 
     private val adapter by lazy {
-        VacanciesAdapter() {
+        VacanciesAdapter(true) {
             val params = bundleOf("id" to it)
             findNavController().navigate(R.id.action_generalFragment_to_vacancyFragment, params)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentGeneralBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -61,38 +67,37 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
         setupVacancies()
         setListeners()
         setObservers()
+
+        setFragmentResultListener(ON_FILTER_CHANGED) { _: String, _: Bundle ->
+            viewModel.searchOnFilterChanged()
+        }
+
     }
 
     private fun setObservers() {
         viewModel.observeUi().observe(viewLifecycleOwner) { state ->
-            if (state is ResponseState.ContentVacanciesList) {
-                adapter.submitList(state.listVacancy)
-            }
-            updateStatus(state)
-            binding.vacanciesProgress.isVisible = when (state) {
-                is ResponseState.Loading -> state.isPagination
-                else -> false
-            }
-
-            binding.foundCountText.text = when (state) {
-                is ResponseState.ContentVacanciesList -> {
-                    if (state.found > 0) {
-                        getString(R.string.found_count, state.found.toString()).plus(" ").plus(getNoun(state.found))
-                    } else {
-                        null
-                    }
-                }
-
-                else -> getString(R.string.no_vacancies_lil)
-            }
-
-            binding.vacanciesLoading.isVisible = when (state) {
-                is ResponseState.Loading -> !state.isPagination
-                else -> false
-            }
-            if (state is ResponseState.Loading) hideKeyBoard()
-
+            render(state)
         }
+        viewModel.observeFilters().observe(viewLifecycleOwner) { isWithFilters ->
+            checkFilters(isWithFilters)
+        }
+    }
+
+    private fun render(state: ResponseState) {
+        if (state is ResponseState.ContentVacanciesList) {
+            adapter.submitList(state.listVacancy)
+        } else {
+            val needClearList = when (state) {
+                is ResponseState.Loading -> !state.isPagination
+                is ResponseState.NetworkError -> !state.isPagination
+                else -> true
+            }
+            if (needClearList) {
+                adapter.submitList(emptyList())
+                adapter.notifyDataSetChanged()
+            }
+        }
+        updateStatus(state)
     }
 
     private fun setListeners() {
@@ -142,25 +147,48 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 binding.foundCountText.setText(R.string.no_vacancies_lil)
             }
 
-            ResponseState.ServerError -> {
-                binding.srcText.setText(R.string.server_error)
+            ResponseState.ServerError -> binding.srcText.setText(R.string.server_error)
+
+            ResponseState.NetworkError(false) -> binding.srcText.setText(R.string.no_internet)
+
+            ResponseState.NetworkError(true) -> {
+                binding.src.isVisible = false
+                Toast.makeText(requireContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show()
             }
 
-            ResponseState.NetworkError -> {
-                binding.srcText.setText(R.string.no_internet)
-            }
-
-            else -> {
-                binding.srcText.text = ""
-            }
+            else -> binding.srcText.text = ""
         }
         updatePicture(state)
+
+        binding.vacanciesProgress.isVisible = when (state) {
+            is ResponseState.Loading -> state.isPagination
+            else -> false
+        }
+
+        binding.foundCountText.text = when (state) {
+            is ResponseState.ContentVacanciesList -> {
+                if (state.found > 0) {
+                    getString(R.string.found_count, state.found.toString()).plus(" ").plus(getNoun(state.found))
+                } else {
+                    null
+                }
+            }
+
+            else -> getString(R.string.no_vacancies_lil)
+        }
+
+        binding.vacanciesLoading.isVisible = when (state) {
+            is ResponseState.Loading -> !state.isPagination
+            else -> false
+        }
+        if (state is ResponseState.Loading) hideKeyBoard()
     }
 
     private fun updatePreStatus(state: ResponseState) {
         binding.vacanciesRv.isVisible = when (state) {
             is ResponseState.Loading -> state.isPagination
             is ResponseState.ContentVacanciesList -> true
+            is ResponseState.NetworkError -> true
             else -> false
         }
         binding.src.visibleOrGone(state !is ResponseState.Loading && state !is ResponseState.ContentVacanciesList)
@@ -170,31 +198,39 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
 
     private fun updatePicture(status: ResponseState) {
         val image = when (status) {
-            ResponseState.Empty -> {
+            is ResponseState.Empty -> {
                 R.drawable.state_image_nothing_found
             }
 
-            ResponseState.ServerError -> {
+            is ResponseState.ServerError -> {
                 R.drawable.state_image_server_error_search
             }
 
-            ResponseState.NetworkError -> {
+            is ResponseState.NetworkError -> {
                 R.drawable.state_image_no_internet
             }
 
-            ResponseState.Start -> {
-                R.drawable.state_image_start_search
-            }
-
             else -> {
-                null
+                R.drawable.state_image_start_search
             }
         }
 
-        image?.let {
+        image.let {
             Glide.with(requireContext())
                 .load(image)
                 .into(binding.src)
+        }
+    }
+
+    private fun checkFilters(isWithFilters: Boolean) {
+        val image = when (isWithFilters) {
+            true -> R.drawable.ic_filter_on
+            else -> R.drawable.ic_filter
+        }
+        image.let {
+            Glide.with(requireContext())
+                .load(image)
+                .into(binding.filterImageView)
         }
     }
 
@@ -242,6 +278,7 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
 
     override fun onResume() {
         super.onResume()
+        viewModel.updateHasFilters()
         activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = true
     }
 }

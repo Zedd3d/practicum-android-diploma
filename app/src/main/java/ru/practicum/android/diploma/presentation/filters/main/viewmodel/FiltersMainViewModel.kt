@@ -3,42 +3,55 @@ package ru.practicum.android.diploma.presentation.filters.main.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import ru.practicum.android.diploma.domain.sharedpreferences.api.SharedPreferencesInteractor
+import ru.practicum.android.diploma.domain.filters.models.FilterValue
+import ru.practicum.android.diploma.domain.sharedpreferences.api.FiltersInteractor
 import ru.practicum.android.diploma.domain.sharedpreferences.model.SharedFilterNames
 import ru.practicum.android.diploma.presentation.filters.main.state.FiltersMainViewState
 import javax.inject.Inject
 
 class FiltersMainViewModel @Inject constructor(
-    private val sharedPreferencesInteractor: SharedPreferencesInteractor
+    private val filtersInteractor: FiltersInteractor
 ) : ViewModel() {
 
     private val state = MutableLiveData<FiltersMainViewState>()
-
     fun getState(): LiveData<FiltersMainViewState> = state
 
-    private var query: String? = null
+    private var filterChanged: Boolean = false
 
     init {
-        state.postValue(getCurrentFilters())
+        loadCurrentFilters()
     }
 
     fun getWorkPlace(): String {
-        val country = sharedPreferencesInteractor.getFilter(SharedFilterNames.COUNTRY)?.valueString ?: ""
-        val region = sharedPreferencesInteractor.getFilter(SharedFilterNames.AREA)?.valueString ?: ""
-        return if (country.isEmpty()) region else "$country $region"
+        val array = mutableListOf<String>()
+        filtersInteractor.getFilter(SharedFilterNames.COUNTRY)?.valueString?.let {
+            array.add(it)
+        }
+
+        filtersInteractor.getFilter(SharedFilterNames.AREA)?.valueString?.let {
+            array.add(it)
+        }
+
+        val result = array.joinToString(", ")
+
+        return result
     }
 
     fun getCurrentFilters(): FiltersMainViewState {
         val workplace = getWorkPlace()
-        val industry = sharedPreferencesInteractor
+        val industry = filtersInteractor
             .getFilter(SharedFilterNames.INDUSTRY)?.valueString ?: ""
-        val salary = sharedPreferencesInteractor
-            .getFilter(SharedFilterNames.SALARY)?.valueInt ?: 0
-        val onlyWithSalary = sharedPreferencesInteractor
-            .getFilter(SharedFilterNames.ONLY_WITH_SALARY)?.valueBoolean ?: false
+        val salary = filtersInteractor
+            .getFilter(SharedFilterNames.SALARY)?.valueString ?: ""
+        val onlyWithSalary =
+            if (filtersInteractor.getFilter(SharedFilterNames.ONLY_WITH_SALARY) == null) {
+                false
+            } else {
+                true
+            }
 
         return if (
-            sharedPreferencesInteractor.getAllFilters().isEmpty()
+            filtersInteractor.getAllFilters().isEmpty()
         ) {
             FiltersMainViewState.Empty
         } else {
@@ -46,18 +59,65 @@ class FiltersMainViewModel @Inject constructor(
                 workPlace = workplace,
                 industries = industry,
                 salary = salary,
-                onlyWithSalary = onlyWithSalary
+                onlyWithSalary = onlyWithSalary,
+                filterChanged,
+                true
+
             )
         }
-
     }
-}
 
-sealed class ResponseState {
+    fun setSalaryFilter(filter: String) {
+        if (filter == filtersInteractor.getFilter(SharedFilterNames.SALARY)?.valueString ?: "") return
 
-    data object Start : ResponseState()
-    data object Empty : ResponseState()
-    data object Content : ResponseState()
-    data object NetworkError : ResponseState()
-    data object ServerError : ResponseState()
+        var filterValue: FilterValue? = null
+
+        if (!filter.isNullOrEmpty()) {
+            filterValue = FilterValue(
+                "",
+                "", SharedFilterNames.SALARY, filter
+            )
+        }
+        filtersInteractor.setFilter(SharedFilterNames.SALARY, filterValue)
+        filterChanged = true
+        loadCurrentFilters()
+    }
+
+    fun setOnlySalaryFilter(checked: Boolean) {
+        var filterValue: FilterValue? = null
+
+        if (checked) {
+            filterValue = FilterValue(
+                "",
+                "", SharedFilterNames.ONLY_WITH_SALARY, "true"
+            )
+        }
+        filtersInteractor.setFilter(SharedFilterNames.ONLY_WITH_SALARY, filterValue)
+        filterChanged = true
+        loadCurrentFilters()
+    }
+
+    fun clearAllFilters() {
+        filtersInteractor.clearAllFilters()
+        filterChanged = false
+        loadCurrentFilters()
+    }
+
+    fun loadCurrentFilters(changed: Boolean = false) {
+        if (changed) filterChanged = true
+        state.postValue(getCurrentFilters())
+    }
+
+    fun clearWorkPlace() {
+        filterChanged = true
+        filtersInteractor.setFilter(SharedFilterNames.COUNTRY, null)
+        filtersInteractor.setFilter(SharedFilterNames.AREA, null)
+        loadCurrentFilters()
+    }
+
+    fun clearIndustry() {
+        filterChanged = true
+        filtersInteractor.setFilter(SharedFilterNames.INDUSTRY, null)
+        loadCurrentFilters()
+    }
 }

@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.practicum.android.diploma.R
-import ru.practicum.android.diploma.domain.filters.models.FilterValue
+import ru.practicum.android.diploma.domain.models.Area
 
 class FiltersAreaViewHolder(parentView: View) : RecyclerView.ViewHolder(parentView) {
     private val filterDescription: TextView
@@ -13,7 +13,7 @@ class FiltersAreaViewHolder(parentView: View) : RecyclerView.ViewHolder(parentVi
         filterDescription = parentView.findViewById(R.id.filterDescription)
     }
 
-    fun bind(filterValue: FilterValue) {
+    fun bind(filterValue: Area) {
         filterDescription.text = filterValue.name
     }
 }
