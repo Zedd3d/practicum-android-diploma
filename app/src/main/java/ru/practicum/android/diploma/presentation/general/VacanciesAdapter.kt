@@ -1,6 +1,5 @@
 package ru.practicum.android.diploma.presentation.general
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -31,7 +30,6 @@ class VacanciesAdapter(
 
         private val binding by viewBinding { VacancyItemBinding.bind(view) }
 
-        @SuppressLint("SetTextI18n")
         fun bind(vacancy: Vacancy, firstElement: Boolean) {
             val padding = if (needPadding && firstElement) {
                 FIRST_ELEMENT_PADDING_TOP
@@ -47,7 +45,7 @@ class VacanciesAdapter(
                     )
                 )
             }
-            binding.tvVacancyName.text = vacancy.name + ", " + vacancy.area
+            binding.tvVacancyName.text = vacancy.name.plus(", ").plus(vacancy.area)
             binding.salary.text = SalaryUtil.formatSalary(view.context, vacancy.salary)
             Glide.with(view.context)
                 .load(vacancy.img)
