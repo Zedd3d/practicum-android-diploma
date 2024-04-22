@@ -91,8 +91,10 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
         }
         binding.clPlaceholderTrouble.isVisible = when (state) {
             is VacancyViewState.Error -> {
-                if (state.isPageNotFound) { binding.tvSrcText.setText(R.string.delete_vacancy)
-                } else { binding.tvSrcText.setText(R.string.server_error)
+                if (state.isPageNotFound) {
+                    binding.tvSrcText.setText(R.string.delete_vacancy)
+                } else {
+                    binding.tvSrcText.setText(R.string.server_error)
                 }
                 true
             }
