@@ -75,7 +75,7 @@ class GeneralViewModel @Inject constructor(
                         currentListVacancies.clear()
                     }
 
-                    response.listVacancy.forEach {
+                    fillFavorites(response.listVacancy).forEach {
                         if (currentListVacancies.find { vacancy -> it.id == vacancy.id } == null) {
                             currentListVacancies.add(it)
                         }
