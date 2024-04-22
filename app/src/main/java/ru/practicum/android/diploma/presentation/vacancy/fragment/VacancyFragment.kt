@@ -192,7 +192,7 @@ class VacancyFragment : Fragment(R.layout.fragment_vacancy) {
         vacancy.employer?.let {
             Glide.with(requireContext())
                 .load(vacancy.employer.logoUrls)
-                .placeholder(R.drawable.placeholder_company_icon)
+                .placeholder(R.drawable.ic_placeholder)
                 .fitCenter()
                 .transform(RoundedCorners(RADIUS))
                 .into(binding.ivCompany)
