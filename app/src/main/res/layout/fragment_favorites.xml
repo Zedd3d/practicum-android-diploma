@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="10dp"
     android:background="?colorSecondary"
+    android:paddingBottom="10dp"
     tools:context=".presentation.favorites.fragment.FavoritesFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        style="@style/toolbarTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/toolbarTitle"
         app:title="@string/favorite_head_name" />
 
     <com.google.android.material.textfield.TextInputEditText
@@ -77,8 +75,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:text="@string/favorite_empty"
-            android:textColor="@color/BlackDay_WhiteNight"
-            android:textAlignment="center" />
-
+            android:textAlignment="center"
+            android:textColor="@color/BlackDay_WhiteNight" />
     </LinearLayout>
 </FrameLayout>

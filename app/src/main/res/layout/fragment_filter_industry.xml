@@ -2,15 +2,15 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/WhiteDay_BlackNight"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/WhiteDay_BlackNight">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarText"
+        style="@style/toolbarTitle"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        style="@style/toolbarTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -36,8 +36,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/ic_clear"
         android:layout_marginHorizontal="@dimen/dimen_16dp"
+        android:src="@drawable/ic_clear"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/choosing_industry_edit_text"
         app:layout_constraintEnd_toEndOf="@+id/choosing_industry_edit_text"
@@ -92,11 +92,11 @@
         android:layout_gravity="center"
         android:indeterminateTint="@color/Blue_yp"
         android:visibility="gone"
-        tools:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/llPlaceholderTrouble"
@@ -107,11 +107,11 @@
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
-        tools:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbarText">
+        app:layout_constraintTop_toBottomOf="@id/toolbarText"
+        tools:visibility="gone">
 
         <ImageView
             android:id="@+id/src"

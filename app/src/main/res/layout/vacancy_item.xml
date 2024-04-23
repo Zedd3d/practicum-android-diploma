@@ -68,13 +68,13 @@
             android:id="@+id/iv_company"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:strokeWidth="1dp"
-            android:padding="1dp"
             android:background="@color/WhiteUniversal_yp"
+            android:padding="1dp"
             android:scaleType="centerInside"
-            android:src="@drawable/placeholder_company_icon"
+            android:src="@drawable/ic_placeholder"
             app:shapeAppearanceOverlay="@style/rounded_12"
-            app:strokeColor="@color/LightGray_yp" />
+            app:strokeColor="@color/LightGray_yp"
+            app:strokeWidth="1dp" />
     </com.google.android.material.card.MaterialCardView>
 
     <TextView
