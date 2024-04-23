@@ -60,7 +60,7 @@ class VacanciesAdapter(
             binding.salary.text = SalaryUtil.formatSalary(view.context, vacancy.salary)
             Glide.with(view.context)
                 .load(vacancy.img)
-                .placeholder(R.drawable.placeholder_company_icon)
+                .placeholder(R.drawable.ic_placeholder)
                 .into(binding.ivCompany)
             binding.department.text = vacancy.area
 
