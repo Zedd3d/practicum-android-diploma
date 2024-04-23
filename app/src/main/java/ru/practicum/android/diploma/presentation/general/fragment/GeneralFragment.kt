@@ -350,7 +350,8 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 }
 
                 is FavoriteState.Error -> {
-                    R.drawable.placeholder_company_icon
+                    Toast.makeText(requireContext(), getString(R.string.favorite_error), Toast.LENGTH_SHORT).show()
+                    R.drawable.state_image_no_internet
                 }
 
                 else -> {
