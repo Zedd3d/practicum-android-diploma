@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.domain.favorites.api.FavoritesInteractor
+import ru.practicum.android.diploma.domain.general.api.SearchVacanciesByIdUseCase
 import ru.practicum.android.diploma.domain.general.api.SearchVacanciesUseCase
 import ru.practicum.android.diploma.domain.general.models.ResponseState
 import ru.practicum.android.diploma.domain.models.Vacancy
@@ -13,7 +15,9 @@ import javax.inject.Inject
 
 class GeneralViewModel @Inject constructor(
     private val searchVacanciesUseCase: SearchVacanciesUseCase,
-    private val filtersInteractor: FiltersInteractor
+    private val filtersInteractor: FiltersInteractor,
+    private val favoritesInteractor: FavoritesInteractor,
+    private val searchVacanciesByIdUseCase: SearchVacanciesByIdUseCase
 ) : ViewModel() {
 
     private var nextPageNumber = 0
@@ -22,12 +26,15 @@ class GeneralViewModel @Inject constructor(
 
     private val stateFilters = MutableLiveData<Boolean>()
 
+    private val favoriteState = MutableLiveData<FavoriteState>()
+
     private var currentListVacancies = mutableListOf<Vacancy>()
+
+    private var isNextPageLoading = false
 
     fun observeUi(): LiveData<ResponseState> = state
     fun observeFilters(): LiveData<Boolean> = stateFilters
-
-    private var isNextPageLoading = false
+    fun observeIsFavorite(): LiveData<FavoriteState> = favoriteState
 
     private var query: String? = null
         set(value) {
@@ -48,6 +55,13 @@ class GeneralViewModel @Inject constructor(
         makeSearchRequest(query, false)
     }
 
+    private suspend fun fillFavorites(list: List<Vacancy>): List<Vacancy> {
+        list.forEach {
+            it.isFavorite = favoritesInteractor.isFavorite(it.id)
+        }
+        return list
+    }
+
     private fun makeSearchRequest(query: String, isPagination: Boolean) {
         state.postValue(ResponseState.Loading(isPagination))
         viewModelScope.launch {
@@ -61,7 +75,7 @@ class GeneralViewModel @Inject constructor(
                         currentListVacancies.clear()
                     }
 
-                    response.listVacancy.forEach {
+                    fillFavorites(response.listVacancy).forEach {
                         if (currentListVacancies.find { vacancy -> it.id == vacancy.id } == null) {
                             currentListVacancies.add(it)
                         }
@@ -109,11 +123,56 @@ class GeneralViewModel @Inject constructor(
         }
     }
 
-    fun updateHasFilters() {
+    fun updateData() {
         stateFilters.postValue(filtersInteractor.getAllFilters().isNotEmpty())
+        val currentValue = state.value
+        viewModelScope.launch {
+            if (currentValue is ResponseState.ContentVacanciesList) {
+                val newValue = currentValue.copy(listVacancy = fillFavorites(currentValue.listVacancy))
+                state.postValue(newValue)
+            }
+        }
+    }
+
+    fun switchFavorite(id: String, position: Int) {
+        viewModelScope.launch {
+            favoriteState.postValue(FavoriteState.Loading)
+            val isFavorite = favoritesInteractor.isFavorite(id)
+            val currentValue = state.value
+            if (currentValue is ResponseState.ContentVacanciesList) {
+                currentValue.listVacancy.get(position).isFavorite = isFavorite
+            }
+
+            if (isFavorite) {
+                favoritesInteractor.deleteDbVacanciFromFavorite(id)
+                favoriteState.postValue(FavoriteState.Content(position, false, id))
+            } else {
+                val vacanciesDetailResponse = searchVacanciesByIdUseCase(id)
+                when (vacanciesDetailResponse) {
+                    is ResponseState.ContentVacancyDetail -> {
+                        favoritesInteractor.insertDbVacanciToFavorite(vacanciesDetailResponse.vacancyDetail)
+                        favoriteState.postValue(FavoriteState.Content(position, true, id))
+                    }
+
+                    else -> favoriteState.postValue(FavoriteState.Error)
+                }
+            }
+        }
     }
 
     companion object {
         const val PAG_COUNT: Int = 20
     }
+}
+
+sealed interface FavoriteState {
+    class Content(
+        val position: Int,
+        val isFavorite: Boolean,
+        val id: String
+    ) : FavoriteState
+
+    data object Error : FavoriteState
+
+    data object Loading : FavoriteState
 }
