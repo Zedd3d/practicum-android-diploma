@@ -56,12 +56,13 @@ class VacanciesAdapter(
                     )
                 )
             }
-            binding.tvVacancyName.text = vacancy.name
+            binding.tvVacancyName.text = vacancy.name.plus(", ").plus(vacancy.area)
             binding.salary.text = SalaryUtil.formatSalary(view.context, vacancy.salary)
             Glide.with(view.context)
                 .load(vacancy.img)
                 .placeholder(R.drawable.ic_placeholder)
                 .into(binding.ivCompany)
+
             binding.department.text = vacancy.area
 
             binding.root.setOnClickListener {
