@@ -80,15 +80,6 @@ class VacanciesAdapter(
                 binding.ivLike.isVisible = true
                 binding.progressLike.isVisible = false
             }
-            val image = when (vacancy.isFavorite) {
-                true -> R.drawable.favorite_vacancy_drawable_fill
-                false -> R.drawable.favorite_vacancy_drawable_empty
-            }
-            image.let {
-                Glide.with(view.context)
-                    .load(image)
-                    .into(binding.ivLike)
-            }
 
             updateFavIco(vacancy)
         }
@@ -98,6 +89,16 @@ class VacanciesAdapter(
                 binding.ivAddToFav.alpha = 1F
             } else {
                 binding.ivAddToFav.alpha = 0F
+            }
+
+            val image = when (vacancy.isFavorite) {
+                true -> R.drawable.favorite_vacancy_drawable_fill
+                false -> R.drawable.favorite_vacancy_drawable_empty
+            }
+            image.let {
+                Glide.with(view.context)
+                    .load(image)
+                    .into(binding.ivLike)
             }
         }
     }
