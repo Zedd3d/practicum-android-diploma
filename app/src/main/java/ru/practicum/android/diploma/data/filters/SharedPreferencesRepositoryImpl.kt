@@ -42,9 +42,14 @@ class SharedPreferencesRepositoryImpl(
             result.put(SharedFilterNames.SALARY, getFilterValue(salaryFilter).valueString)
         }
 
-        val inlyWithSalaryFilter = sharedPref.getString(SharedFilterNames.ONLY_WITH_SALARY, null)
-        if (!inlyWithSalaryFilter.isNullOrEmpty()) {
-            result.put(SharedFilterNames.ONLY_WITH_SALARY, getFilterValue(inlyWithSalaryFilter).valueString)
+        val onlyWithSalaryFilter = sharedPref.getString(SharedFilterNames.ONLY_WITH_SALARY, null)
+        if (!onlyWithSalaryFilter.isNullOrEmpty()) {
+            result.put(SharedFilterNames.ONLY_WITH_SALARY, getFilterValue(onlyWithSalaryFilter).valueString)
+        }
+
+        val currencyHardFilter = sharedPref.getString(SharedFilterNames.CURRENCY_HARD, null)
+        if (!currencyHardFilter.isNullOrEmpty()) {
+            result.put(SharedFilterNames.CURRENCY_HARD, getFilterValue(currencyHardFilter).valueInt.toString())
         }
 
         return result.toMap()

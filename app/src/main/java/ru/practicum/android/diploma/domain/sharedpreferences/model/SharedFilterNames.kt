@@ -6,4 +6,5 @@ object SharedFilterNames {
     const val INDUSTRY = "industry"
     const val SALARY = "salary"
     const val ONLY_WITH_SALARY = "only_with_salary"
+    const val CURRENCY_HARD = "currency_hard"
 }

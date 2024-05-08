@@ -50,6 +50,8 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.lifecycle.viewmodel.savedstate)
     implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
     kapt(libs.lifecycle.compiler)
 
     // UI layer libraries
@@ -93,4 +95,6 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.core)
     implementation(libs.html)
+
+    implementation("com.google.firebase:firebase-crashlytics:18.6.4")
 }

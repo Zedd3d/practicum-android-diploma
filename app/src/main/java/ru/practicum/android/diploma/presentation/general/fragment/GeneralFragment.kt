@@ -388,6 +388,10 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
                 adapter.submitList(emptyList())
                 adapter.notifyDataSetChanged()
             }
+
+            if (state is ResponseState.Loading && state.isPagination){
+                binding.tvPageProgress.text = "Loading ${state.pageNumber} from 100 \n (max 2000)"
+            }
         }
         updateStatus(state)
     }
@@ -500,6 +504,8 @@ class GeneralFragment : Fragment(R.layout.fragment_general) {
             is ResponseState.Loading -> state.isPagination
             else -> false
         }
+
+        binding.tvPageProgress.isVisible = binding.vacanciesProgress.isVisible
 
         binding.foundCountText.text = when (state) {
             is ResponseState.ContentVacanciesList -> {

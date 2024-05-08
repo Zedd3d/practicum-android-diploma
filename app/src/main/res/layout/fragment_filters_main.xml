@@ -116,6 +116,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/llSalary" />
 
+    <TextView
+        android:id="@+id/titleCurrency"
+        style="@style/StandartTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/currency_in_sourse"
+        android:paddingVertical="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="12dp"
+        android:textColor="@color/BlackDay_WhiteNight"
+        app:layout_constraintEnd_toStartOf="@id/spCurrency"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cbOnlyWithSalary"/>
+
+    <Spinner
+        android:id="@+id/spCurrency"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="12dp"
+        tools:listitem="@layout/currency_item"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/titleCurrency"
+        app:layout_constraintTop_toBottomOf="@id/cbOnlyWithSalary" />
+
     <Button
         android:id="@+id/btnCancel"
         style="@style/StandartButton"

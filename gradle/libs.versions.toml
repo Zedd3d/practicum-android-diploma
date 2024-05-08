@@ -23,6 +23,8 @@ detektTwitterComposeRules ="0.0.26"
 viewbindingpropertydelegateNoreflection = "1.5.9"
 kotlin = "1.9.22"
 lifecycleViewmodelCompose = "2.7.0"
+firebase-crashlytics = "19.0.0"
+firebase-analytics = "22.0.0"
 
 [libraries]
 
@@ -71,6 +73,8 @@ uiTests-junitExt = "androidx.test.ext:junit:1.1.5"
 uiTests-espressoCore = "androidx.test.espresso:espresso-core:3.5.1"
 viewbindingpropertydelegate-noreflection = { module = "com.github.kirich1409:viewbindingpropertydelegate-noreflection", version.ref = "viewbindingpropertydelegateNoreflection" }
 lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebase-crashlytics" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebase-analytics" }
 
 [bundles]
 [plugins]

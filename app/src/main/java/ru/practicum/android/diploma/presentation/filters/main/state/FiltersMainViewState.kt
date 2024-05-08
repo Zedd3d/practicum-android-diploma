@@ -6,8 +6,9 @@ sealed interface FiltersMainViewState {
         val industries: String,
         val salary: String,
         val onlyWithSalary: Boolean,
+        val currencyHard: Int,
         val filterChanged: Boolean,
-        val filtresAvailable: Boolean
+        val filtresAvailable: Boolean,
     ) : FiltersMainViewState
 
     object Empty : FiltersMainViewState

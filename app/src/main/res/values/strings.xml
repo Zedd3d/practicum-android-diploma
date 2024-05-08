@@ -25,7 +25,7 @@
     <string name="no_salary">Зарплата не указана</string>
     <string name="filter_workplace">Место работы</string>
     <string name="filter_settings">Настройки фильтрации</string>
-    <string name="expected_salary">Ожидаемая зарплата</string>
+    <string name="expected_salary">Ожидаемая зарплата (Руб. по курсу)</string>
     <string name="input_expected_salary">Введите сумму</string>
     <string name="filter_only_with_salary">Не показывать без зарплаты</string>
     <string name="filter_industries">Отрасль</string>
@@ -58,4 +58,5 @@
     <string name="delete_vacancy">Вакансия была удалена</string>
     <string name="industri_text">Отрасль</string>
     <string name="favorite_error">не удалось обновить признак избранного. проверьте подключение к сети</string>
+    <string name="currency_in_sourse">Валюта в объявлении</string>
 </resources>

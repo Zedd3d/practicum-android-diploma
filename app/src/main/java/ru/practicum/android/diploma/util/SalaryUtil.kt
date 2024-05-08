@@ -34,7 +34,7 @@ object SalaryUtil {
         return text.toString()
     }
 
-    private fun getSymbolFromCurrency(currency: String?): String {
+    fun getSymbolFromCurrency(currency: String?): String {
         return when (currency) {
             "RUR" -> {
                 "₽"

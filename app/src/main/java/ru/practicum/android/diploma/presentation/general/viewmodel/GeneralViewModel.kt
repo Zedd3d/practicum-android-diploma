@@ -4,13 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.favorites.api.FavoritesInteractor
+import ru.practicum.android.diploma.domain.filters.models.FilterValue
 import ru.practicum.android.diploma.domain.general.api.SearchVacanciesByIdUseCase
 import ru.practicum.android.diploma.domain.general.api.SearchVacanciesUseCase
 import ru.practicum.android.diploma.domain.general.models.ResponseState
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.sharedpreferences.api.FiltersInteractor
+import ru.practicum.android.diploma.domain.sharedpreferences.model.SharedFilterNames
 import javax.inject.Inject
 
 class GeneralViewModel @Inject constructor(
@@ -32,6 +35,8 @@ class GeneralViewModel @Inject constructor(
 
     private var isNextPageLoading = false
 
+    private var JobSearch: DisposableHandle? = null
+
     fun observeUi(): LiveData<ResponseState> = state
     fun observeFilters(): LiveData<Boolean> = stateFilters
     fun observeIsFavorite(): LiveData<FavoriteState> = favoriteState
@@ -47,7 +52,8 @@ class GeneralViewModel @Inject constructor(
     fun search(query: String) {
         if (this.query == query) return
         this.query = query
-
+        JobSearch?.let{ it.dispose() }
+        JobSearch = null
         if (query.isEmpty()) {
             state.postValue(ResponseState.Start)
             return
@@ -62,10 +68,15 @@ class GeneralViewModel @Inject constructor(
         return list
     }
 
-    private fun makeSearchRequest(query: String, isPagination: Boolean) {
-        state.postValue(ResponseState.Loading(isPagination))
-        viewModelScope.launch {
+    private fun makeSearchRequest(query: String, isPagination: Boolean, counterInc: Int = 0) {
+        if (query.isNullOrEmpty()) return
+        state.postValue(ResponseState.Loading(isPagination,nextPageNumber))
+        var counter = counterInc
+        val filterCurrencyHard = filtersInteractor.getFilter(SharedFilterNames.CURRENCY_HARD)?: FilterValue("","","","",0)
+
+        JobSearch = viewModelScope.launch {
             val filtersMap = filtersInteractor.getAllFilters()
+
             if (!isPagination) nextPageNumber = 0
             when (val response = searchVacanciesUseCase(query, nextPageNumber, filtersMap)) {
                 is ResponseState.ContentVacanciesList -> {
@@ -77,7 +88,14 @@ class GeneralViewModel @Inject constructor(
 
                     fillFavorites(response.listVacancy).forEach {
                         if (currentListVacancies.find { vacancy -> it.id == vacancy.id } == null) {
-                            currentListVacancies.add(it)
+                            if (filterCurrencyHard.valueInt !=0){
+                                if (filterCurrencyHard.valueString.contentEquals(it.salary?.currency ?: "",true)){
+                                    counter ++
+                                    currentListVacancies.add(it)
+                                }
+                            } else {
+                                currentListVacancies.add(it)
+                            }
                         }
                     }
 
@@ -93,13 +111,21 @@ class GeneralViewModel @Inject constructor(
 
                 is ResponseState.NetworkError -> state.postValue(ResponseState.NetworkError(isPagination))
 
-                is ResponseState.Loading -> state.postValue(ResponseState.Loading(isPagination))
+                is ResponseState.Loading -> state.postValue(ResponseState.Loading(isPagination,nextPageNumber))
                 else -> {
+                    counter = -1
                     state.postValue(response)
                 }
             }
             stateFilters.postValue(filtersMap.isNotEmpty())
             isNextPageLoading = false
+        }.invokeOnCompletion {
+            if (filterCurrencyHard.valueInt !=0
+                && counter >=0
+                && counter<PAG_COUNT
+                && nextPageNumber<MAX_PAGES){
+                makeSearchRequest(query, true, counter)
+            }
         }
     }
 
@@ -108,6 +134,8 @@ class GeneralViewModel @Inject constructor(
         maxPages?.let { if (nextPageNumber + 1 >= it) return }
 
         isNextPageLoading = true
+        JobSearch?.let{ it.dispose() }
+        JobSearch = null
         makeSearchRequest(query, true)
     }
 
@@ -162,6 +190,7 @@ class GeneralViewModel @Inject constructor(
 
     companion object {
         const val PAG_COUNT: Int = 20
+        const val MAX_PAGES: Int = 100
     }
 }
 

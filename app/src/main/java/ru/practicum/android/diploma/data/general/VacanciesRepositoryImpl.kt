@@ -6,6 +6,7 @@ import ru.practicum.android.diploma.data.dto.detail.VacancyDetailDto
 import ru.practicum.android.diploma.data.network.NetworkClient
 import ru.practicum.android.diploma.domain.api.VacanciesRepository
 import ru.practicum.android.diploma.domain.general.models.ResponseState
+import ru.practicum.android.diploma.domain.sharedpreferences.model.SharedFilterNames
 import javax.inject.Inject
 
 const val PAGINATION_COUNT_PAGES = "20"
@@ -26,7 +27,8 @@ class VacanciesRepositoryImpl @Inject constructor(
             "text" to text,
             "page" to page.toString(),
             "per_page" to PAGINATION_COUNT_PAGES
-        ).plus(filters)
+        ).plus(filters.filter { it.key != SharedFilterNames.CURRENCY_HARD })
+
         val response = networkClient.doRequest(query)
         return if (response.resultCode == HTTP_OK && response is VacanciesResponse) {
             val listVacancies = response.items.asDomain()

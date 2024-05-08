@@ -63,7 +63,7 @@ class VacanciesAdapter(
                 .placeholder(R.drawable.ic_placeholder)
                 .into(binding.ivCompany)
 
-            binding.department.text = vacancy.area
+            binding.department.text = vacancy.employer
 
             binding.root.setOnClickListener {
                 onClick.invoke(vacancy.id)

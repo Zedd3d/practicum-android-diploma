@@ -3,6 +3,7 @@ package ru.practicum.android.diploma.presentation.filters.main.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import ru.practicum.android.diploma.domain.Currency
 import ru.practicum.android.diploma.domain.filters.models.FilterValue
 import ru.practicum.android.diploma.domain.sharedpreferences.api.FiltersInteractor
 import ru.practicum.android.diploma.domain.sharedpreferences.model.SharedFilterNames
@@ -50,6 +51,8 @@ class FiltersMainViewModel @Inject constructor(
                 true
             }
 
+        val currencyHard = filtersInteractor.getFilter(SharedFilterNames.CURRENCY_HARD)?.valueInt?:0
+
         return if (
             filtersInteractor.getAllFilters().isEmpty()
         ) {
@@ -60,6 +63,7 @@ class FiltersMainViewModel @Inject constructor(
                 industries = industry,
                 salary = salary,
                 onlyWithSalary = onlyWithSalary,
+                currencyHard = currencyHard,
                 filterChanged,
                 true
 
@@ -118,6 +122,19 @@ class FiltersMainViewModel @Inject constructor(
     fun clearIndustry() {
         filterChanged = true
         filtersInteractor.setFilter(SharedFilterNames.INDUSTRY, null)
+        loadCurrentFilters()
+    }
+
+    fun setCurrencyFilter(currency: Currency) {
+        var filterValue: FilterValue? = null
+
+        if (currency.id!=0) {
+            filterValue = FilterValue("",
+                "", SharedFilterNames.CURRENCY_HARD, currency.name,currency.id
+            )
+        }
+        filtersInteractor.setFilter(SharedFilterNames.CURRENCY_HARD, filterValue)
+        filterChanged = true
         loadCurrentFilters()
     }
 }

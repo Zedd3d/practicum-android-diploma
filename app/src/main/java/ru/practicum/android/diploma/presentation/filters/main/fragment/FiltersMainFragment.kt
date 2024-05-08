@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.onEach
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.app.App
 import ru.practicum.android.diploma.databinding.FragmentFiltersMainBinding
+import ru.practicum.android.diploma.domain.Currency
 import ru.practicum.android.diploma.presentation.Factory
 import ru.practicum.android.diploma.presentation.filters.CustomViewPropertysSetter.setViewPropertys
 import ru.practicum.android.diploma.presentation.filters.main.state.FiltersMainViewState
@@ -39,6 +41,10 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
     private var _binding: FragmentFiltersMainBinding? = null
     private val binding get() = _binding!!
 
+    private val adapterCurrencies by lazy {
+        ListCurrenciesAdapter(requireContext())
+    }
+
     companion object {
         const val DEBOUNCE = 1000L
         const val FILTER_CHANGED = "filter_changed"
@@ -54,6 +60,7 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.spCurrency.adapter = adapterCurrencies
         binding.btnCancel.isSelected = true
         activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible = false
 
@@ -121,6 +128,15 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
         binding.llWorkPlace.root.setOnClickListener {
             findNavController().navigate(R.id.action_filtersMainFragment_to_filtersWorkPlaceFragment)
         }
+
+        binding.spCurrency.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val currency = (binding.spCurrency.getSelectedItem() as Currency)
+                viewModel.setCurrencyFilter(currency)
+            }
+
+            override fun onNothingSelected(arg0: AdapterView<*>?) {}
+        })
     }
 
     private fun checkAndSaveEditText() {
@@ -154,6 +170,7 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
                 binding.cbOnlyWithSalary.isChecked = false
                 binding.btnCancel.isVisible = false
                 binding.btnAccept.isVisible = false
+                setCurrencyFilter(0)
             }
 
             is FiltersMainViewState.Content -> {
@@ -163,11 +180,16 @@ class FiltersMainFragment : Fragment(R.layout.fragment_filters_main) {
                 binding.cbOnlyWithSalary.isChecked = state.onlyWithSalary
                 binding.btnCancel.isVisible = state.filtresAvailable
                 binding.btnAccept.isVisible = state.filterChanged
+                setCurrencyFilter(state.currencyHard)
             }
         }
         if (binding.tvSalaryHint.isEnabled) {
             binding.tietSalary.setSelection(binding.tietSalary.text?.length ?: 0)
         }
+    }
+
+    private fun setCurrencyFilter(i: Int) {
+        binding.spCurrency.setSelection(i)
     }
 
     override fun onDestroyView() {
